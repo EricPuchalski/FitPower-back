@@ -2,6 +2,7 @@ package ar.gym.gym.controller;
 
 import ar.gym.gym.dto.request.GymRequestDto;
 import ar.gym.gym.dto.response.GymResponseDto;
+import ar.gym.gym.model.Gym;
 import ar.gym.gym.service.GymService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,12 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/gyms")
 public class GymController{
-    @Autowired
-    private GymService gymService;
+
+    private final GymService gymService;
+
+    public GymController(GymService gymService) {
+        this.gymService = gymService;
+    }
 
     // Endpoint para crear un nuevo gimnasio
     @PostMapping
@@ -32,16 +38,16 @@ public class GymController{
     }
 
     // Endpoint para obtener un gimnasio por código
-    @GetMapping("/{gymCode}")
-    public ResponseEntity<GymResponseDto> findById(@PathVariable String name) {
-        GymResponseDto gym = gymService.findByName(name);
-        return ResponseEntity.ok(gym);
+    @GetMapping("/{name}")
+    public ResponseEntity<Gym> findByName(@PathVariable String name) {
+        Optional<Gym> gym = gymService.findByName(name);
+        return ResponseEntity.ok(gym.get());
     }
 
     // Endpoint para actualizar un gimnasio existente
-    @PutMapping("/{gymCode}")
-    public ResponseEntity<GymResponseDto> update(@RequestBody GymRequestDto gymRequestDto) {
-        GymResponseDto updatedGym = gymService.update(gymRequestDto);
+    @PutMapping("/{id}")
+    public ResponseEntity<GymResponseDto> update(@RequestBody GymRequestDto gymRequestDto, @PathVariable Long id) {
+        GymResponseDto updatedGym = gymService.update(gymRequestDto, id);
         return ResponseEntity.ok(updatedGym);
     }
 
@@ -53,7 +59,7 @@ public class GymController{
     }
 
     // Endpoint para agregar un cliente a un gimnasio
-    @PostMapping("/add/{gymCode}/clients/{dni}")
+    @PutMapping("/add/{gymCode}/clients/{dni}")
     public ResponseEntity<GymResponseDto> addClientToGym(@PathVariable String gymCode, @PathVariable String dni) {
         GymResponseDto updatedGym = gymService.addClientToGym(gymCode, dni);
         return ResponseEntity.ok(updatedGym);

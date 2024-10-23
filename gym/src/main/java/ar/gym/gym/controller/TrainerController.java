@@ -55,9 +55,9 @@ public class TrainerController{
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{dni}")
-    public ResponseEntity<List<ClientResponseDto>> getClients(@PathVariable String dni){
-        List<ClientResponseDto>trainerClients = trainerService.getClientsAssociated(dni);
+    @GetMapping("/{dniTrainer}")
+    public ResponseEntity<List<ClientResponseDto>> getClients(@PathVariable String dniTrainer){
+        List<ClientResponseDto>trainerClients = trainerService.getClientsAssociated(dniTrainer);
         return ResponseEntity.ok(trainerClients);
     }
 

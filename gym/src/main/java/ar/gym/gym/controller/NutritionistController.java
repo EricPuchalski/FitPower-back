@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
-@RequestMapping("/api/nutritionist")
+@RequestMapping("/api/nutritionists")
 public class NutritionistController {
     @Autowired
     private NutritionistService nutritionistService;
@@ -52,9 +52,9 @@ public class NutritionistController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{dni}")
-    public ResponseEntity<List<ClientResponseDto>> getClients(@PathVariable String dni){
-        List<ClientResponseDto>nutritionistClients = nutritionistService.getClientsAssociated(dni);
+    @GetMapping("/{dniNutritionist}")
+    public ResponseEntity<List<ClientResponseDto>> getClients(@PathVariable String dniNutritionist){
+        List<ClientResponseDto>nutritionistClients = nutritionistService.getClientsAssociated(dniNutritionist);
         return ResponseEntity.ok(nutritionistClients);
     }
 

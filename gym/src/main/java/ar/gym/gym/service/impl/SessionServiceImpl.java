@@ -24,9 +24,6 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionResponseDto create(SessionRequestDto sessionRequestDto) {
-        if (sessionRepository.findById(sessionRequestDto.getId()).isPresent()) {
-            throw new EntityExistsException("Ya existe una sesión con el código " + sessionRequestDto.getId());
-        }
         Session session = sessionMapper.dtoToEntity(sessionRequestDto);
         sessionRepository.save(session);
         return sessionMapper.entityToDto(session);
@@ -53,35 +50,34 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionResponseDto update(SessionRequestDto sessionRequestDto) {
-        // Verificamos si la sesión existe por su ID, sino lanzamos excepción
-        Session existingSession = sessionRepository.findById(sessionRequestDto.getId())
-                .orElseThrow(() -> new EntityExistsException("Sesión no encontrada"));
+
 
         // Actualizamos solo los campos no nulos o no vacíos del DTO
         if (sessionRequestDto.getTrainingDay() != null && !sessionRequestDto.getTrainingDay().isEmpty()) {
-            existingSession.setTrainingDay(sessionRequestDto.getTrainingDay());
+            sessionRequestDto.setTrainingDay(sessionRequestDto.getTrainingDay());
         }
         if (sessionRequestDto.getMuscleGroup() != null && !sessionRequestDto.getMuscleGroup().isEmpty()) {
-            existingSession.setMuscleGroup(sessionRequestDto.getMuscleGroup());
+            sessionRequestDto.setMuscleGroup(sessionRequestDto.getMuscleGroup());
         }
         if (sessionRequestDto.getSets() > 0) {
-            existingSession.setSets(sessionRequestDto.getSets());
+            sessionRequestDto.setSets(sessionRequestDto.getSets());
         }
         if (sessionRequestDto.getReps() > 0) {
-            existingSession.setReps(sessionRequestDto.getReps());
+            sessionRequestDto.setReps(sessionRequestDto.getReps());
         }
         if (sessionRequestDto.getRestTime() != null) {
-            existingSession.setRestTime(sessionRequestDto.getRestTime());
+            sessionRequestDto.setRestTime(sessionRequestDto.getRestTime());
         }
         if (sessionRequestDto.getDuration() != null) {
-            existingSession.setDuration(sessionRequestDto.getDuration());
+            sessionRequestDto.setDuration(sessionRequestDto.getDuration());
         }
 
         // Actualizamos el estado de completitud de la sesión
-        existingSession.setCompleted(sessionRequestDto.isCompleted());
+        sessionRequestDto.setCompleted(sessionRequestDto.isCompleted());
 
         // Guardamos la sesión actualizada en la base de datos
-        Session updatedSession = sessionRepository.save(existingSession);
+        Session session = sessionMapper.dtoToEntity(sessionRequestDto);
+        Session updatedSession = sessionRepository.save(session);
 
         // Devolvemos el DTO actualizado usando el mapper
         return sessionMapper.entityToDto(updatedSession);
@@ -99,16 +95,8 @@ public class SessionServiceImpl implements SessionService {
 
         Exercise exercise;
 
-        // Determinar si exerciseIdentifier es Long (ID) o String (nombre)
-        if (exerciseIdentifier instanceof Long) {
-            // Buscar el ejercicio por su ID
             exercise = exerciseServiceImpl.getExerciseByIdOrThrow((Long) exerciseIdentifier);
-        } else if (exerciseIdentifier instanceof String) {
-            // Buscar el ejercicio por su nombre
-            exercise = exerciseServiceImpl.getExerciseByNameOrThrow((String) exerciseIdentifier);
-        } else {
-            throw new IllegalArgumentException("El identificador del ejercicio debe ser un ID (Long) o un nombre (String)");
-        }
+
 
         // Asignar el ejercicio a la sesión
         session.setExercise(exercise);

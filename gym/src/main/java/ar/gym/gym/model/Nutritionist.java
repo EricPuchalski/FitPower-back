@@ -9,6 +9,9 @@ import java.util.List;
 @Entity
 @Table(name = "nutritionists")
 public class Nutritionist extends Person {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String profession;
     private boolean available;
     @OneToMany(mappedBy = "nutritionist")

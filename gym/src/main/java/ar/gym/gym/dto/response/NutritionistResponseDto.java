@@ -1,12 +1,14 @@
 package ar.gym.gym.dto.response;
 
-import com.itec.FitFlowApp.model.entity.Client;
-import com.itec.FitFlowApp.model.entity.Gym;
-import com.itec.FitFlowApp.model.entity.NutritionalPlan;
+import ar.gym.gym.model.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class NutritionistResponseDto {
     private Long id;
     private String name;

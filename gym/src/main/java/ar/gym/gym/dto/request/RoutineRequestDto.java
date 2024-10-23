@@ -1,15 +1,17 @@
 package ar.gym.gym.dto.request;
 
-import com.itec.FitFlowApp.model.entity.Session;
-import com.itec.FitFlowApp.util.Status;
+import ar.gym.gym.model.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoutineRequestDto {
-    private Long id;
     private String clientDni; // Cambiar Client completo por solo el DNI
     private String trainerDni; // Cambiar Trainer completo por solo el DNI
     private String routineCode;
@@ -18,6 +20,6 @@ public class RoutineRequestDto {
     private  LocalDate startDate;
     private boolean active;
     private List<Session> sessions;
-    private Status status;
+//    private Status status;
 
 }

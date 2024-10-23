@@ -1,13 +1,18 @@
 package ar.gym.gym.dto.request;
 
-import com.itec.FitFlowApp.model.entity.*;
+import ar.gym.gym.model.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.lang.Record;
 import java.util.List;
 
-@Data
-public class ClientRequestDto {
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ClientRequestDto {
     private Long id;
     private String name;
     private String surname;
@@ -16,16 +21,14 @@ public class ClientRequestDto {
     private String address;
     private String email;
     private boolean active;
-    private ClientStatus initState;
-    private ClientStatus currentState;
+    private ClientStatus status;
     private String goal;
-    private Gym gym;
-    private Trainer trainer;
-    private Nutritionist nutritionist;
-    private List<Routine>routines;
-    private List<NutritionalPlan>nutritionalPlans;
-    private Record record;
-    private List<TrainingDiary>trainingDiaryList;
-    private List<NutritionalDiary>nutritionalDiaryList;
+//    private String gymName;
+//    private Trainer trainer;
+//    private Nutritionist nutritionist;
+//    private List<Routine>routines;
+//    private List<NutritionalPlan> nutritionalPlans;
+//    private List<TrainingDiary>trainingDiaryList;
+//    private List<NutritionalDiary>nutritionalDiaryList;
 
 }

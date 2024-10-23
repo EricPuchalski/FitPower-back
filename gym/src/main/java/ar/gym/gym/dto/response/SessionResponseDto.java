@@ -1,13 +1,15 @@
 package ar.gym.gym.dto.response;
 
-import com.itec.FitFlowApp.model.entity.Exercise;
-import com.itec.FitFlowApp.model.entity.Routine;
-import com.itec.FitFlowApp.model.entity.TrainingDiary;
+import ar.gym.gym.model.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SessionResponseDto {
     private Long id;
     private String trainingDay;

@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface GymRepository extends JpaRepository<Gym, Long> {
     Optional<Gym> findByGymCode(String GymCode);
 
-    Optional<GymResponseDto> findByName(String name);
+    Optional<Gym> findByName(String name);
+
 }

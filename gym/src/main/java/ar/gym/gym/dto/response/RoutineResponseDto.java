@@ -1,14 +1,15 @@
 package ar.gym.gym.dto.response;
 
-import com.itec.FitFlowApp.model.entity.Client;
-import com.itec.FitFlowApp.model.entity.Session;
-import com.itec.FitFlowApp.model.entity.Trainer;
-import com.itec.FitFlowApp.util.Status;
+import ar.gym.gym.model.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoutineResponseDto {
     private Client client;
     private Trainer trainer;
@@ -18,5 +19,5 @@ public class RoutineResponseDto {
     private  LocalDate startDate;
     private boolean active;
     private List<Session> sessions;
-    private Status status;
+//    private Status status;
 }

@@ -75,7 +75,6 @@ public class NutritionistServiceImpl implements NutritionistService {
         }
 
         existingNutritionist.setActive(nutritionistRequestDto.isActive());
-        existingNutritionist.setAvailable(nutritionistRequestDto.isAvailable());
 
         // Guardamos el entrenador actualizado en la base de datos
         Nutritionist updatedNutritionist = nutritionistRepository.save(existingNutritionist);

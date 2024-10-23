@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/clients")
 public class ClientController{
 
-    private ClientService clientService;
+    private final ClientService clientService;
 
     public ClientController(ClientService clientService) {
         this.clientService = clientService;
@@ -33,20 +33,25 @@ public class ClientController{
 
 
     @GetMapping("/{dni}")
-    public ResponseEntity<ClientResponseDto> findById(@PathVariable String id) {
-        ClientResponseDto client = clientService.findById(id);
+    public ResponseEntity<ClientResponseDto> findByDni(@PathVariable String dni) {
+        ClientResponseDto client = clientService.findByDni(dni);
         return ResponseEntity.ok(client);
     }
 
 
-    @PutMapping("/{dni}")
-    public ResponseEntity<ClientResponseDto> update(@RequestBody ClientRequestDto clientRequestDto) {
-        ClientResponseDto updatedClient = clientService.update(clientRequestDto);
+    @PutMapping("/{id}")
+    public ResponseEntity<ClientResponseDto> update(@RequestBody ClientRequestDto clientRequestDto, @PathVariable Long id) {
+        ClientResponseDto updatedClient = clientService.update(clientRequestDto, id);
         return ResponseEntity.ok(updatedClient);    }
 
+    @PutMapping("/disable/{dni}")
+    public ResponseEntity<Void> disable(@PathVariable String dni) {
+       clientService.disableClientByDni(dni);
+        return ResponseEntity.ok().build();
+    }
 
     @DeleteMapping("/{dni}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        clientService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable String dni) {
+        clientService.delete(dni);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);    }
 }

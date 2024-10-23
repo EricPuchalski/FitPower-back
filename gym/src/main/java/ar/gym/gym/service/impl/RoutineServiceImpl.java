@@ -31,9 +31,6 @@ public class RoutineServiceImpl implements RoutineService {
     @Override
     public RoutineResponseDto create(RoutineRequestDto routineRequestDto) {
         // Verificar si ya existe una rutina con el mismo ID
-        if (routineRepository.findById(routineRequestDto.getId()).isPresent()) {
-            throw new EntityExistsException("Ya existe una rutina con el código " + routineRequestDto.getId());
-        }
 
         // Buscar el cliente por DNI
         Client client = clientServiceImpl.getClientByDniOrThrow(routineRequestDto.getClientDni());
@@ -85,54 +82,52 @@ public class RoutineServiceImpl implements RoutineService {
 
     @Override
     public RoutineResponseDto update(RoutineRequestDto routineRequestDto) {
-        // Verificamos si la rutina existe por su ID, sino lanzamos excepción
-        Routine existingRoutine = routineRepository.findById(routineRequestDto.getId())
-                .orElseThrow(() -> new EntityExistsException("Rutina no encontrada"));
+        // Verificamos si la rutina existe por su ID, sino lanzamos excepció
 
         // Actualizamos solo los campos no nulos o no vacíos del DTO
 
         // Actualizamos el código de la rutina si no está vacío
         if (routineRequestDto.getRoutineCode() != null && !routineRequestDto.getRoutineCode().isEmpty()) {
-            existingRoutine.setRoutineCode(routineRequestDto.getRoutineCode());
+            routineRequestDto.setRoutineCode(routineRequestDto.getRoutineCode());
         }
 
         // Actualizamos el tipo de rutina si no está vacío
         if (routineRequestDto.getRoutineType() != null && !routineRequestDto.getRoutineType().isEmpty()) {
-            existingRoutine.setRoutineType(routineRequestDto.getRoutineType());
+            routineRequestDto.setRoutineType(routineRequestDto.getRoutineType());
         }
 
         // Actualizamos el entrenador si no está vacío
         if (routineRequestDto.getTrainerDni() != null) {
             Trainer trainer = trainerServiceImpl.getTrainerByDniOrThrow(routineRequestDto.getTrainerDni());
-            existingRoutine.setTrainer(trainer);
+            routineRequestDto.setTrainerDni(trainer.getDni());
         }
 
         // Actualizamos el cliente si no está vacío
         if (routineRequestDto.getClientDni() != null) {
             Client client = clientServiceImpl.getClientByDniOrThrow(routineRequestDto.getClientDni());
-            existingRoutine.setClient(client);
+            routineRequestDto.setClientDni(client.getDni());
         }
 
         // Actualizamos la fecha de creación si está presente
         if (routineRequestDto.getCreationDate() != null) {
-            existingRoutine.setCreationDate(routineRequestDto.getCreationDate());
+            routineRequestDto.setCreationDate(routineRequestDto.getCreationDate());
         }
 
         // Actualizamos la fecha de inicio si está presente
         if (routineRequestDto.getStartDate() != null) {
-            existingRoutine.setStartDate(routineRequestDto.getStartDate());
+            routineRequestDto.setStartDate(routineRequestDto.getStartDate());
         }
 
         // Actualizamos el estado activo
-        existingRoutine.setActive(routineRequestDto.isActive());
+        routineRequestDto.setActive(routineRequestDto.isActive());
 
         // Actualizamos el estado de la rutina si está presente
 //        if (routineRequestDto.getStatus() != null) {
 //            existingRoutine.setS(routineRequestDto.getStatus());
 //        }
-
+        Routine routine = routineMapper.dtoToEntity(routineRequestDto);
         // Guardamos la rutina actualizada en la base de datos
-        Routine updatedRoutine = routineRepository.save(existingRoutine);
+        Routine updatedRoutine = routineRepository.save(routine);
 
         // Devolvemos el DTO actualizado usando el mapper
         return routineMapper.entityToDto(updatedRoutine);

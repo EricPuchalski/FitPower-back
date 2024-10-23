@@ -17,8 +17,6 @@ public class Exercise {
     private float weight;
     private LocalTime restTime;
     private LocalTime duration;
-    @OneToMany(mappedBy = "session")
-    private Session session;
 }
 
 

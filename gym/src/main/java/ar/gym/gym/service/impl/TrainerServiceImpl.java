@@ -23,7 +23,6 @@ public class TrainerServiceImpl implements TrainerService {
     private TrainerRepository trainerRepository;
     private TrainerMapper trainerMapper;
     private ClientMapper clientMapper;
-    private RoutineServiceImpl routineServiceImpl;
 
     @Override
     public TrainerResponseDto create(TrainerRequestDto trainerRequestDto) {
@@ -100,7 +99,12 @@ public class TrainerServiceImpl implements TrainerService {
                 .map(clientMapper::entityToDto)
                 .collect(Collectors.toList());
     }
-    public RoutineResponseDto createRoutine(RoutineRequestDto routineRequestDto){
-        return  routineServiceImpl.create(routineRequestDto);
+
+    @Override
+    public RoutineResponseDto createRoutine(RoutineRequestDto routineRequestDto) {
+        return null;
     }
+//    public RoutineResponseDto createRoutine(RoutineRequestDto routineRequestDto){
+//        return  routineServiceImpl.create(routineRequestDto);
+//    }
 }

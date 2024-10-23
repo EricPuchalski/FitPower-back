@@ -10,9 +10,13 @@ public interface ClientService{
 
     List<ClientResponseDto> findAll();
 
-    ClientResponseDto findById(String id);
+    ClientResponseDto findByDni(String dni);
 
-    ClientResponseDto update(ClientRequestDto clientRequestDto);
+    ClientResponseDto update(ClientRequestDto clientRequestDto, Long id);
 
     void delete(String id);
+
+
+    void disableClientByDni(String dni);
+
 }

@@ -13,21 +13,29 @@ import ar.gym.gym.repository.NutritionistRepository;
 import ar.gym.gym.repository.TrainerRepository;
 import ar.gym.gym.service.GymService;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
 public class GymServiceImpl implements GymService {
-    private GymRepository gymRepository;
-    private GymMapper gymMapper;
-    private ClientRepository clientRepository;
-    private TrainerRepository trainerRepository;
-    private NutritionistRepository nutritionistRepository;
+    private final GymRepository gymRepository;
+    private final GymMapper gymMapper;
+    private final ClientRepository clientRepository;
+    private final TrainerRepository trainerRepository;
+    private final NutritionistRepository nutritionistRepository;
+
+    public GymServiceImpl(GymRepository gymRepository, GymMapper gymMapper, ClientRepository clientRepository, TrainerRepository trainerRepository, NutritionistRepository nutritionistRepository) {
+        this.gymRepository = gymRepository;
+        this.gymMapper = gymMapper;
+        this.clientRepository = clientRepository;
+        this.trainerRepository = trainerRepository;
+        this.nutritionistRepository = nutritionistRepository;
+    }
 
     @Override
     @Transactional
@@ -49,12 +57,12 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public GymResponseDto findByName(String name) {
-        // Buscar el gimnasio por nombre
-
-        // Mapear la entidad Gym a GymResponseDto
-        return gymRepository.findByName(name)
-                .orElseThrow(() -> new EntityExistsException("Gym not found with name: " + name));
+    public Optional<Gym> findByName(String name) {
+        Optional<Gym> gym = gymRepository.findByName(name);
+        if (gym.isPresent()){
+            return gym;
+        }
+        throw new EntityExistsException("El gimnasio con el nombre " + name + " no existe");
     }
 
     //Funcion para reutilizar el mensaje de clase con id inexistente
@@ -64,10 +72,10 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    @Transactional
-    public GymResponseDto update(GymRequestDto gymRequestDto) {
+    public GymResponseDto update(GymRequestDto gymRequestDto, Long id) {
         // Primero obtenemos el Gym existente o lanzamos una excepción si no existe
-        Gym existingGym = getGymByCodeOrThrow(gymRequestDto.getGymCode());
+        Gym existingGym = gymRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Gimnasio no encontrado con el ID: " + id));
 
         // Actualizamos los campos básicos si no son nulos o vacíos
         if (gymRequestDto.getName() != null && !gymRequestDto.getName().isEmpty()) {
@@ -83,11 +91,13 @@ public class GymServiceImpl implements GymService {
             existingGym.setAddress(gymRequestDto.getAddress());
         }
 
+        // Guardamos el gimnasio actualizado en la base de datos
         gymRepository.save(existingGym);
 
+        // Convertimos la entidad actualizada a DTO y la retornamos
         return gymMapper.entityToDto(existingGym);
-
     }
+
 
     @Override
     public void deleteByGymCode(String gymCode) {
@@ -95,7 +105,6 @@ public class GymServiceImpl implements GymService {
         gymRepository.delete(gym);
     }
 
-    @Transactional
     public GymResponseDto addClientToGym(String gymCode, String dni) {
         // Buscar el gimnasio por el código
         Gym gym = getGymByCodeOrThrow(gymCode);

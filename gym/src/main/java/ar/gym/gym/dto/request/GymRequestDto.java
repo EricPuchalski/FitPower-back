@@ -1,15 +1,16 @@
 package ar.gym.gym.dto.request;
 
-import com.itec.FitFlowApp.model.entity.Client;
-import com.itec.FitFlowApp.model.entity.Nutritionist;
-import com.itec.FitFlowApp.model.entity.Trainer;
+import ar.gym.gym.model.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class GymRequestDto {
-    private Long id;
     private String gymCode;
     private String name;
     private String phone;
@@ -18,5 +19,4 @@ public class GymRequestDto {
     private List<Client> clientList;
     private List<Trainer>trainerList;
     private List<Nutritionist>nutritionistList;
-
 }
