@@ -1,6 +1,5 @@
 package ar.gym.gym.model;
 
-import com.itec.FitFlowApp.util.Person;
 import jakarta.persistence.*;
 import lombok.Data;
 

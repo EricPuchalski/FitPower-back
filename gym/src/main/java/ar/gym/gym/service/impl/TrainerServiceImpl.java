@@ -1,16 +1,16 @@
 package ar.gym.gym.service.impl;
 
-import com.itec.FitFlowApp.dto.request.RoutineRequestDto;
-import com.itec.FitFlowApp.dto.request.TrainerRequestDto;
-import com.itec.FitFlowApp.dto.response.ClientResponseDto;
-import com.itec.FitFlowApp.dto.response.RoutineResponseDto;
-import com.itec.FitFlowApp.dto.response.TrainerResponseDto;
-import com.itec.FitFlowApp.exeption.EntityException;
-import com.itec.FitFlowApp.mapper.ClientMapper;
-import com.itec.FitFlowApp.mapper.TrainerMapper;
-import com.itec.FitFlowApp.model.entity.Trainer;
-import com.itec.FitFlowApp.model.repository.TrainerRepository;
-import com.itec.FitFlowApp.util.CRUD;
+import ar.gym.gym.dto.request.RoutineRequestDto;
+import ar.gym.gym.dto.request.TrainerRequestDto;
+import ar.gym.gym.dto.response.ClientResponseDto;
+import ar.gym.gym.dto.response.RoutineResponseDto;
+import ar.gym.gym.dto.response.TrainerResponseDto;
+import ar.gym.gym.mapper.ClientMapper;
+import ar.gym.gym.mapper.TrainerMapper;
+import ar.gym.gym.model.Trainer;
+import ar.gym.gym.repository.TrainerRepository;
+import ar.gym.gym.service.TrainerService;
+import jakarta.persistence.EntityExistsException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +19,16 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
-public class TrainerServiceImpl implements CRUD<TrainerResponseDto, TrainerRequestDto> {
+public class TrainerServiceImpl implements TrainerService {
     private TrainerRepository trainerRepository;
     private TrainerMapper trainerMapper;
-    private ClientMapper  clientMapper;
+    private ClientMapper clientMapper;
     private RoutineServiceImpl routineServiceImpl;
 
     @Override
     public TrainerResponseDto create(TrainerRequestDto trainerRequestDto) {
         if(trainerRepository.findByDni(trainerRequestDto.getDni()).isPresent()){
-            throw new EntityException("Ya existe un entrenador con el DNI " + trainerRequestDto.getDni());
+            throw new EntityExistsException("Ya existe un entrenador con el DNI " + trainerRequestDto.getDni());
         }
         Trainer trainer = trainerMapper.dtoToEntity(trainerRequestDto);
         trainerRepository.save(trainer);
@@ -45,7 +45,7 @@ public class TrainerServiceImpl implements CRUD<TrainerResponseDto, TrainerReque
 
     public Trainer getTrainerByDniOrThrow(String dni) {
         return trainerRepository.findByDni(dni)
-                .orElseThrow(() -> new EntityException("El entrenador con el DNI " + dni + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("El entrenador con el DNI " + dni + " no existe"));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class TrainerServiceImpl implements CRUD<TrainerResponseDto, TrainerReque
         trainerRepository.delete(trainer);
     }
 
-    public List<ClientResponseDto> getClients(String dni){
+    public List<ClientResponseDto> getClientsAssociated(String dni){
         Trainer trainer = getTrainerByDniOrThrow(dni);
         return trainer.getClients()
                 .stream()

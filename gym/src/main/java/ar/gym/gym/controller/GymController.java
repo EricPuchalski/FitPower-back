@@ -1,9 +1,8 @@
 package ar.gym.gym.controller;
 
-import com.itec.FitFlowApp.dto.request.GymRequestDto;
-import com.itec.FitFlowApp.dto.response.GymResponseDto;
-import com.itec.FitFlowApp.model.service.GymService;
-import com.itec.FitFlowApp.util.Controller;
+import ar.gym.gym.dto.request.GymRequestDto;
+import ar.gym.gym.dto.response.GymResponseDto;
+import ar.gym.gym.service.GymService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/fit_flow/gyms")
-public class GymController implements Controller<GymResponseDto, GymRequestDto> {
+@RequestMapping("/api/gyms")
+public class GymController{
     @Autowired
     private GymService gymService;
 
@@ -34,8 +33,8 @@ public class GymController implements Controller<GymResponseDto, GymRequestDto> 
 
     // Endpoint para obtener un gimnasio por código
     @GetMapping("/{gymCode}")
-    public ResponseEntity<GymResponseDto> findById(@PathVariable String gymCode) {
-        GymResponseDto gym = gymService.findById(gymCode);
+    public ResponseEntity<GymResponseDto> findById(@PathVariable String name) {
+        GymResponseDto gym = gymService.findByName(name);
         return ResponseEntity.ok(gym);
     }
 
@@ -49,7 +48,7 @@ public class GymController implements Controller<GymResponseDto, GymRequestDto> 
     // Endpoint para eliminar un gimnasio
     @DeleteMapping("/{gymCode}")
     public ResponseEntity<Void> delete(@PathVariable String gymCode) {
-        gymService.delete(gymCode);
+        gymService.deleteByGymCode(gymCode);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

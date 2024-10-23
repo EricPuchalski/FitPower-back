@@ -1,14 +1,14 @@
 package ar.gym.gym.service.impl;
 
-import com.itec.FitFlowApp.dto.request.NutritionistRequestDto;
-import com.itec.FitFlowApp.dto.response.ClientResponseDto;
-import com.itec.FitFlowApp.dto.response.NutritionistResponseDto;
-import com.itec.FitFlowApp.exeption.EntityException;
-import com.itec.FitFlowApp.mapper.ClientMapper;
-import com.itec.FitFlowApp.mapper.NutritionistMapper;
-import com.itec.FitFlowApp.model.entity.Nutritionist;
-import com.itec.FitFlowApp.model.repository.NutritionistRepository;
-import com.itec.FitFlowApp.util.CRUD;
+import ar.gym.gym.dto.request.NutritionistRequestDto;
+import ar.gym.gym.dto.response.ClientResponseDto;
+import ar.gym.gym.dto.response.NutritionistResponseDto;
+import ar.gym.gym.mapper.ClientMapper;
+import ar.gym.gym.mapper.NutritionistMapper;
+import ar.gym.gym.model.Nutritionist;
+import ar.gym.gym.repository.NutritionistRepository;
+import ar.gym.gym.service.NutritionistService;
+import jakarta.persistence.EntityExistsException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
-public class NutritionistServiceImpl implements CRUD<NutritionistResponseDto, NutritionistRequestDto> {
+public class NutritionistServiceImpl implements NutritionistService {
     private NutritionistRepository nutritionistRepository;
     private NutritionistMapper nutritionistMapper;
     private ClientMapper clientMapper;
@@ -25,7 +25,7 @@ public class NutritionistServiceImpl implements CRUD<NutritionistResponseDto, Nu
     @Override
     public NutritionistResponseDto create(NutritionistRequestDto nutritionistRequestDto) {
         if(nutritionistRepository.findByDni(nutritionistRequestDto.getDni()).isPresent()){
-            throw new EntityException("Ya existe un nutricionista con el DNI " + nutritionistRequestDto.getDni());
+            throw new EntityExistsException("Ya existe un nutricionista con el DNI " + nutritionistRequestDto.getDni());
         }
         Nutritionist nutritionist = nutritionistMapper.dtoToEntity(nutritionistRequestDto);
         nutritionistRepository.save(nutritionist);
@@ -42,12 +42,12 @@ public class NutritionistServiceImpl implements CRUD<NutritionistResponseDto, Nu
 
     public Nutritionist getNutritionistByDniOrThrow(String dni) {
         return nutritionistRepository.findByDni(dni)
-                .orElseThrow(() -> new EntityException("El nutricionista con el DNI " + dni + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("El nutricionista con el DNI " + dni + " no existe"));
     }
 
     @Override
-    public NutritionistResponseDto findById(String id) {
-        Nutritionist nutritionist = getNutritionistByDniOrThrow(id);
+    public NutritionistResponseDto findByDni(String dni) {
+        Nutritionist nutritionist = getNutritionistByDniOrThrow(dni);
         return nutritionistMapper.entityToDto(nutritionist);
     }
 
@@ -85,12 +85,11 @@ public class NutritionistServiceImpl implements CRUD<NutritionistResponseDto, Nu
     }
 
     @Override
-    public void delete(String id) {
-        Nutritionist nutritionist = new Nutritionist();
-        nutritionistRepository.delete(nutritionist);
+    public void delete(Long id) {
+        nutritionistRepository.deleteById(id);
     }
 
-    public List<ClientResponseDto> getClients(String dni){
+    public List<ClientResponseDto> getClientsAssociated(String dni){
         Nutritionist nutritionist = getNutritionistByDniOrThrow(dni);
         return nutritionist.getClients()
                 .stream()

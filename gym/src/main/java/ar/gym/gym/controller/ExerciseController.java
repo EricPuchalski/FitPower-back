@@ -1,22 +1,25 @@
 package ar.gym.gym.controller;
 
-import com.itec.FitFlowApp.dto.request.ExerciseRequestDto;
-import com.itec.FitFlowApp.dto.response.ExerciseResponseDto;
-import com.itec.FitFlowApp.model.service.ExerciseService;
-import com.itec.FitFlowApp.util.Controller;
-import org.springframework.beans.factory.annotation.Autowired;
+import ar.gym.gym.dto.request.ExerciseRequestDto;
+import ar.gym.gym.dto.response.ExerciseResponseDto;
+import ar.gym.gym.service.ExerciseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/fit_flow/exercises")
-public class ExerciseController implements Controller<ExerciseResponseDto, ExerciseRequestDto> {
-    @Autowired
+@RequestMapping("/api/exercises")
+public class ExerciseController {
+
     private ExerciseService exerciseService;
 
-    @Override
+    public ExerciseController(ExerciseService exerciseService) {
+        this.exerciseService = exerciseService;
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ExerciseResponseDto> create(@RequestBody ExerciseRequestDto exerciseRequestDto) {
@@ -24,36 +27,37 @@ public class ExerciseController implements Controller<ExerciseResponseDto, Exerc
         return new ResponseEntity<>(createdExercise, HttpStatus.CREATED);
     }
 
-    @Override
+
     @GetMapping
     public ResponseEntity<List<ExerciseResponseDto>> findAll() {
         List<ExerciseResponseDto> exercises = exerciseService.findAll();
         return ResponseEntity.ok(exercises);
     }
 
-    @Override
+
     @GetMapping("/{id}")
-    public ResponseEntity<ExerciseResponseDto> findById(@PathVariable String id) {
+    public ResponseEntity<ExerciseResponseDto> findById(@PathVariable Long id) {
         ExerciseResponseDto exercise = exerciseService.findById(id);
         return ResponseEntity.ok(exercise);
     }
 
     @GetMapping("/{name}")
     public ResponseEntity<ExerciseResponseDto> findByName(@PathVariable String name) {
-        ExerciseResponseDto exercise = exerciseService.findByName(name);
-        return ResponseEntity.ok(exercise);
+        Optional<ExerciseResponseDto> exercise = exerciseService.findByName(name);
+        return exercise.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Override
+
+
     @PutMapping("/{id}")
     public ResponseEntity<ExerciseResponseDto> update(@RequestBody ExerciseRequestDto exerciseRequestDto) {
         ExerciseResponseDto updatedExercise = exerciseService.update(exerciseRequestDto);
         return ResponseEntity.ok(updatedExercise);
     }
 
-    @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         exerciseService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -1,6 +1,5 @@
 package ar.gym.gym.model;
 
-import com.itec.FitFlowApp.util.Status;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,6 +26,6 @@ public class Routine {
     private boolean active;
     @OneToMany(mappedBy = "routine")
     private List<Session>sessions;
-    @Enumerated(EnumType.STRING)
-    private Status status;
+//    @Enumerated(EnumType.STRING)
+//    private Status status;
 }

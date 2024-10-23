@@ -1,18 +1,18 @@
 package ar.gym.gym.service.impl;
 
-import com.itec.FitFlowApp.dto.request.GymRequestDto;
-import com.itec.FitFlowApp.dto.response.GymResponseDto;
-import com.itec.FitFlowApp.exeption.EntityException;
-import com.itec.FitFlowApp.mapper.GymMapper;
-import com.itec.FitFlowApp.model.entity.Client;
-import com.itec.FitFlowApp.model.entity.Gym;
-import com.itec.FitFlowApp.model.entity.Nutritionist;
-import com.itec.FitFlowApp.model.entity.Trainer;
-import com.itec.FitFlowApp.model.repository.ClientRepository;
-import com.itec.FitFlowApp.model.repository.GymRepository;
-import com.itec.FitFlowApp.model.repository.NutritionistRepository;
-import com.itec.FitFlowApp.model.repository.TrainerRepository;
-import com.itec.FitFlowApp.util.CRUD;
+import ar.gym.gym.dto.request.GymRequestDto;
+import ar.gym.gym.dto.response.GymResponseDto;
+import ar.gym.gym.mapper.GymMapper;
+import ar.gym.gym.model.Client;
+import ar.gym.gym.model.Gym;
+import ar.gym.gym.model.Nutritionist;
+import ar.gym.gym.model.Trainer;
+import ar.gym.gym.repository.ClientRepository;
+import ar.gym.gym.repository.GymRepository;
+import ar.gym.gym.repository.NutritionistRepository;
+import ar.gym.gym.repository.TrainerRepository;
+import ar.gym.gym.service.GymService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
-public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
+public class GymServiceImpl implements GymService {
     private GymRepository gymRepository;
     private GymMapper gymMapper;
     private ClientRepository clientRepository;
@@ -33,7 +33,7 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
     @Transactional
     public GymResponseDto create(GymRequestDto gymRequestDto) {
         if (gymRepository.findByGymCode(gymRequestDto.getGymCode()).isPresent()) {
-            throw new EntityException("Ya existe un gimnasio con el código " + gymRequestDto.getGymCode());
+            throw new EntityExistsException("Ya existe un gimnasio con el código " + gymRequestDto.getGymCode());
         }
         Gym gym = gymMapper.dtoToEntity(gymRequestDto);
         gymRepository.save(gym);
@@ -49,15 +49,18 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
     }
 
     @Override
-    public GymResponseDto findById(String id) {
-        Gym gym = getGymByCodeOrThrow(id);
-        return gymMapper.entityToDto(gym);
+    public GymResponseDto findByName(String name) {
+        // Buscar el gimnasio por nombre
+
+        // Mapear la entidad Gym a GymResponseDto
+        return gymRepository.findByName(name)
+                .orElseThrow(() -> new EntityExistsException("Gym not found with name: " + name));
     }
 
     //Funcion para reutilizar el mensaje de clase con id inexistente
-    private Gym getGymByCodeOrThrow(String gymCode) {
+    public Gym getGymByCodeOrThrow(String gymCode) {
         return gymRepository.findByGymCode(gymCode)
-                .orElseThrow(() -> new EntityException("El gimnasio con el código " + gymCode + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("El gimnasio con el código " + gymCode + " no existe"));
     }
 
     @Override
@@ -87,8 +90,8 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
     }
 
     @Override
-    public void delete(String id) {
-        Gym gym = getGymByCodeOrThrow(id);
+    public void deleteByGymCode(String gymCode) {
+        Gym gym = getGymByCodeOrThrow(gymCode);
         gymRepository.delete(gym);
     }
 
@@ -97,7 +100,7 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
         // Buscar el gimnasio por el código
         Gym gym = getGymByCodeOrThrow(gymCode);
         Client client = clientRepository.findByDni(dni)
-                .orElseThrow(() -> new EntityException("El cliente con el DNI "+ dni + "no existe") );
+                .orElseThrow(() -> new EntityExistsException("El cliente con el DNI "+ dni + "no existe") );
 
         // Verificar si el cliente ya está en la lista del gimnasio
         if (!gym.getClientList().contains(client)) {
@@ -108,7 +111,7 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
             gymRepository.save(gym);
             clientRepository.save(client);
         } else {
-            throw new EntityException("El cliente ya está asignado a este gimnasio.");
+            throw new EntityExistsException("El cliente ya está asignado a este gimnasio.");
         }
 
         return gymMapper.entityToDto(gym);
@@ -119,7 +122,7 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
         // Buscar el gimnasio por el código
         Gym gym = getGymByCodeOrThrow(gymCode);
         Trainer trainer = trainerRepository.findByDni(dni)
-                .orElseThrow(() -> new EntityException("El entrenador con el DNI " + dni + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("El entrenador con el DNI " + dni + " no existe"));
 
         // Verificar si el entrenador ya existe en la lista
         if (!gym.getTrainerList().contains(trainer)) {
@@ -130,7 +133,7 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
             gymRepository.save(gym);
             trainerRepository.save(trainer);
         } else {
-            throw new EntityException("El entrenador ya está asignado a este gimnasio.");
+            throw new EntityExistsException("El entrenador ya está asignado a este gimnasio.");
         }
 
         // Devolver el DTO actualizado
@@ -142,7 +145,7 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
         // Buscar el gimnasio por el código
         Gym gym = getGymByCodeOrThrow(gymCode);
         Nutritionist nutritionist = nutritionistRepository.findByDni(dni)
-                .orElseThrow(() -> new EntityException("El entrenador con el DNI " + dni + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("El entrenador con el DNI " + dni + " no existe"));
 
         // Verificar si el nutricionista ya existe en la lista
         if (!gym.getNutritionistList().contains(nutritionist)) {
@@ -153,7 +156,7 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
             gymRepository.save(gym);
             nutritionistRepository.save(nutritionist);
         } else {
-            throw new EntityException("El nutricionista ya está asignado a este gimnasio.");
+            throw new EntityExistsException("El nutricionista ya está asignado a este gimnasio.");
         }
 
         // Devolver el DTO actualizado
@@ -164,10 +167,10 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
     public void assignTrainerToClient(String dniTrainer, String dniClient){
         // Buscar entrenador y cliente por dni
         Trainer trainer = trainerRepository.findByDni(dniTrainer)
-                .orElseThrow(() -> new EntityException("El entrenador con el DNI " + dniTrainer + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("El entrenador con el DNI " + dniTrainer + " no existe"));
 
         Client client = clientRepository.findByDni(dniClient)
-                .orElseThrow(() -> new EntityException("El cliente con el DNI " + dniClient + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("El cliente con el DNI " + dniClient + " no existe"));
 
         // Verificar que el cliente y el entrenador pertenezcan al mismo gimnasio
         if (client.getGym() == null || !client.getGym().equals(trainer.getGym())) {
@@ -182,7 +185,7 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
             // Guardar los cambios en la base de datos
             clientRepository.save(client);
         } else {
-            throw new EntityException("El entrenador ya está asignado a este cliente.");
+            throw new EntityExistsException("El entrenador ya está asignado a este cliente.");
         }
 
     }
@@ -190,10 +193,10 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
     public void assignNutritionistToClient(String dniNut, String dniClient){
         // Buscar entrenador y cliente por dni
         Nutritionist nutritionist = nutritionistRepository.findByDni(dniNut)
-                .orElseThrow(() -> new EntityException("El nutricionista con el DNI " + dniNut + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("El nutricionista con el DNI " + dniNut + " no existe"));
 
         Client client = clientRepository.findByDni(dniClient)
-                .orElseThrow(() -> new EntityException("El cliente con el DNI " + dniClient + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("El cliente con el DNI " + dniClient + " no existe"));
 
         // Verificar que el cliente y el nutricionista pertenezcan al mismo gimnasio
         if (client.getGym() == null || !client.getGym().equals(nutritionist.getGym())) {
@@ -208,7 +211,7 @@ public class GymServiceImpl implements CRUD<GymResponseDto, GymRequestDto> {
             // Guardar los cambios en la base de datos
             clientRepository.save(client);
         } else {
-            throw new EntityException("El nutricionista ya está asignado a este cliente.");
+            throw new EntityExistsException("El nutricionista ya está asignado a este cliente.");
         }
 
     }

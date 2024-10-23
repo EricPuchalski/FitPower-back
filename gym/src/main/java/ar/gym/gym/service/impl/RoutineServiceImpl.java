@@ -1,17 +1,17 @@
 package ar.gym.gym.service.impl;
 
-import com.itec.FitFlowApp.dto.request.RoutineRequestDto;
-import com.itec.FitFlowApp.dto.request.SessionRequestDto;
-import com.itec.FitFlowApp.dto.response.RoutineResponseDto;
-import com.itec.FitFlowApp.dto.response.SessionResponseDto;
-import com.itec.FitFlowApp.exeption.EntityException;
-import com.itec.FitFlowApp.mapper.RoutineMapper;
-import com.itec.FitFlowApp.model.entity.Client;
-import com.itec.FitFlowApp.model.entity.Routine;
-import com.itec.FitFlowApp.model.entity.Session;
-import com.itec.FitFlowApp.model.entity.Trainer;
-import com.itec.FitFlowApp.model.repository.RoutineRepository;
-import com.itec.FitFlowApp.util.CRUD;
+import ar.gym.gym.dto.request.RoutineRequestDto;
+import ar.gym.gym.dto.request.SessionRequestDto;
+import ar.gym.gym.dto.response.RoutineResponseDto;
+import ar.gym.gym.dto.response.SessionResponseDto;
+import ar.gym.gym.mapper.RoutineMapper;
+import ar.gym.gym.model.Client;
+import ar.gym.gym.model.Routine;
+import ar.gym.gym.model.Session;
+import ar.gym.gym.model.Trainer;
+import ar.gym.gym.repository.RoutineRepository;
+import ar.gym.gym.service.RoutineService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
-public class RoutineServiceImpl implements CRUD<RoutineResponseDto, RoutineRequestDto> {
+public class RoutineServiceImpl implements RoutineService {
     private RoutineRepository routineRepository;
     private RoutineMapper routineMapper;
     private SessionServiceImpl sessionServiceImpl;
@@ -32,7 +32,7 @@ public class RoutineServiceImpl implements CRUD<RoutineResponseDto, RoutineReque
     public RoutineResponseDto create(RoutineRequestDto routineRequestDto) {
         // Verificar si ya existe una rutina con el mismo ID
         if (routineRepository.findById(routineRequestDto.getId()).isPresent()) {
-            throw new EntityException("Ya existe una rutina con el código " + routineRequestDto.getId());
+            throw new EntityExistsException("Ya existe una rutina con el código " + routineRequestDto.getId());
         }
 
         // Buscar el cliente por DNI
@@ -72,14 +72,14 @@ public class RoutineServiceImpl implements CRUD<RoutineResponseDto, RoutineReque
                 .collect(Collectors.toList());
     }
 
-    private Routine getRoutineByCodeOrThrow(Long routineID) {
+    public Routine getRoutineByCodeOrThrow(Long routineID) {
         return routineRepository.findById(routineID)
-                .orElseThrow(() -> new EntityException("La rutina con el ID " + routineID + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("La rutina con el ID " + routineID + " no existe"));
     }
 
     @Override
-    public RoutineResponseDto findById(String id) {
-        Routine routine = getRoutineByCodeOrThrow(Long.parseLong(id));
+    public RoutineResponseDto findById(Long id) {
+        Routine routine = getRoutineByCodeOrThrow(id);
         return routineMapper.entityToDto(routine);
     }
 
@@ -87,7 +87,7 @@ public class RoutineServiceImpl implements CRUD<RoutineResponseDto, RoutineReque
     public RoutineResponseDto update(RoutineRequestDto routineRequestDto) {
         // Verificamos si la rutina existe por su ID, sino lanzamos excepción
         Routine existingRoutine = routineRepository.findById(routineRequestDto.getId())
-                .orElseThrow(() -> new EntityException("Rutina no encontrada"));
+                .orElseThrow(() -> new EntityExistsException("Rutina no encontrada"));
 
         // Actualizamos solo los campos no nulos o no vacíos del DTO
 
@@ -127,9 +127,9 @@ public class RoutineServiceImpl implements CRUD<RoutineResponseDto, RoutineReque
         existingRoutine.setActive(routineRequestDto.isActive());
 
         // Actualizamos el estado de la rutina si está presente
-        if (routineRequestDto.getStatus() != null) {
-            existingRoutine.setStatus(routineRequestDto.getStatus());
-        }
+//        if (routineRequestDto.getStatus() != null) {
+//            existingRoutine.setS(routineRequestDto.getStatus());
+//        }
 
         // Guardamos la rutina actualizada en la base de datos
         Routine updatedRoutine = routineRepository.save(existingRoutine);
@@ -140,8 +140,8 @@ public class RoutineServiceImpl implements CRUD<RoutineResponseDto, RoutineReque
 
 
     @Override
-    public void delete(String id) {
-        Routine routine = getRoutineByCodeOrThrow(Long.parseLong(id));
+    public void delete(Long id) {
+        Routine routine = getRoutineByCodeOrThrow(id);
         routineRepository.delete(routine);
     }
 
@@ -170,7 +170,7 @@ public class RoutineServiceImpl implements CRUD<RoutineResponseDto, RoutineReque
     }
 
     @Transactional
-    public RoutineResponseDto removeSessionFromRoutine(Long routineId, Object sessionId) {
+    public RoutineResponseDto removeSessionFromRoutine(Long routineId, Long sessionId) {
         // Buscar la rutina por su ID
         Routine routine = getRoutineByCodeOrThrow(routineId);
 
@@ -178,7 +178,7 @@ public class RoutineServiceImpl implements CRUD<RoutineResponseDto, RoutineReque
         Session sessionToRemove = routine.getSessions().stream()
                 .filter(session -> session.getId().equals(sessionId))
                 .findFirst()
-                .orElseThrow(() -> new EntityException("La sesión con el ID " + sessionId + " no se encuentra en la rutina con ID " + routineId));
+                .orElseThrow(() -> new EntityExistsException("La sesión con el ID " + sessionId + " no se encuentra en la rutina con ID " + routineId));
 
         // Eliminar la sesión de la lista de sesiones de la rutina
         routine.getSessions().remove(sessionToRemove);

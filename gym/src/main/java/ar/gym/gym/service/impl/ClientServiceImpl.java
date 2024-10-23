@@ -1,14 +1,14 @@
 package ar.gym.gym.service.impl;
 
-import com.itec.FitFlowApp.dto.request.ClientRequestDto;
-import com.itec.FitFlowApp.dto.response.ClientResponseDto;
-import com.itec.FitFlowApp.exeption.EntityException;
-import com.itec.FitFlowApp.mapper.ClientMapper;
-import com.itec.FitFlowApp.model.entity.Client;
-import com.itec.FitFlowApp.model.entity.ClientStatus;
-import com.itec.FitFlowApp.model.repository.ClientRepository;
-import com.itec.FitFlowApp.model.repository.ClientStatusRepository;
-import com.itec.FitFlowApp.util.CRUD;
+import ar.gym.gym.dto.request.ClientRequestDto;
+import ar.gym.gym.dto.response.ClientResponseDto;
+import ar.gym.gym.mapper.ClientMapper;
+import ar.gym.gym.model.Client;
+import ar.gym.gym.model.ClientStatus;
+import ar.gym.gym.repository.ClientRepository;
+import ar.gym.gym.repository.ClientStatusRepository;
+import ar.gym.gym.service.ClientService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,42 +18,43 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
-public class ClientServiceImpl implements CRUD<ClientResponseDto, ClientRequestDto> {
+public class ClientServiceImpl implements ClientService {
     private ClientRepository clientRepository;
     private ClientMapper clientMapper;
     private ClientStatusRepository clientStatusRepository;
     //private RoutineMapper routineMapper;
 
     @Override
-    @Transactional
     public ClientResponseDto create(ClientRequestDto clientRequestDto) {
         if(clientRepository.findByDni(clientRequestDto.getDni()).isPresent()){
-            throw new EntityException("Ya existe un cliente con el código " + clientRequestDto.getDni());
+            throw new EntityExistsException("Ya existe un cliente con el código " + clientRequestDto.getDni());
         }
         // Crear los estados inicial y actual
-        ClientStatus initState = new ClientStatus();
-        initState.setWeight(clientRequestDto.getInitState().getWeight());
-        initState.setHeight(clientRequestDto.getInitState().getHeight());
-        initState.setBodymass(clientRequestDto.getInitState().getBodymass());
-        initState.setBodyfat(clientRequestDto.getInitState().getBodyfat());
-
+//        ClientStatus initState = new ClientStatus();
+//        initState.setWeight(clientRequestDto.getInitState().getWeight());
+//        initState.setHeight(clientRequestDto.getInitState().getHeight());
+//        initState.setBodymass(clientRequestDto.getInitState().getBodymass());
+//        initState.setBodyfat(clientRequestDto.getInitState().getBodyfat());
+//
         ClientStatus currentState = new ClientStatus();
-        currentState.setWeight(clientRequestDto.getCurrentState().getWeight());
-        currentState.setHeight(clientRequestDto.getCurrentState().getHeight());
-        currentState.setBodymass(clientRequestDto.getCurrentState().getBodymass());
-        currentState.setBodyfat(clientRequestDto.getCurrentState().getBodyfat());
+//        currentState.setWeight(clientRequestDto.getCurrentState().getWeight());
+//        currentState.setHeight(clientRequestDto.getCurrentState().getHeight());
+//        currentState.setBodymass(clientRequestDto.getCurrentState().getBodymass());
+//        currentState.setBodyfat(clientRequestDto.getCurrentState().getBodyfat());
 
         // Guardar los estados en la base de datos
-        clientStatusRepository.save(initState);
-        clientStatusRepository.save(currentState);
+//        clientStatusRepository.save(initState);
+//        clientStatusRepository.save(currentState);
 
         Client client = clientMapper.dtoToEntity(clientRequestDto);
-        client.setInitState(initState);
-        client.setCurrentState(currentState);
+//        client.setInitState(initState);
+//        client.setCurrentState(currentState);
 
         clientRepository.save(client);
         return clientMapper.entityToDto(client);
     }
+
+
 
     @Override
     public List<ClientResponseDto> findAll() {
@@ -65,7 +66,7 @@ public class ClientServiceImpl implements CRUD<ClientResponseDto, ClientRequestD
 
     public Client getClientByDniOrThrow(String dni){
         return clientRepository.findByDni(dni)
-                .orElseThrow(() -> new EntityException("El cliente con el dni " + dni + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("El cliente con el dni " + dni + " no existe"));
     }
     @Override
     public ClientResponseDto findById(String id) {
@@ -76,41 +77,9 @@ public class ClientServiceImpl implements CRUD<ClientResponseDto, ClientRequestD
     @Override
     @Transactional
     public ClientResponseDto update(ClientRequestDto clientRequestDto) {
-        Client existingClient = getClientByDniOrThrow(clientRequestDto.getDni());
-        if (clientRequestDto.getName() != null && !clientRequestDto.getName().isEmpty()) {
-            existingClient.setName(clientRequestDto.getName());
-        }
-        if (clientRequestDto.getSurname() != null && !clientRequestDto.getSurname().isEmpty()) {
-            existingClient.setSurname(clientRequestDto.getSurname());
-        }
-        if (clientRequestDto.getPhone() != null && !clientRequestDto.getPhone().isEmpty()) {
-            existingClient.setPhone(clientRequestDto.getPhone());
-        }
-        if (clientRequestDto.getAddress() != null && !clientRequestDto.getAddress().isEmpty()) {
-            existingClient.setAddress(clientRequestDto.getAddress());
-        }
-        if (clientRequestDto.getEmail() != null && !clientRequestDto.getEmail().isEmpty()) {
-            existingClient.setEmail(clientRequestDto.getEmail());
-        }
-        if (clientRequestDto.getGoal() != null && !clientRequestDto.getGoal().isEmpty()) {
-            existingClient.setGoal(clientRequestDto.getGoal());
-        }
-        if (clientRequestDto.getInitState() != null) {
-            existingClient.setInitState(clientRequestDto.getInitState());
-        }
-        if (clientRequestDto.getCurrentState() != null) {
-            existingClient.setCurrentState(clientRequestDto.getCurrentState());
-        }
-
-        // Actualizar el estado de actividad del cliente
-        existingClient.setActive(clientRequestDto.isActive());
-
-        // Guardamos el cliente actualizado en la base de datos
-        Client updatedClient = clientRepository.save(existingClient);
-
-        // Devolvemos el DTO actualizado usando el mapper
-        return clientMapper.entityToDto(updatedClient);
-
+        Client existingClient = clientMapper.dtoToEntity(clientRequestDto);
+        clientRepository.save(existingClient);
+        return clientMapper.entityToDto(existingClient);
     }
 
     @Override

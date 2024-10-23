@@ -1,12 +1,13 @@
 package ar.gym.gym.service.impl;
 
-import com.itec.FitFlowApp.dto.request.SessionRequestDto;
-import com.itec.FitFlowApp.dto.response.SessionResponseDto;
-import com.itec.FitFlowApp.exeption.EntityException;
-import com.itec.FitFlowApp.mapper.SessionMapper;
-import com.itec.FitFlowApp.model.entity.*;
-import com.itec.FitFlowApp.model.repository.SessionRepository;
-import com.itec.FitFlowApp.util.CRUD;
+import ar.gym.gym.dto.request.SessionRequestDto;
+import ar.gym.gym.dto.response.SessionResponseDto;
+import ar.gym.gym.mapper.SessionMapper;
+import ar.gym.gym.model.Exercise;
+import ar.gym.gym.model.Session;
+import ar.gym.gym.repository.SessionRepository;
+import ar.gym.gym.service.SessionService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
-public class SessionServiceImpl implements CRUD<SessionResponseDto, SessionRequestDto> {
+public class SessionServiceImpl implements SessionService {
     private SessionRepository sessionRepository;
     private SessionMapper sessionMapper;
     private ExerciseServiceImpl exerciseServiceImpl;
@@ -24,7 +25,7 @@ public class SessionServiceImpl implements CRUD<SessionResponseDto, SessionReque
     @Override
     public SessionResponseDto create(SessionRequestDto sessionRequestDto) {
         if (sessionRepository.findById(sessionRequestDto.getId()).isPresent()) {
-            throw new EntityException("Ya existe una sesión con el código " + sessionRequestDto.getId());
+            throw new EntityExistsException("Ya existe una sesión con el código " + sessionRequestDto.getId());
         }
         Session session = sessionMapper.dtoToEntity(sessionRequestDto);
         sessionRepository.save(session);
@@ -41,7 +42,7 @@ public class SessionServiceImpl implements CRUD<SessionResponseDto, SessionReque
 
     public Session getSessionByCodeOrThrow(Long sessionID) {
         return sessionRepository.findById(sessionID)
-                .orElseThrow(() -> new EntityException("La session con el ID " + sessionID + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("La session con el ID " + sessionID + " no existe"));
     }
 
     @Override
@@ -54,7 +55,7 @@ public class SessionServiceImpl implements CRUD<SessionResponseDto, SessionReque
     public SessionResponseDto update(SessionRequestDto sessionRequestDto) {
         // Verificamos si la sesión existe por su ID, sino lanzamos excepción
         Session existingSession = sessionRepository.findById(sessionRequestDto.getId())
-                .orElseThrow(() -> new EntityException("Sesión no encontrada"));
+                .orElseThrow(() -> new EntityExistsException("Sesión no encontrada"));
 
         // Actualizamos solo los campos no nulos o no vacíos del DTO
         if (sessionRequestDto.getTrainingDay() != null && !sessionRequestDto.getTrainingDay().isEmpty()) {
@@ -87,9 +88,8 @@ public class SessionServiceImpl implements CRUD<SessionResponseDto, SessionReque
     }
 
     @Override
-    public void delete(String id) {
-        Session session = getSessionByCodeOrThrow(Long.valueOf(id));
-        sessionRepository.delete(session);
+    public void delete(Long id) {
+        sessionRepository.deleteById(id);
     }
 
     @Transactional

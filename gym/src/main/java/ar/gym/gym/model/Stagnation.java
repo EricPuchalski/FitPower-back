@@ -1,6 +1,5 @@
 package ar.gym.gym.model;
 
-import com.itec.FitFlowApp.util.StagnationType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,7 +13,7 @@ public class Stagnation {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
-    private StagnationType type;
+//    private StagnationType type;
     private Double currentWeight;
     private Double bodyMass;
     private String observations;
