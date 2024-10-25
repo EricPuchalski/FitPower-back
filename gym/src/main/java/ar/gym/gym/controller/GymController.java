@@ -1,6 +1,7 @@
 package ar.gym.gym.controller;
 
 import ar.gym.gym.dto.request.GymRequestDto;
+import ar.gym.gym.dto.response.AddClientToNutritionistResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
 import ar.gym.gym.model.Gym;
 import ar.gym.gym.service.GymService;
@@ -87,10 +88,10 @@ public class GymController{
     }
 
     //Endpoint para asignar un entrenador a un cliente
-    @PostMapping("/assign/{dniNut}/nutritionist-to-client/{dniClient}")
-    public ResponseEntity<String>assignNutritionistToClient(@PathVariable String dniNut, @PathVariable String dniClient){
-        gymService.assignNutritionistToClient(dniNut,dniClient);
-        return ResponseEntity.ok("Nutricionista asignado correctamente al cliente.");
+    @PutMapping("/assign/{dniNut}/nutritionist-to-client/{dniClient}")
+    public ResponseEntity<AddClientToNutritionistResponseDto>assignNutritionistToClient(@PathVariable String dniNut, @PathVariable String dniClient){
+        AddClientToNutritionistResponseDto addClientToNutritionistResponseDto = gymService.assignNutritionistToClient(dniNut,dniClient);
+        return ResponseEntity.ok(addClientToNutritionistResponseDto);
     }
 
 }

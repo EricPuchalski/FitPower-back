@@ -2,35 +2,35 @@ package ar.gym.gym.service.impl;
 
 import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
-import ar.gym.gym.dto.response.GymResponseDto;
 import ar.gym.gym.mapper.ClientMapper;
 import ar.gym.gym.mapper.GymMapper;
 import ar.gym.gym.model.Client;
-import ar.gym.gym.model.ClientStatus;
 import ar.gym.gym.model.Gym;
 import ar.gym.gym.repository.ClientRepository;
-import ar.gym.gym.repository.ClientStatusRepository;
 import ar.gym.gym.repository.GymRepository;
 import ar.gym.gym.service.ClientService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
 public class ClientServiceImpl implements ClientService {
-    private ClientRepository clientRepository;
-    private GymRepository gymRepository;
-    private ClientMapper clientMapper;
-    private GymMapper gymMapper;
-    private ClientStatusRepository clientStatusRepository;
-    //private RoutineMapper routineMapper;
+    private final ClientRepository clientRepository;
+    private final GymRepository gymRepository;
+    private final ClientMapper clientMapper;
+    private final GymMapper gymMapper;
+
+
+    public ClientServiceImpl(ClientRepository clientRepository, GymRepository gymRepository, ClientMapper clientMapper, GymMapper gymMapper) {
+        this.clientRepository = clientRepository;
+        this.gymRepository = gymRepository;
+        this.clientMapper = clientMapper;
+        this.gymMapper = gymMapper;
+    }
 
     @Override
     public ClientResponseDto create(ClientRequestDto clientRequestDto) {
@@ -38,12 +38,12 @@ public class ClientServiceImpl implements ClientService {
             throw new EntityExistsException("Ya existe un cliente con el código " + clientRequestDto.getDni());
         }
         Client client = clientMapper.dtoToEntity(clientRequestDto);
-//        Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
-//        if (gym.isPresent()){
-//            client.setGym(gym.get());
-//        } else {
-//            throw new EntityNotFoundException("No se encontró el gimnasio con el nombre " + clientRequestDto.getGymName());
-//        }
+        Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
+        if (gym.isPresent()){
+            client.setGym(gym.get());
+        } else {
+            throw new EntityNotFoundException("No se encontró el gimnasio con el nombre " + clientRequestDto.getGymName());
+        }
         client.setActive(true);
         clientRepository.save(client);
         return clientMapper.entityToDto(client);
@@ -71,11 +71,10 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientResponseDto update(ClientRequestDto clientRequestDto, Long id) {
-        // Verificar si el cliente existe
+
         Client existingClient = clientRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con el ID: " + id));
 
-        // Actualizar los campos uno por uno si no son null
         if (clientRequestDto.getName() != null) {
             existingClient.setName(clientRequestDto.getName());
         }
@@ -95,26 +94,22 @@ public class ClientServiceImpl implements ClientService {
             existingClient.setEmail(clientRequestDto.getEmail());
         }
         existingClient.setActive(clientRequestDto.isActive());
-//        if (clientRequestDto.getStatus() != null) {
-//            existingClient.setStatus(clientRequestDto.getStatus());
-//        }
+
         if (clientRequestDto.getGoal() != null) {
             existingClient.setGoal(clientRequestDto.getGoal());
         }
 
-        // Asignar el gimnasio si el nombre no es null
-//        if (clientRequestDto.getGymName() != null) {
-//            Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
-//            existingClient.setGym(gym.orElse(null)); // Manejar caso en que el gimnasio no se encuentre
-//        } else {
-//            existingClient.setGym(null); // Establecer gimnasio en null si el nombre es null
-//        }
+        if (clientRequestDto.getGymName() != null) {
+            Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
+            existingClient.setGym(gym.orElse(null)); // Manejar caso en que el gimnasio no se encuentre
+        } else {
+            existingClient.setGym(null); // Establecer gimnasio en null si el nombre es null
+        }
 
-        // Guardar el cliente actualizado en la base de datos
+
         Client updatedClient = clientRepository.save(existingClient);
         ClientResponseDto clientResponse = clientMapper.entityToDto(updatedClient);
-//        clientResponse.setGymName(updatedClient.getGym().getName());
-        // Convertir la entidad actualizada a DTO y retornarla
+
         return clientMapper.entityToDto(updatedClient);
     }
 
@@ -137,11 +132,13 @@ public class ClientServiceImpl implements ClientService {
                 .collect(Collectors.toList());
     }*/
 
-    public void disableClientByDni(String dni) {
+    public ClientResponseDto disableClientByDni(String dni) {
         Client client = clientRepository.findByDni(dni)
                 .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con DNI: " + dni));
         client.setActive(false);
         clientRepository.save(client);
+
+        return clientMapper.entityToDto(client);
     }
 
 }

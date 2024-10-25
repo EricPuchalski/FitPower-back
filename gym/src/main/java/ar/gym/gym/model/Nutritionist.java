@@ -1,12 +1,16 @@
 package ar.gym.gym.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "nutritionists")
 public class Nutritionist extends Person {
     @Id
@@ -14,8 +18,6 @@ public class Nutritionist extends Person {
     private Long id;
     private String profession;
     private boolean available;
-    @OneToMany(mappedBy = "nutritionist")
-    private List<NutritionalPlan> nutritionalPlanList;
     @OneToMany(mappedBy = "nutritionist")
     private List<Client>clients;
     @ManyToOne

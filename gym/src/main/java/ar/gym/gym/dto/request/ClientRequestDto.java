@@ -23,7 +23,7 @@ public class ClientRequestDto {
     private boolean active;
     private ClientStatus status;
     private String goal;
-//    private String gymName;
+    private String gymName;
 //    private Trainer trainer;
 //    private Nutritionist nutritionist;
 //    private List<Routine>routines;

@@ -20,4 +20,6 @@ public interface NutritionistService {
    void delete(Long id);
     List<ClientResponseDto> getClientsAssociated(String dni);
 
+    NutritionistResponseDto disableNutritionistByDni(String dni);
+
 }

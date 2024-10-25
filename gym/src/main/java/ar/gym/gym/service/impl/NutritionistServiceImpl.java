@@ -5,22 +5,34 @@ import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.NutritionistResponseDto;
 import ar.gym.gym.mapper.ClientMapper;
 import ar.gym.gym.mapper.NutritionistMapper;
+import ar.gym.gym.model.Client;
+import ar.gym.gym.model.Gym;
 import ar.gym.gym.model.Nutritionist;
+import ar.gym.gym.repository.GymRepository;
 import ar.gym.gym.repository.NutritionistRepository;
 import ar.gym.gym.service.NutritionistService;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
 public class NutritionistServiceImpl implements NutritionistService {
-    private NutritionistRepository nutritionistRepository;
-    private NutritionistMapper nutritionistMapper;
-    private ClientMapper clientMapper;
+    private final NutritionistRepository nutritionistRepository;
+    private final NutritionistMapper nutritionistMapper;
+    private final GymRepository gymRepository;
+    private final ClientMapper clientMapper;
+
+    public NutritionistServiceImpl(NutritionistRepository nutritionistRepository, NutritionistMapper nutritionistMapper, GymRepository gymRepository, ClientMapper clientMapper) {
+        this.nutritionistRepository = nutritionistRepository;
+        this.nutritionistMapper = nutritionistMapper;
+        this.gymRepository = gymRepository;
+        this.clientMapper = clientMapper;
+    }
 
     @Override
     public NutritionistResponseDto create(NutritionistRequestDto nutritionistRequestDto) {
@@ -28,6 +40,15 @@ public class NutritionistServiceImpl implements NutritionistService {
             throw new EntityExistsException("Ya existe un nutricionista con el DNI " + nutritionistRequestDto.getDni());
         }
         Nutritionist nutritionist = nutritionistMapper.dtoToEntity(nutritionistRequestDto);
+        System.out.println("Buscando gimnasio con el nombre: " + nutritionistRequestDto.getGymName());
+
+        Optional<Gym> gym = gymRepository.findByName(nutritionistRequestDto.getGymName());
+        if (gym.isPresent()){
+            nutritionist.setGym(gym.get());
+        } else {
+            throw new EntityNotFoundException("No se encontró el gimnasio con el nombre " + nutritionistRequestDto.getGymName());
+        }
+        nutritionist.setActive(true);
         nutritionistRepository.save(nutritionist);
         return nutritionistMapper.entityToDto(nutritionist);
     }
@@ -73,6 +94,12 @@ public class NutritionistServiceImpl implements NutritionistService {
         if (nutritionistRequestDto.getProfession() != null && !nutritionistRequestDto.getProfession().isEmpty()) {
             existingNutritionist.setProfession(nutritionistRequestDto.getProfession());
         }
+        if (nutritionistRequestDto.getGymName() != null) {
+            Optional<Gym> gym = gymRepository.findByName(nutritionistRequestDto.getGymName());
+            existingNutritionist.setGym(gym.orElse(null)); // Manejar caso en que el gimnasio no se encuentre
+        } else {
+            existingNutritionist.setGym(null); // Establecer gimnasio en null si el nombre es null
+        }
 
         existingNutritionist.setActive(nutritionistRequestDto.isActive());
 
@@ -94,6 +121,15 @@ public class NutritionistServiceImpl implements NutritionistService {
                 .stream()
                 .map(clientMapper::entityToDto)
                 .collect(Collectors.toList());
+    }
+
+    public NutritionistResponseDto disableNutritionistByDni(String dni) {
+        Nutritionist nutritionist = nutritionistRepository.findByDni(dni)
+                .orElseThrow(() -> new EntityNotFoundException("Nutricionista no encontrado con DNI: " + dni));
+
+        nutritionist.setActive(false);
+        nutritionistRepository.save(nutritionist);
+        return nutritionistMapper.entityToDto(nutritionist);
     }
 
 }

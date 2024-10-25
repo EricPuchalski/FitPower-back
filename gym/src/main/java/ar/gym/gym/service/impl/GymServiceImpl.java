@@ -1,6 +1,7 @@
 package ar.gym.gym.service.impl;
 
 import ar.gym.gym.dto.request.GymRequestDto;
+import ar.gym.gym.dto.response.AddClientToNutritionistResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
 import ar.gym.gym.mapper.GymMapper;
 import ar.gym.gym.model.Client;
@@ -17,6 +18,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,7 +40,6 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    @Transactional
     public GymResponseDto create(GymRequestDto gymRequestDto) {
         if (gymRepository.findByGymCode(gymRequestDto.getGymCode()).isPresent()) {
             throw new EntityExistsException("Ya existe un gimnasio con el código " + gymRequestDto.getGymCode());
@@ -126,7 +127,6 @@ public class GymServiceImpl implements GymService {
         return gymMapper.entityToDto(gym);
     }
 
-    @Transactional
     public GymResponseDto addTrainerToGym(String gymCode, String dni) {
         // Buscar el gimnasio por el código
         Gym gym = getGymByCodeOrThrow(gymCode);
@@ -149,12 +149,12 @@ public class GymServiceImpl implements GymService {
         return gymMapper.entityToDto(gym);
     }
 
-   @Transactional
+
     public GymResponseDto addNutritionistToGym(String gymCode, String dni) {
         // Buscar el gimnasio por el código
         Gym gym = getGymByCodeOrThrow(gymCode);
         Nutritionist nutritionist = nutritionistRepository.findByDni(dni)
-                .orElseThrow(() -> new EntityExistsException("El entrenador con el DNI " + dni + " no existe"));
+                .orElseThrow(() -> new EntityExistsException("El nutricionista con el DNI " + dni + " no existe"));
 
         // Verificar si el nutricionista ya existe en la lista
         if (!gym.getNutritionistList().contains(nutritionist)) {
@@ -199,10 +199,10 @@ public class GymServiceImpl implements GymService {
 
     }
 
-    public void assignNutritionistToClient(String dniNut, String dniClient){
+    public AddClientToNutritionistResponseDto assignNutritionistToClient(String dniNutritionist, String dniClient){
         // Buscar entrenador y cliente por dni
-        Nutritionist nutritionist = nutritionistRepository.findByDni(dniNut)
-                .orElseThrow(() -> new EntityExistsException("El nutricionista con el DNI " + dniNut + " no existe"));
+        Nutritionist nutritionist = nutritionistRepository.findByDni(dniNutritionist)
+                .orElseThrow(() -> new EntityExistsException("El nutricionista con el DNI " + dniNutritionist + " no existe"));
 
         Client client = clientRepository.findByDni(dniClient)
                 .orElseThrow(() -> new EntityExistsException("El cliente con el DNI " + dniClient + " no existe"));
@@ -219,9 +219,22 @@ public class GymServiceImpl implements GymService {
 
             // Guardar los cambios en la base de datos
             clientRepository.save(client);
+            AddClientToNutritionistResponseDto addClientToNutritionistResponseDto = createClientToNutritionist(dniNutritionist, dniClient);
+            return addClientToNutritionistResponseDto;
         } else {
             throw new EntityExistsException("El nutricionista ya está asignado a este cliente.");
         }
 
+    }
+
+    public AddClientToNutritionistResponseDto createClientToNutritionist(String dniNutritionist, String dniClient){
+        if (dniNutritionist != null || dniClient != null){
+            AddClientToNutritionistResponseDto clientToNutritionist = new AddClientToNutritionistResponseDto();
+            clientToNutritionist.setClientDni(dniClient);
+            clientToNutritionist.setNutritionistDni(dniNutritionist);
+            clientToNutritionist.setRegistrationDate(LocalDateTime.now());
+            return clientToNutritionist;
+        }
+        return null;
     }
 }

@@ -18,6 +18,6 @@ public class GymResponseDto {
     private String email;
     private String address;
     private List<ClientResponseDto> clientList;
-    private List<Trainer>trainerList;
-    private List<Nutritionist>nutritionistList;
+    private List<TrainerResponseDto> trainerList;
+    private List<NutritionistResponseDto> nutritionistList;
 }

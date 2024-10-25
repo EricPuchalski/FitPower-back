@@ -1,6 +1,5 @@
 package ar.gym.gym.dto.request;
 
-import ar.gym.gym.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,5 @@ public class NutritionistRequestDto {
     private String email;
     private boolean active;
     private String profession;
-    private List<NutritionalPlan> nutritionalPlanList;
-    private List<Client>clients;
-    private Gym gym;
+    private String gymName;
 }
