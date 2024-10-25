@@ -12,26 +12,18 @@ import java.util.List;
 public interface TrainerService {
 
     TrainerResponseDto create(TrainerRequestDto trainerRequestDto);
-    public List<TrainerResponseDto> findAll();
+   List<TrainerResponseDto> findAll();
 
-    // Encuentra un entrenador por DNI o lanza una excepción si no existe
-    public Trainer getTrainerByDniOrThrow(String dni);
+    Trainer getTrainerByDniOrThrow(String dni);
 
-    // Encuentra un entrenador por ID
-
-    public TrainerResponseDto findById(String id);
-
-    // Actualiza los datos de un entrenador
-
-    public TrainerResponseDto update(TrainerRequestDto trainerRequestDto);
+    TrainerResponseDto findByDni(String dni);
+    TrainerResponseDto update(TrainerRequestDto trainerRequestDto);
 
     // Elimina un entrenador por su ID
 
-    public void delete(String id);
+    void deleteByDni(String dni);
 
-    // Obtiene la lista de clientes asociados a un entrenador dado su DNI
-    public List<ClientResponseDto> getClientsAssociated(String dni);
+   List<ClientResponseDto> getClientsAssociated(String dni);
 
-    // Crea una rutina para un entrenador
-    public RoutineResponseDto createRoutine(RoutineRequestDto routineRequestDto);
+    RoutineResponseDto createRoutine(RoutineRequestDto routineRequestDto);
 }

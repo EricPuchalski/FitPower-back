@@ -3,6 +3,7 @@ package ar.gym.gym.service;
 
 import ar.gym.gym.dto.request.GymRequestDto;
 import ar.gym.gym.dto.response.AddClientToNutritionistResponseDto;
+import ar.gym.gym.dto.response.AddClientToTrainerResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
 import ar.gym.gym.model.Gym;
 
@@ -23,7 +24,7 @@ public interface GymService {
 
     GymResponseDto addNutritionistToGym(String gymCode, String dni);
 
-    void assignTrainerToClient(String dniTrainer, String dniClient);
+    AddClientToTrainerResponseDto assignTrainerToClient(String dniTrainer, String dniClient);
 
     AddClientToNutritionistResponseDto assignNutritionistToClient(String dniNutritionist, String dniClient);
 

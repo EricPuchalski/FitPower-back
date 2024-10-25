@@ -2,6 +2,7 @@ package ar.gym.gym.service.impl;
 
 import ar.gym.gym.dto.request.GymRequestDto;
 import ar.gym.gym.dto.response.AddClientToNutritionistResponseDto;
+import ar.gym.gym.dto.response.AddClientToTrainerResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
 import ar.gym.gym.mapper.GymMapper;
 import ar.gym.gym.model.Client;
@@ -173,7 +174,7 @@ public class GymServiceImpl implements GymService {
     }
 
 
-    public void assignTrainerToClient(String dniTrainer, String dniClient){
+    public AddClientToTrainerResponseDto assignTrainerToClient(String dniTrainer, String dniClient){
         // Buscar entrenador y cliente por dni
         Trainer trainer = trainerRepository.findByDni(dniTrainer)
                 .orElseThrow(() -> new EntityExistsException("El entrenador con el DNI " + dniTrainer + " no existe"));
@@ -193,6 +194,7 @@ public class GymServiceImpl implements GymService {
 
             // Guardar los cambios en la base de datos
             clientRepository.save(client);
+            return createClientToTrainer(dniTrainer, dniClient);
         } else {
             throw new EntityExistsException("El entrenador ya está asignado a este cliente.");
         }
@@ -219,8 +221,7 @@ public class GymServiceImpl implements GymService {
 
             // Guardar los cambios en la base de datos
             clientRepository.save(client);
-            AddClientToNutritionistResponseDto addClientToNutritionistResponseDto = createClientToNutritionist(dniNutritionist, dniClient);
-            return addClientToNutritionistResponseDto;
+            return createClientToNutritionist(dniNutritionist, dniClient);
         } else {
             throw new EntityExistsException("El nutricionista ya está asignado a este cliente.");
         }
@@ -234,6 +235,17 @@ public class GymServiceImpl implements GymService {
             clientToNutritionist.setNutritionistDni(dniNutritionist);
             clientToNutritionist.setRegistrationDate(LocalDateTime.now());
             return clientToNutritionist;
+        }
+        return null;
+    }
+
+    public AddClientToTrainerResponseDto createClientToTrainer(String dniTrainer, String dniClient){
+        if (dniTrainer != null || dniClient != null){
+            AddClientToTrainerResponseDto clientToTrainerResponseDto = new AddClientToTrainerResponseDto();
+            clientToTrainerResponseDto.setClientDni(dniClient);
+            clientToTrainerResponseDto.setTrainerDni(dniTrainer);
+            clientToTrainerResponseDto.setRegistrationDate(LocalDateTime.now());
+            return clientToTrainerResponseDto;
         }
         return null;
     }

@@ -3,8 +3,11 @@ package ar.gym.gym.controller;
 import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.service.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,9 +23,10 @@ public class ClientController{
     }
 
     @PostMapping
-    public ResponseEntity<ClientResponseDto> create(@RequestBody ClientRequestDto clientRequestDto) {
+    public ResponseEntity<ClientResponseDto> create(@Validated @RequestBody ClientRequestDto clientRequestDto) {
         ClientResponseDto createdClient = clientService.create(clientRequestDto);
-        return new ResponseEntity<>(createdClient, HttpStatus.CREATED);    }
+        return new ResponseEntity<>(createdClient, HttpStatus.CREATED);
+    }
 
 
     @GetMapping
@@ -40,7 +44,7 @@ public class ClientController{
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientResponseDto> update(@RequestBody ClientRequestDto clientRequestDto, @PathVariable Long id) {
+    public ResponseEntity<ClientResponseDto> update(@Valid @RequestBody ClientRequestDto clientRequestDto, @PathVariable Long id) {
         ClientResponseDto updatedClient = clientService.update(clientRequestDto, id);
         return ResponseEntity.ok(updatedClient);    }
 

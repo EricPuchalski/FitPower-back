@@ -19,8 +19,7 @@ public class TrainerResponseDto {
     private String email;
     private boolean active;
     private String profession;
-    private boolean available;
     private List<Routine> routineList;
-    private List<Client>clients;
-    private Gym gym;
+    private List<ClientResponseDto> clients;
+    private String gymName;
 }

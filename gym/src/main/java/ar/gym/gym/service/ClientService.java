@@ -20,4 +20,8 @@ public interface ClientService{
 
     ClientResponseDto disableClientByDni(String dni);
 
+//    ClientResponseDto findByEmail(String email);
+
+
+
 }

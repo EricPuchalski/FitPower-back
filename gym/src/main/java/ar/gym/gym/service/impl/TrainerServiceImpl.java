@@ -7,29 +7,53 @@ import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.mapper.ClientMapper;
 import ar.gym.gym.mapper.TrainerMapper;
+import ar.gym.gym.model.Gym;
 import ar.gym.gym.model.Trainer;
+import ar.gym.gym.repository.GymRepository;
 import ar.gym.gym.repository.TrainerRepository;
 import ar.gym.gym.service.TrainerService;
 import jakarta.persistence.EntityExistsException;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
+
 @Service
 public class TrainerServiceImpl implements TrainerService {
-    private TrainerRepository trainerRepository;
-    private TrainerMapper trainerMapper;
-    private ClientMapper clientMapper;
+    private final TrainerRepository trainerRepository;
+    private final TrainerMapper trainerMapper;
+    private final ClientMapper clientMapper;
+
+    private final GymRepository gymRepository;
+
+    public TrainerServiceImpl(TrainerRepository trainerRepository, TrainerMapper trainerMapper, ClientMapper clientMapper, GymRepository gymRepository) {
+        this.trainerRepository = trainerRepository;
+        this.trainerMapper = trainerMapper;
+        this.clientMapper = clientMapper;
+        this.gymRepository = gymRepository;
+    }
 
     @Override
     public TrainerResponseDto create(TrainerRequestDto trainerRequestDto) {
         if(trainerRepository.findByDni(trainerRequestDto.getDni()).isPresent()){
             throw new EntityExistsException("Ya existe un entrenador con el DNI " + trainerRequestDto.getDni());
         }
+
         Trainer trainer = trainerMapper.dtoToEntity(trainerRequestDto);
+
+        if (trainerRequestDto.getGymName() != null) {
+            Optional<Gym> gym = gymRepository.findByName(trainerRequestDto.getGymName());
+
+            if (gym.isPresent()) {
+                trainer.setGym(gym.get());
+            } else {
+                throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + trainerRequestDto.getGymName());
+            }
+        }
+
         trainerRepository.save(trainer);
         return trainerMapper.entityToDto(trainer);
     }
@@ -48,8 +72,8 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public TrainerResponseDto findById(String id) {
-        Trainer trainer = getTrainerByDniOrThrow(id);
+    public TrainerResponseDto findByDni(String dni) {
+        Trainer trainer = getTrainerByDniOrThrow(dni);
         return trainerMapper.entityToDto(trainer);
     }
 
@@ -76,8 +100,17 @@ public class TrainerServiceImpl implements TrainerService {
             existingTrainer.setProfession(trainerRequestDto.getProfession());
         }
 
+        if (trainerRequestDto.getGymName() != null) {
+            Optional<Gym> gym = gymRepository.findByName(trainerRequestDto.getGymName());
+
+            if (gym.isPresent()) {
+                existingTrainer.setGym(gym.get());
+            } else {
+                throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + trainerRequestDto.getGymName());
+            }
+        }
+
         existingTrainer.setActive(trainerRequestDto.isActive());
-        existingTrainer.setAvailable(trainerRequestDto.isAvailable());
 
         // Guardamos el entrenador actualizado en la base de datos
         Trainer updatedTrainer = trainerRepository.save(existingTrainer);
@@ -87,8 +120,8 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public void delete(String id) {
-        Trainer trainer = getTrainerByDniOrThrow(id);
+    public void deleteByDni(String dni) {
+        Trainer trainer = getTrainerByDniOrThrow(dni);
         trainerRepository.delete(trainer);
     }
 

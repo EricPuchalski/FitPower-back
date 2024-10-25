@@ -35,14 +35,24 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientResponseDto create(ClientRequestDto clientRequestDto) {
         if(clientRepository.findByDni(clientRequestDto.getDni()).isPresent()){
-            throw new EntityExistsException("Ya existe un cliente con el código " + clientRequestDto.getDni());
+            throw new EntityExistsException("Ya existe un cliente con el dni " + clientRequestDto.getDni());
         }
+        if(clientRepository.findByPhone(clientRequestDto.getPhone()).isPresent()){
+            throw new EntityExistsException("Ya existe un cliente con el número de teléfono " + clientRequestDto.getPhone());
+        }
+        if(clientRepository.findByEmail(clientRequestDto.getEmail()).isPresent()){
+            throw new EntityExistsException("Ya existe un cliente con el email " + clientRequestDto.getEmail());
+        }
+
         Client client = clientMapper.dtoToEntity(clientRequestDto);
-        Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
-        if (gym.isPresent()){
-            client.setGym(gym.get());
-        } else {
-            throw new EntityNotFoundException("No se encontró el gimnasio con el nombre " + clientRequestDto.getGymName());
+        if (clientRequestDto.getGymName() != null) {
+            Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
+
+            if (gym.isPresent()) {
+                client.setGym(gym.get());
+            } else {
+                throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + clientRequestDto.getGymName());
+            }
         }
         client.setActive(true);
         clientRepository.save(client);
@@ -71,15 +81,15 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientResponseDto update(ClientRequestDto clientRequestDto, Long id) {
-
         Client existingClient = clientRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con el ID: " + id));
 
+        // Actualizar campos del cliente si no son nulos
         if (clientRequestDto.getName() != null) {
             existingClient.setName(clientRequestDto.getName());
         }
-        if (clientRequestDto.getSurname() != null) {
-            existingClient.setSurname(clientRequestDto.getSurname());
+        if (clientRequestDto.getLastname() != null) {
+            existingClient.setSurname(clientRequestDto.getLastname());
         }
         if (clientRequestDto.getDni() != null) {
             existingClient.setDni(clientRequestDto.getDni());
@@ -99,19 +109,22 @@ public class ClientServiceImpl implements ClientService {
             existingClient.setGoal(clientRequestDto.getGoal());
         }
 
+        // Solo buscar y actualizar el gimnasio si gymName no es nulo
         if (clientRequestDto.getGymName() != null) {
             Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
-            existingClient.setGym(gym.orElse(null)); // Manejar caso en que el gimnasio no se encuentre
-        } else {
-            existingClient.setGym(null); // Establecer gimnasio en null si el nombre es null
+
+            if (gym.isPresent()) {
+                existingClient.setGym(gym.get());
+            } else {
+                throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + clientRequestDto.getGymName());
+            }
         }
 
-
         Client updatedClient = clientRepository.save(existingClient);
-        ClientResponseDto clientResponse = clientMapper.entityToDto(updatedClient);
 
-        return clientMapper.entityToDto(updatedClient);
+        return clientMapper.entityToDto(updatedClient); // Cambié esta línea para usar la variable clientResponse
     }
+
 
     @Override
     public void delete(String id) {

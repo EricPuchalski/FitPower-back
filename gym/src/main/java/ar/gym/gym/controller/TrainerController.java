@@ -6,7 +6,7 @@ import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.service.TrainerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +16,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/trainers")
 public class TrainerController{
-    @Autowired
-    private TrainerService trainerService;
+
+    private final TrainerService trainerService;
+
+    public TrainerController(TrainerService trainerService) {
+        this.trainerService = trainerService;
+    }
 
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TrainerResponseDto> create(@RequestBody TrainerRequestDto trainerRequestDto) {
+    public ResponseEntity<TrainerResponseDto> create(@Valid @RequestBody TrainerRequestDto trainerRequestDto) {
         TrainerResponseDto createdTrainer = trainerService.create(trainerRequestDto);
         return new ResponseEntity<>(createdTrainer, HttpStatus.CREATED);
     }
@@ -36,28 +39,28 @@ public class TrainerController{
 
 
     @GetMapping("/{dni}")
-    public ResponseEntity<TrainerResponseDto> findById(@PathVariable String id) {
-        TrainerResponseDto trainer = trainerService.findById(id);
+    public ResponseEntity<TrainerResponseDto> findByDni(@PathVariable String dni) {
+        TrainerResponseDto trainer = trainerService.findByDni(dni);
         return ResponseEntity.ok(trainer);
     }
 
 
     @PutMapping("/{dni}")
-    public ResponseEntity<TrainerResponseDto> update(@RequestBody TrainerRequestDto trainerRequestDto) {
+    public ResponseEntity<TrainerResponseDto> update(@Valid @RequestBody TrainerRequestDto trainerRequestDto) {
         TrainerResponseDto updatedTrainer = trainerService.update(trainerRequestDto);
         return ResponseEntity.ok(updatedTrainer);
     }
 
 
     @DeleteMapping("/{dni}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        trainerService.delete(id);
+    public ResponseEntity<Void> deleteByDni(@PathVariable String dni) {
+        trainerService.deleteByDni(dni);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{dniTrainer}")
-    public ResponseEntity<List<ClientResponseDto>> getClients(@PathVariable String dniTrainer){
-        List<ClientResponseDto>trainerClients = trainerService.getClientsAssociated(dniTrainer);
+    @GetMapping("/clients/{dni}")
+    public ResponseEntity<List<ClientResponseDto>> getClients(@PathVariable String dni){
+        List<ClientResponseDto>trainerClients = trainerService.getClientsAssociated(dni);
         return ResponseEntity.ok(trainerClients);
     }
 

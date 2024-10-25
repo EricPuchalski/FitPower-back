@@ -40,13 +40,15 @@ public class NutritionistServiceImpl implements NutritionistService {
             throw new EntityExistsException("Ya existe un nutricionista con el DNI " + nutritionistRequestDto.getDni());
         }
         Nutritionist nutritionist = nutritionistMapper.dtoToEntity(nutritionistRequestDto);
-        System.out.println("Buscando gimnasio con el nombre: " + nutritionistRequestDto.getGymName());
 
-        Optional<Gym> gym = gymRepository.findByName(nutritionistRequestDto.getGymName());
-        if (gym.isPresent()){
-            nutritionist.setGym(gym.get());
-        } else {
-            throw new EntityNotFoundException("No se encontró el gimnasio con el nombre " + nutritionistRequestDto.getGymName());
+        if (nutritionistRequestDto.getGymName() != null) {
+            Optional<Gym> gym = gymRepository.findByName(nutritionistRequestDto.getGymName());
+
+            if (gym.isPresent()) {
+                nutritionist.setGym(gym.get());
+            } else {
+                throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + nutritionistRequestDto.getGymName());
+            }
         }
         nutritionist.setActive(true);
         nutritionistRepository.save(nutritionist);
@@ -96,9 +98,12 @@ public class NutritionistServiceImpl implements NutritionistService {
         }
         if (nutritionistRequestDto.getGymName() != null) {
             Optional<Gym> gym = gymRepository.findByName(nutritionistRequestDto.getGymName());
-            existingNutritionist.setGym(gym.orElse(null)); // Manejar caso en que el gimnasio no se encuentre
-        } else {
-            existingNutritionist.setGym(null); // Establecer gimnasio en null si el nombre es null
+
+            if (gym.isPresent()) {
+                existingNutritionist.setGym(gym.get());
+            } else {
+                throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + nutritionistRequestDto.getGymName());
+            }
         }
 
         existingNutritionist.setActive(nutritionistRequestDto.isActive());
