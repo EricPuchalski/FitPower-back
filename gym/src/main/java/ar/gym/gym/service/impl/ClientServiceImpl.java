@@ -11,6 +11,8 @@ import ar.gym.gym.repository.GymRepository;
 import ar.gym.gym.service.ClientService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +21,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class ClientServiceImpl implements ClientService {
+
+    private final Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
     private final ClientRepository clientRepository;
     private final GymRepository gymRepository;
     private final ClientMapper clientMapper;
     private final GymMapper gymMapper;
-
 
     public ClientServiceImpl(ClientRepository clientRepository, GymRepository gymRepository, ClientMapper clientMapper, GymMapper gymMapper) {
         this.clientRepository = clientRepository;
@@ -34,13 +37,15 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientResponseDto create(ClientRequestDto clientRequestDto) {
-        if(clientRepository.findByDni(clientRequestDto.getDni()).isPresent()){
+        logger.info("Entrando al método create con datos del cliente: {}", clientRequestDto);
+
+        if (clientRepository.findByDni(clientRequestDto.getDni()).isPresent()) {
             throw new EntityExistsException("Ya existe un cliente con el dni " + clientRequestDto.getDni());
         }
-        if(clientRepository.findByPhone(clientRequestDto.getPhone()).isPresent()){
+        if (clientRepository.findByPhone(clientRequestDto.getPhone()).isPresent()) {
             throw new EntityExistsException("Ya existe un cliente con el número de teléfono " + clientRequestDto.getPhone());
         }
-        if(clientRepository.findByEmail(clientRequestDto.getEmail()).isPresent()){
+        if (clientRepository.findByEmail(clientRequestDto.getEmail()).isPresent()) {
             throw new EntityExistsException("Ya existe un cliente con el email " + clientRequestDto.getEmail());
         }
 
@@ -56,35 +61,54 @@ public class ClientServiceImpl implements ClientService {
         }
         client.setActive(true);
         clientRepository.save(client);
-        return clientMapper.entityToDto(client);
+
+        ClientResponseDto response = clientMapper.entityToDto(client);
+        logger.info("Saliendo del método create con respuesta: {}", response);
+        return response;
     }
 
     @Override
     public List<ClientResponseDto> findAll() {
-        List<Client>clients = clientRepository.findAll();
-        return clients.stream()
+        logger.info("Entrando al método findAll");
+
+        List<Client> clients = clientRepository.findAll();
+        List<ClientResponseDto> response = clients.stream()
                 .map(clientMapper::entityToDto)
                 .collect(Collectors.toList());
+
+        logger.info("Saliendo del método findAll con número total de clientes encontrados: {}", response.size());
+        return response;
     }
 
-    public Client getClientByDniOrThrow(String dni){
-        return clientRepository.findByDni(dni)
-                .orElseThrow(() -> new EntityExistsException("El cliente con el dni " + dni + " no existe"));
+    public Client getClientByDniOrThrow(String dni) {
+        logger.info("Entrando al método getClientByDniOrThrow con DNI: {}", dni);
+
+        Client client = clientRepository.findByDni(dni)
+                .orElseThrow(() -> new EntityNotFoundException("El cliente con el dni " + dni + " no existe"));
+
+        logger.info("Saliendo del método getClientByDniOrThrow con cliente encontrado: {}", client);
+        return client;
     }
+
     @Override
     public ClientResponseDto findByDni(String dni) {
+        logger.info("Entrando al método findByDni con DNI: {}", dni);
+
         Client client = getClientByDniOrThrow(dni);
-        ClientResponseDto clientResponseDto = clientMapper.entityToDto(client);
-        clientResponseDto.setGymName(client.getGym().getName());
-        return clientResponseDto;
+        ClientResponseDto response = clientMapper.entityToDto(client);
+        response.setGymName(client.getGym().getName());
+
+        logger.info("Saliendo del método findByDni con respuesta: {}", response);
+        return response;
     }
 
     @Override
     public ClientResponseDto update(ClientRequestDto clientRequestDto, Long id) {
+        logger.info("Entrando al método update con ID: {} y datos de actualización: {}", id, clientRequestDto);
+
         Client existingClient = clientRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con el ID: " + id));
 
-        // Actualizar campos del cliente si no son nulos
         if (clientRequestDto.getName() != null) {
             existingClient.setName(clientRequestDto.getName());
         }
@@ -109,7 +133,6 @@ public class ClientServiceImpl implements ClientService {
             existingClient.setGoal(clientRequestDto.getGoal());
         }
 
-        // Solo buscar y actualizar el gimnasio si gymName no es nulo
         if (clientRequestDto.getGymName() != null) {
             Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
 
@@ -121,37 +144,32 @@ public class ClientServiceImpl implements ClientService {
         }
 
         Client updatedClient = clientRepository.save(existingClient);
+        ClientResponseDto response = clientMapper.entityToDto(updatedClient);
 
-        return clientMapper.entityToDto(updatedClient); // Cambié esta línea para usar la variable clientResponse
+        logger.info("Saliendo del método update con cliente actualizado: {}", response);
+        return response;
     }
-
 
     @Override
     public void delete(String id) {
+        logger.info("Entrando al método delete con DNI: {}", id);
+
         Client client = getClientByDniOrThrow(id);
         clientRepository.delete(client);
+
+        logger.info("Cliente eliminado correctamente con DNI: {}", id);
     }
 
-   /* public List<RoutineResponseDto> getRoutinesByClientDni(String dni) {
-        // Obtener el cliente por DNI o lanzar excepción si no existe
-        Client client = getClientByDniOrThrow(dni);
-
-        // Obtener la lista de rutinas del cliente
-        List<Routine> routines = client.getRoutines();
-
-        // Convertir las rutinas a DTO utilizando un mapper si es necesario
-        return routines.stream()
-                .map(routineMapper::entityToDto)
-                .collect(Collectors.toList());
-    }*/
-
     public ClientResponseDto disableClientByDni(String dni) {
+        logger.info("Entrando al método disableClientByDni con DNI: {}", dni);
+
         Client client = clientRepository.findByDni(dni)
                 .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con DNI: " + dni));
         client.setActive(false);
         clientRepository.save(client);
 
-        return clientMapper.entityToDto(client);
+        ClientResponseDto response = clientMapper.entityToDto(client);
+        logger.info("Saliendo del método disableClientByDni con cliente desactivado: {}", response);
+        return response;
     }
-
 }

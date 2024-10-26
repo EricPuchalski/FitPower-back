@@ -5,21 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b2ff890f-4515-478b-9216-a36d2f21e1d7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/NutritionalPlanService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/NutritionalPlanServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/ClientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/ClientController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/ExerciseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/ExerciseController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/GymController.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/GymController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/NutritionistController.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/NutritionistController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/TrainerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/TrainerController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/ClientRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/ClientRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/ExerciseRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/ExerciseRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/ExerciseResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/ExerciseResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/Exercise.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/Exercise.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/NutritionalPlan.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/NutritionalPlan.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/repository/ExerciseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/repository/ExerciseRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/repository/NutritionalPlanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/repository/NutritionalPlanRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/ExerciseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/ExerciseService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/NutritionistService.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/NutritionistService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/Gym.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/Gym.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/ClientServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/ClientServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/ExerciseServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/ExerciseServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/GymServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/GymServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/NutritionistServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/NutritionistServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,13 +38,6 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="useMavenConfig" value="true" />
-      </MavenGeneralSettings>
-    </option>
-  </component>
   <component name="ProjectId" id="2ncknuEYoCAKxruS3xbVNnuubkw" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -56,15 +46,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Projects/workspace/FitPower_Individual/FitPowerPruebas-back/gym/src/main/java/ar/gym/gym/controller&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.GymApplication.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "NutritionLogic",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/Projects/workspace/FitPower_Individual/FitPowerPruebas-back/gym/src/main/java/ar/gym/gym/controller"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Projects\workspace\FitPower_Individual\FitPowerPruebas-back\gym\src\main\java\ar\gym\gym\controller" />
