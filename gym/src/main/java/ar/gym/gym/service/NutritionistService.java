@@ -22,4 +22,6 @@ public interface NutritionistService {
 
     NutritionistResponseDto disableNutritionistByDni(String dni);
 
+
+
 }

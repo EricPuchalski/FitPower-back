@@ -16,7 +16,6 @@ public class NutritionalPlan {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
-    private String nutCode;
     private String type;
     private Date startDate;
     private Date endDate;
@@ -25,8 +24,6 @@ public class NutritionalPlan {
     private boolean active;
     @OneToMany(mappedBy = "nutritionalPlan")
     private List<Food> foodList;
-//    @Enumerated(EnumType.STRING)
-//    private Status status;
 
 
 }

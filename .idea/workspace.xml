@@ -5,27 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b2ff890f-4515-478b-9216-a36d2f21e1d7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/AddClientToTrainerResponseDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/NutritionalPlanService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/NutritionalPlanServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/gym/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/ClientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/ClientController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/GymController.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/GymController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/TrainerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/TrainerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/ExerciseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/controller/ExerciseController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/ClientRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/ClientRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/NutritionistRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/NutritionistRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/TrainerRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/TrainerRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/ClientResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/ClientResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/TrainerResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/TrainerResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/Person.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/repository/ClientRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/repository/ClientRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/ClientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/ClientService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/GymService.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/GymService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/TrainerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/TrainerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/ClientServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/ClientServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/GymServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/GymServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/NutritionistServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/NutritionistServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/TrainerServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/TrainerServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/ExerciseRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/ExerciseRequestDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/ExerciseResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/ExerciseResponseDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/Exercise.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/Exercise.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/NutritionalPlan.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/model/NutritionalPlan.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/repository/ExerciseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/repository/ExerciseRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/repository/NutritionalPlanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/repository/NutritionalPlanRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/ExerciseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/ExerciseService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/NutritionistService.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/NutritionistService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/ExerciseServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/ExerciseServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,8 +30,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="package-info" />
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>

@@ -14,9 +14,7 @@ public class Exercise {
     private Long id;
     private String name;
     private String equipment;
-    private float weight;
-    private LocalTime restTime;
-    private LocalTime duration;
+    private String muscleGroup;
 }
 
 

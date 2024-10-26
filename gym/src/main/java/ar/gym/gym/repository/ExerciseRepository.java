@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
-    Optional<ExerciseResponseDto> findByName(String name);
+    Optional<Exercise> findByName(String name);
 
 }

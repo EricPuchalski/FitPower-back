@@ -12,8 +12,5 @@ import java.time.LocalTime;
 public class ExerciseResponseDto {
     private String name;
     private String equipment;
-    private float weight;
-    private LocalTime restTime;
-    private LocalTime duration;
-    private Session session;
+    private String muscleGroup;
 }

@@ -4,6 +4,7 @@ import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ExerciseRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.ExerciseResponseDto;
+import ar.gym.gym.model.Exercise;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +17,9 @@ public interface ExerciseService {
 
     ExerciseResponseDto findById(Long id);
 
-    ExerciseResponseDto update(ExerciseRequestDto exerciseRequestDto);
+    ExerciseResponseDto update(ExerciseRequestDto exerciseRequestDto, Long id);
 
     void delete(Long id);
 
-    Optional<ExerciseResponseDto> findByName(String name);
+    Optional<Exercise> findByName(String name);
 }
