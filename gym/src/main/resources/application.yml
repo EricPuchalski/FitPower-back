@@ -24,3 +24,13 @@ logging:
   level:
     root: info # permite ver los logs de consola
 
+gym:
+  openapi:
+    url: "http://localhost:8080"
+    description: ".API for gym management"
+    contact:
+      name: "Puchalski Eric, Villalba Gonzalo, Pedrozo Facundo, Paniagua Santiago"
+      email: "Añadir emails de cada uno."
+      url: "https://github.com/PaniaguaSanty"
+    title: "Gym Managemen Apllication"
+    version: "1.0"
