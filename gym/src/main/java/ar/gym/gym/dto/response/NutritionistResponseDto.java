@@ -19,8 +19,6 @@ public class NutritionistResponseDto {
     private String email;
     private boolean active;
     private String profession;
-    private boolean available;
-    private List<NutritionalPlan> nutritionalPlanList;
-    private List<Client>clients;
-    private Gym gym;
+    private List<ClientResponseDto> clients;
+    private String gymName;
 }

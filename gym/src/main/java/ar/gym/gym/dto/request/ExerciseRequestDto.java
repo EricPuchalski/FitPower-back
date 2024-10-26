@@ -10,11 +10,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseRequestDto {
-    private Long id;
     private String name;
     private String equipment;
-    private float weight;
-    private LocalTime restTime;
-    private LocalTime duration;
-    private Session session;
+    private String muscleGroup;
 }

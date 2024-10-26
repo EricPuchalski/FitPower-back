@@ -14,7 +14,7 @@ import java.util.List;
 public class ClientResponseDto {
     private Long id;
     private String name;
-    private String surname;
+    private String lastname;
     private String dni;
     private String phone;
     private String address;
@@ -23,11 +23,4 @@ public class ClientResponseDto {
     private List<ClientStatus> statuses;
     private String goal;
     private String gymName;
-//    private Trainer trainer;
-//    private Nutritionist nutritionist;
-//    private List<Routine>routines;
-//    private List<NutritionalPlan>nutritionalPlans;
-//    private Record record;
-//    private List<TrainingDiary>trainingDiaryList;
-//    private List<NutritionalDiary>nutritionalDiaryList;
 }

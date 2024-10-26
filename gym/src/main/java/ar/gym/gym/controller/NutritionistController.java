@@ -18,8 +18,7 @@ public class NutritionistController {
 
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<NutritionistResponseDto> create(NutritionistRequestDto nutritionistRequestDto) {
+    public ResponseEntity<NutritionistResponseDto> create(@RequestBody NutritionistRequestDto nutritionistRequestDto) {
         NutritionistResponseDto createdNutritionist = nutritionistService.create(nutritionistRequestDto);
         return new ResponseEntity<>(createdNutritionist, HttpStatus.CREATED);
     }
@@ -33,28 +32,33 @@ public class NutritionistController {
 
 
     @GetMapping("/{dni}")
-    public ResponseEntity<NutritionistResponseDto> findById(String dni) {
+    public ResponseEntity<NutritionistResponseDto> findById(@PathVariable String dni) {
         NutritionistResponseDto nutritionist = nutritionistService.findByDni(dni);
         return ResponseEntity.ok(nutritionist);
     }
 
 
     @PutMapping("/{dni}")
-    public ResponseEntity<NutritionistResponseDto> update(NutritionistRequestDto nutritionistRequestDto) {
+    public ResponseEntity<NutritionistResponseDto> update(@RequestBody NutritionistRequestDto nutritionistRequestDto) {
         NutritionistResponseDto updatedNutritionist = nutritionistService.update(nutritionistRequestDto);
         return ResponseEntity.ok(updatedNutritionist);
     }
 
+    @PutMapping("/disable/{dni}")
+    public ResponseEntity<NutritionistResponseDto> disableByDni(@PathVariable String dni) {
+        NutritionistResponseDto nutritionistRequestDto = nutritionistService.disableNutritionistByDni(dni);
+        return ResponseEntity.ok(nutritionistRequestDto);
+    }
 
-    @DeleteMapping("/{dni}")
-    public ResponseEntity<Void> delete(Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         nutritionistService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{dniNutritionist}")
-    public ResponseEntity<List<ClientResponseDto>> getClients(@PathVariable String dniNutritionist){
-        List<ClientResponseDto>nutritionistClients = nutritionistService.getClientsAssociated(dniNutritionist);
+    @GetMapping("/clients/{dni}")
+    public ResponseEntity<List<ClientResponseDto>> getClientsAssociated(@PathVariable String dni){
+        List<ClientResponseDto>nutritionistClients = nutritionistService.getClientsAssociated(dni);
         return ResponseEntity.ok(nutritionistClients);
     }
 

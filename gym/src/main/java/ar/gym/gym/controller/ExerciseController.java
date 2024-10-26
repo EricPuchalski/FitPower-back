@@ -2,6 +2,7 @@ package ar.gym.gym.controller;
 
 import ar.gym.gym.dto.request.ExerciseRequestDto;
 import ar.gym.gym.dto.response.ExerciseResponseDto;
+import ar.gym.gym.model.Exercise;
 import ar.gym.gym.service.ExerciseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +15,13 @@ import java.util.Optional;
 @RequestMapping("/api/exercises")
 public class ExerciseController {
 
-    private ExerciseService exerciseService;
+    private final ExerciseService exerciseService;
 
     public ExerciseController(ExerciseService exerciseService) {
         this.exerciseService = exerciseService;
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ExerciseResponseDto> create(@RequestBody ExerciseRequestDto exerciseRequestDto) {
         ExerciseResponseDto createdExercise = exerciseService.create(exerciseRequestDto);
         return new ResponseEntity<>(createdExercise, HttpStatus.CREATED);
@@ -35,24 +35,17 @@ public class ExerciseController {
     }
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ExerciseResponseDto> findById(@PathVariable Long id) {
-        ExerciseResponseDto exercise = exerciseService.findById(id);
-        return ResponseEntity.ok(exercise);
-    }
 
     @GetMapping("/{name}")
-    public ResponseEntity<ExerciseResponseDto> findByName(@PathVariable String name) {
-        Optional<ExerciseResponseDto> exercise = exerciseService.findByName(name);
-        return exercise.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Exercise> findByName(@PathVariable String name) {
+        Optional<Exercise> exercise = exerciseService.findByName(name);
+        return ResponseEntity.ok(exercise.get());
     }
 
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ExerciseResponseDto> update(@RequestBody ExerciseRequestDto exerciseRequestDto) {
-        ExerciseResponseDto updatedExercise = exerciseService.update(exerciseRequestDto);
+    @PutMapping("/{id}")    public ResponseEntity<ExerciseResponseDto> update(@RequestBody ExerciseRequestDto exerciseRequestDto, @PathVariable Long id) {
+        ExerciseResponseDto updatedExercise = exerciseService.update(exerciseRequestDto, id);
         return ResponseEntity.ok(updatedExercise);
     }
 
