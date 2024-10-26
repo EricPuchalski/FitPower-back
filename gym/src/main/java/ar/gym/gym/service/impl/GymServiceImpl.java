@@ -16,7 +16,6 @@ import ar.gym.gym.repository.TrainerRepository;
 import ar.gym.gym.service.GymService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
