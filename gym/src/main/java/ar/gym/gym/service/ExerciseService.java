@@ -17,7 +17,7 @@ public interface ExerciseService {
 
     ExerciseResponseDto findById(Long id);
 
-    ExerciseResponseDto update(ExerciseRequestDto exerciseRequestDto, Long id);
+    ExerciseResponseDto update(ExerciseRequestDto exerciseRequestDto, String name);
 
     void delete(Long id);
 

@@ -74,13 +74,6 @@ public class TrainerController {
         return ResponseEntity.ok(trainerClients);
     }
 
-    @PostMapping("/routines")
-    public ResponseEntity<RoutineResponseDto> createRoutineForClient(@RequestBody RoutineRequestDto routineRequestDto) {
-        logger.info("Creating routine for client with request: {}", routineRequestDto);
-        RoutineResponseDto routineResponse = trainerService.createRoutine(routineRequestDto);
-        logger.info("Created routine: {}", routineResponse);
-        return ResponseEntity.status(HttpStatus.CREATED).body(routineResponse);
-    }
 
     //falta crear la funcion de plan nut
     //creamos rutina y agregamos a trainer

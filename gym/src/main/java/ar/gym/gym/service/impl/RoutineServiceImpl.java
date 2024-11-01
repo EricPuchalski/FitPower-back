@@ -8,7 +8,6 @@ import ar.gym.gym.mapper.RoutineMapper;
 import ar.gym.gym.model.Client;
 import ar.gym.gym.model.Routine;
 import ar.gym.gym.model.Session;
-import ar.gym.gym.model.Trainer;
 import ar.gym.gym.repository.RoutineRepository;
 import ar.gym.gym.service.RoutineService;
 import jakarta.persistence.EntityExistsException;
@@ -25,8 +24,6 @@ public class RoutineServiceImpl implements RoutineService {
     private RoutineMapper routineMapper;
     private SessionServiceImpl sessionServiceImpl;
     private ClientServiceImpl clientServiceImpl;
-    private TrainerServiceImpl trainerServiceImpl;
-
 
     @Override
     public RoutineResponseDto create(RoutineRequestDto routineRequestDto) {
@@ -35,21 +32,11 @@ public class RoutineServiceImpl implements RoutineService {
         // Buscar el cliente por DNI
         Client client = clientServiceImpl.getClientByDniOrThrow(routineRequestDto.getClientDni());
 
-        // Buscar el entrenador por DNI
-        Trainer trainer = trainerServiceImpl.getTrainerByDniOrThrow(routineRequestDto.getTrainerDni());
-
-        // Verificar que el entrenador esté vinculado al cliente
-        if (!trainer.getClients().contains(client)) {
-            throw new IllegalArgumentException("El entrenador no está vinculado a este cliente.");
-        }
-
         // Convertimos el request a entidad
         Routine routine = routineMapper.dtoToEntity(routineRequestDto);
 
         // Establecemos el cliente y el entrenador en la rutina
         routine.setClient(client);
-        routine.setTrainer(trainer);
-
         // Guardamos la rutina en la base de datos
         routineRepository.save(routine);
 
@@ -81,56 +68,22 @@ public class RoutineServiceImpl implements RoutineService {
     }
 
     @Override
-    public RoutineResponseDto update(RoutineRequestDto routineRequestDto) {
-        // Verificamos si la rutina existe por su ID, sino lanzamos excepció
-
-        // Actualizamos solo los campos no nulos o no vacíos del DTO
-
-        // Actualizamos el código de la rutina si no está vacío
-        if (routineRequestDto.getRoutineCode() != null && !routineRequestDto.getRoutineCode().isEmpty()) {
-            routineRequestDto.setRoutineCode(routineRequestDto.getRoutineCode());
-        }
-
-        // Actualizamos el tipo de rutina si no está vacío
-        if (routineRequestDto.getRoutineType() != null && !routineRequestDto.getRoutineType().isEmpty()) {
-            routineRequestDto.setRoutineType(routineRequestDto.getRoutineType());
-        }
-
-        // Actualizamos el entrenador si no está vacío
-        if (routineRequestDto.getTrainerDni() != null) {
-            Trainer trainer = trainerServiceImpl.getTrainerByDniOrThrow(routineRequestDto.getTrainerDni());
-            routineRequestDto.setTrainerDni(trainer.getDni());
-        }
+    public RoutineResponseDto update(RoutineRequestDto routineRequestDto, Long id) {
+        Routine routine = getRoutineByCodeOrThrow(id);
 
         // Actualizamos el cliente si no está vacío
         if (routineRequestDto.getClientDni() != null) {
             Client client = clientServiceImpl.getClientByDniOrThrow(routineRequestDto.getClientDni());
-            routineRequestDto.setClientDni(client.getDni());
+            routine.setClient(client);
         }
-
-        // Actualizamos la fecha de creación si está presente
-        if (routineRequestDto.getCreationDate() != null) {
-            routineRequestDto.setCreationDate(routineRequestDto.getCreationDate());
+        if (routineRequestDto.getName() != null){
+            routine.setName(routineRequestDto.getName());
         }
-
-        // Actualizamos la fecha de inicio si está presente
-        if (routineRequestDto.getStartDate() != null) {
-            routineRequestDto.setStartDate(routineRequestDto.getStartDate());
-        }
-
-        // Actualizamos el estado activo
-        routineRequestDto.setActive(routineRequestDto.isActive());
-
-        // Actualizamos el estado de la rutina si está presente
-//        if (routineRequestDto.getStatus() != null) {
-//            existingRoutine.setS(routineRequestDto.getStatus());
-//        }
-        Routine routine = routineMapper.dtoToEntity(routineRequestDto);
         // Guardamos la rutina actualizada en la base de datos
-        Routine updatedRoutine = routineRepository.save(routine);
+        routineRepository.save(routine);
 
         // Devolvemos el DTO actualizado usando el mapper
-        return routineMapper.entityToDto(updatedRoutine);
+        return routineMapper.entityToDto(routine);
     }
 
 
@@ -139,9 +92,13 @@ public class RoutineServiceImpl implements RoutineService {
         Routine routine = getRoutineByCodeOrThrow(id);
         routineRepository.delete(routine);
     }
-
+    @Override
     @Transactional
-    public RoutineResponseDto addSessionToRoutine(Long routineId, SessionRequestDto sessionRequestDto, Object exerciseIdentifier) {
+    public RoutineResponseDto addSessionToRoutine(Long routineId, SessionRequestDto sessionRequestDto, String exerciseName) {
+        // Validar entradas
+        if (sessionRequestDto == null || exerciseName == null || exerciseName.isEmpty()) {
+            throw new IllegalArgumentException("Los datos de la sesión y el nombre del ejercicio son obligatorios.");
+        }
         // Buscar la rutina por su ID
         Routine routine = getRoutineByCodeOrThrow(routineId);
 
@@ -149,7 +106,7 @@ public class RoutineServiceImpl implements RoutineService {
         SessionResponseDto sessionResponseDto = sessionServiceImpl.create(sessionRequestDto);
 
         // Añadir el ejercicio a la sesión
-        sessionServiceImpl.addExerciseToSession(sessionResponseDto.getId(), exerciseIdentifier);
+        sessionServiceImpl.addExerciseToSession(sessionResponseDto.getId(), exerciseName);
 
         // Buscar la sesión actualizada con el ejercicio asignado
         Session session = sessionServiceImpl.getSessionByCodeOrThrow(sessionResponseDto.getId());
@@ -178,7 +135,7 @@ public class RoutineServiceImpl implements RoutineService {
         // Eliminar la sesión de la lista de sesiones de la rutina
         routine.getSessions().remove(sessionToRemove);
 
-        // Llamar al método delete del SessionService
+        // Llamar al metodo delete del SessionService
         sessionServiceImpl.delete(sessionId);
 
         // Guardar la rutina actualizada
@@ -203,7 +160,5 @@ public class RoutineServiceImpl implements RoutineService {
         // Devolver el DTO de la rutina actualizada usando el mapper
         return routineMapper.entityToDto(updatedRoutine);
     }
-
-
 
 }

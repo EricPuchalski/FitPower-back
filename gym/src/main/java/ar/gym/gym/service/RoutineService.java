@@ -1,6 +1,7 @@
 package ar.gym.gym.service;
 
 import ar.gym.gym.dto.request.RoutineRequestDto;
+import ar.gym.gym.dto.request.SessionRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.model.Routine;
 
@@ -13,11 +14,17 @@ public interface RoutineService {
 
     Routine getRoutineByCodeOrThrow(Long routineID);
 
-    RoutineResponseDto update(RoutineRequestDto routineRequestDto);
+    RoutineResponseDto update(RoutineRequestDto routineRequestDto, Long id);
 
     RoutineResponseDto findById(Long id);
 
-    public void delete(Long id);
+    void delete(Long id);
+
+    RoutineResponseDto addSessionToRoutine(Long routineId, SessionRequestDto sessionRequestDto, String exerciseName);
+
+    RoutineResponseDto removeSessionFromRoutine(Long routineId, Long sessionId);
+
+    RoutineResponseDto editSessionInRoutine(Long routineId, SessionRequestDto sessionRequestDto);
 
 
-}
+    }

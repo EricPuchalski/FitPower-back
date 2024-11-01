@@ -13,13 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class RoutineRequestDto {
     private String clientDni; // Cambiar Client completo por solo el DNI
-    private String trainerDni; // Cambiar Trainer completo por solo el DNI
-    private String routineCode;
-    private String routineType;
-    private LocalDate creationDate;
-    private  LocalDate startDate;
-    private boolean active;
-    private List<Session> sessions;
+    private String name;
 //    private Status status;
 
 }

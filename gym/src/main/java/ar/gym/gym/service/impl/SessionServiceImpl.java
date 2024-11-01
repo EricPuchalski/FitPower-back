@@ -89,13 +89,11 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Transactional
-    public void addExerciseToSession(Long sessionId, Object exerciseIdentifier) {
+    public void addExerciseToSession(Long sessionId, String exerciseName) {
         // Buscar la sesión por su ID
         Session session = getSessionByCodeOrThrow(sessionId);
 
-        Exercise exercise;
-
-            exercise = exerciseServiceImpl.getExerciseByIdOrThrow((Long) exerciseIdentifier);
+        Exercise exercise = exerciseServiceImpl.getExerciseByNameOrThrow(exerciseName);
 
 
         // Asignar el ejercicio a la sesión

@@ -132,12 +132,4 @@ public class TrainerServiceImpl implements TrainerService {
                 .map(clientMapper::entityToDto)
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public RoutineResponseDto createRoutine(RoutineRequestDto routineRequestDto) {
-        return null;
-    }
-//    public RoutineResponseDto createRoutine(RoutineRequestDto routineRequestDto){
-//        return  routineServiceImpl.create(routineRequestDto);
-//    }
 }

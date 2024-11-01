@@ -7,6 +7,7 @@ import ar.gym.gym.model.Exercise;
 import ar.gym.gym.repository.ExerciseRepository;
 import ar.gym.gym.service.ExerciseService;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -57,11 +58,11 @@ public class ExerciseServiceImpl implements ExerciseService {
         return responseList;
     }
 
-    public Exercise getExerciseByIdOrThrow(Long id) {
-        logger.info("Entrando al método getExerciseByIdOrThrow con ID: {}", id);
+    public Exercise getExerciseByNameOrThrow(String name) {
+        logger.info("Entrando al método getExerciseByIdOrThrow con ID: {}", name);
 
-        Exercise exercise = exerciseRepository.findById(id)
-                .orElseThrow(() -> new EntityExistsException("El ejercicio con ID " + id + " no existe"));
+        Exercise exercise = exerciseRepository.findByName(name)
+                .orElseThrow(() -> new EntityExistsException("El ejercicio con nombre " + name + " no existe"));
 
         logger.info("Saliendo del método getExerciseByIdOrThrow con ejercicio: {}", exercise);
         return exercise;
@@ -71,7 +72,8 @@ public class ExerciseServiceImpl implements ExerciseService {
     public ExerciseResponseDto findById(Long id) {
         logger.info("Entrando al método findById con ID: {}", id);
 
-        Exercise exercise = getExerciseByIdOrThrow(id);
+        Exercise exercise = exerciseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No existe un ejercicio con este id"));
         ExerciseResponseDto response = exerciseMapper.entityToDto(exercise);
 
         logger.info("Saliendo del método findById con respuesta: {}", response);
@@ -93,10 +95,10 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public ExerciseResponseDto update(ExerciseRequestDto exerciseRequestDto, Long id) {
-        logger.info("Entrando al método update con datos: {}, ID: {}", exerciseRequestDto, id);
+    public ExerciseResponseDto update(ExerciseRequestDto exerciseRequestDto, String name) {
+        logger.info("Entrando al método update con datos: {}, ID: {}", exerciseRequestDto, name);
 
-        Exercise existingExercise = getExerciseByIdOrThrow(id);
+        Exercise existingExercise = getExerciseByNameOrThrow(name);
 
         if (exerciseRequestDto.getName() != null && !exerciseRequestDto.getName().isEmpty()) {
             existingExercise.setName(exerciseRequestDto.getName());
@@ -119,7 +121,8 @@ public class ExerciseServiceImpl implements ExerciseService {
     public void delete(Long id) {
         logger.info("Entrando al método delete con ID: {}", id);
 
-        Exercise exercise = getExerciseByIdOrThrow(id);
+        Exercise exercise = exerciseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No existe un ejercicio con este id"));
         exerciseRepository.delete(exercise);
 
         logger.info("Saliendo del método delete con ejercicio eliminado: {}", id);

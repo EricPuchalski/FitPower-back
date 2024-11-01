@@ -25,5 +25,4 @@ public interface TrainerService {
 
    List<ClientResponseDto> getClientsAssociated(String dni);
 
-    RoutineResponseDto createRoutine(RoutineRequestDto routineRequestDto);
 }

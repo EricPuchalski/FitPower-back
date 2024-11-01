@@ -16,16 +16,10 @@ public class Routine {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
-    @ManyToOne
-    @JoinColumn(name = "trainer_id")
-    private Trainer trainer;
-    private String routineCode;
-    private String routineType;
+    private String name;
     private LocalDate creationDate;
-    private  LocalDate startDate;
     private boolean active;
     @OneToMany(mappedBy = "routine")
     private List<Session>sessions;
-//    @Enumerated(EnumType.STRING)
-//    private Status status;
+
 }

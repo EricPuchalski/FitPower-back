@@ -11,13 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoutineResponseDto {
-    private Client client;
-    private Trainer trainer;
-    private String routineCode;
-    private String routineType;
+    private Long id;
+    private String clientDNI;
+    private String name;
     private LocalDate creationDate;
-    private  LocalDate startDate;
     private boolean active;
-    private List<Session> sessions;
-//    private Status status;
 }
