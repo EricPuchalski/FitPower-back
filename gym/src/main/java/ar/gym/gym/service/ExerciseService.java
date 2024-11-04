@@ -1,8 +1,6 @@
 package ar.gym.gym.service;
 
-import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ExerciseRequestDto;
-import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.ExerciseResponseDto;
 import ar.gym.gym.model.Exercise;
 
@@ -17,7 +15,7 @@ public interface ExerciseService {
 
     ExerciseResponseDto findById(Long id);
 
-    ExerciseResponseDto update(ExerciseRequestDto exerciseRequestDto, String name);
+    ExerciseResponseDto update(ExerciseRequestDto exerciseRequestDto, Long id);
 
     void delete(Long id);
 

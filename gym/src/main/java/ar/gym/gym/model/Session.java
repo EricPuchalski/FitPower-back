@@ -25,10 +25,6 @@ public class Session {
     @ManyToOne
     @JoinColumn(name = "routine_id")
     private Routine routine;
-    @ManyToOne
-    @JoinColumn(name = "training_diary_id")
-    private TrainingDiary trainingDiary;
-
 }
 
 

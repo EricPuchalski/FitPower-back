@@ -20,7 +20,7 @@ public interface RoutineService {
 
     void delete(Long id);
 
-    RoutineResponseDto addSessionToRoutine(Long routineId, SessionRequestDto sessionRequestDto, String exerciseName);
+    RoutineResponseDto addSessionToRoutine(Long routineId, SessionRequestDto sessionRequestDto);
 
     RoutineResponseDto removeSessionFromRoutine(Long routineId, Long sessionId);
 

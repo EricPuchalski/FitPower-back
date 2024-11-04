@@ -19,7 +19,8 @@ public class Routine {
     private String name;
     private LocalDate creationDate;
     private boolean active;
-    @OneToMany(mappedBy = "routine")
-    private List<Session>sessions;
+    @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Session> sessions;
+
 
 }

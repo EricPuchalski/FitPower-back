@@ -25,5 +25,7 @@ public interface SessionService {
     // Elimina una sesión por su ID
     void delete(Long id);
 
+    void addExerciseToSession(Long sessionId, String name);
+
     // Agrega un ejercicio a una sesión
 }

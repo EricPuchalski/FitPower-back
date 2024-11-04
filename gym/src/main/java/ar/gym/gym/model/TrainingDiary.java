@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Entity
@@ -19,6 +18,4 @@ public class TrainingDiary {
     private LocalDateTime date;
     private String observation;
     private boolean completed;
-    @OneToMany(mappedBy = "trainingDiary")
-    private List<Session>exercisesPerformed;
 }

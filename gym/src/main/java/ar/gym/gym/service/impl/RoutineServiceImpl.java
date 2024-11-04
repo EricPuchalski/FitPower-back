@@ -3,49 +3,73 @@ package ar.gym.gym.service.impl;
 import ar.gym.gym.dto.request.RoutineRequestDto;
 import ar.gym.gym.dto.request.SessionRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
-import ar.gym.gym.dto.response.SessionResponseDto;
 import ar.gym.gym.mapper.RoutineMapper;
 import ar.gym.gym.model.Client;
+import ar.gym.gym.model.Exercise;
 import ar.gym.gym.model.Routine;
 import ar.gym.gym.model.Session;
+import ar.gym.gym.repository.ClientRepository;
+import ar.gym.gym.repository.ExerciseRepository;
 import ar.gym.gym.repository.RoutineRepository;
+import ar.gym.gym.repository.SessionRepository;
 import ar.gym.gym.service.RoutineService;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-@AllArgsConstructor
+
+
 @Service
 public class RoutineServiceImpl implements RoutineService {
-    private RoutineRepository routineRepository;
-    private RoutineMapper routineMapper;
-    private SessionServiceImpl sessionServiceImpl;
-    private ClientServiceImpl clientServiceImpl;
+    private final RoutineRepository routineRepository;
+    private final RoutineMapper routineMapper;
+    private final ClientRepository clientRepository;
+    private final SessionRepository sessionRepository;
+
+    private final ExerciseRepository exerciseRepository;
+
+    public RoutineServiceImpl(RoutineRepository routineRepository, RoutineMapper routineMapper, ClientRepository clientRepository, SessionRepository sessionRepository, ExerciseRepository exerciseRepository) {
+        this.routineRepository = routineRepository;
+        this.routineMapper = routineMapper;
+        this.clientRepository = clientRepository;
+        this.sessionRepository = sessionRepository;
+        this.exerciseRepository = exerciseRepository;
+    }
 
     @Override
     public RoutineResponseDto create(RoutineRequestDto routineRequestDto) {
-        // Verificar si ya existe una rutina con el mismo ID
-
         // Buscar el cliente por DNI
-        Client client = clientServiceImpl.getClientByDniOrThrow(routineRequestDto.getClientDni());
+        Optional<Client> client = clientRepository.findByDni(routineRequestDto.getClientDni());
 
-        // Convertimos el request a entidad
-        Routine routine = routineMapper.dtoToEntity(routineRequestDto);
+        if (client.isPresent()) {
+            // Convertimos el request a entidad
+            Routine routine = routineMapper.dtoToEntity(routineRequestDto);
 
-        // Establecemos el cliente y el entrenador en la rutina
-        routine.setClient(client);
-        // Guardamos la rutina en la base de datos
-        routineRepository.save(routine);
+            // Establecer la relación con el cliente
+            routine.setClient(client.get());
 
-        // Añadimos la rutina a la lista de rutinas del cliente
-        client.getRoutines().add(routine);
+            routine.setActive(true);
+            routine.setCreationDate(LocalDate.now());
 
-        // Devolvemos la rutina creada como DTO
-        return routineMapper.entityToDto(routine);
+            // Añadimos la rutina a la lista de rutinas del cliente
+            client.get().getRoutines().add(routine);
+
+            // Guardamos la rutina en la base de datos (esto ahora debería funcionar)
+            routineRepository.save(routine);
+
+            // Devolvemos la rutina creada como DTO
+            return routineMapper.entityToDto(routine);
+        }
+
+        throw new EntityNotFoundException("El cliente con el dni " + routineRequestDto.getClientDni() + " no existe");
     }
+
 
 
     @Override
@@ -73,12 +97,16 @@ public class RoutineServiceImpl implements RoutineService {
 
         // Actualizamos el cliente si no está vacío
         if (routineRequestDto.getClientDni() != null) {
-            Client client = clientServiceImpl.getClientByDniOrThrow(routineRequestDto.getClientDni());
-            routine.setClient(client);
+            Optional<Client> client = clientRepository.findByDni(routineRequestDto.getClientDni());
+            client.ifPresent(routine::setClient);
+
         }
         if (routineRequestDto.getName() != null){
             routine.setName(routineRequestDto.getName());
         }
+
+        routine.setCreationDate(LocalDate.from(LocalDateTime.now()));
+        routine.setActive(true);
         // Guardamos la rutina actualizada en la base de datos
         routineRepository.save(routine);
 
@@ -93,33 +121,38 @@ public class RoutineServiceImpl implements RoutineService {
         routineRepository.delete(routine);
     }
     @Override
-    @Transactional
-    public RoutineResponseDto addSessionToRoutine(Long routineId, SessionRequestDto sessionRequestDto, String exerciseName) {
-        // Validar entradas
-        if (sessionRequestDto == null || exerciseName == null || exerciseName.isEmpty()) {
-            throw new IllegalArgumentException("Los datos de la sesión y el nombre del ejercicio son obligatorios.");
-        }
+    public RoutineResponseDto addSessionToRoutine(Long routineId, SessionRequestDto sessionRequestDto) {
         // Buscar la rutina por su ID
         Routine routine = getRoutineByCodeOrThrow(routineId);
 
-        // Crear la nueva sesión
-        SessionResponseDto sessionResponseDto = sessionServiceImpl.create(sessionRequestDto);
+        // Crear la nueva sesión usando el SessionRequestDto
+        Session session = new Session();
+        session.setSets(sessionRequestDto.getSets());
+        session.setReps(sessionRequestDto.getReps());
+        session.setRestTime(sessionRequestDto.getRestTime());
+        session.setCompleted(sessionRequestDto.isCompleted());
 
-        // Añadir el ejercicio a la sesión
-        sessionServiceImpl.addExerciseToSession(sessionResponseDto.getId(), exerciseName);
+        // Buscar el ejercicio por nombre y asignarlo a la sesión
+        Exercise exercise = exerciseRepository.findByName(sessionRequestDto.getExerciseName())
+                .orElseThrow(() -> new EntityNotFoundException("El ejercicio con el nombre " + sessionRequestDto.getExerciseName() + " no existe."));
+        session.setExercise(exercise);
 
-        // Buscar la sesión actualizada con el ejercicio asignado
-        Session session = sessionServiceImpl.getSessionByCodeOrThrow(sessionResponseDto.getId());
+        // Establecer la rutina en la sesión
+        session.setRoutine(routine);
 
-        // Añadir la sesión a la lista de sesiones de la rutina
-        routine.getSessions().add(session);
+        // Guardar la sesión en la base de datos
+        Session savedSession = sessionRepository.save(session);
 
-        // Guardar la rutina actualizada
+        // Añadir la sesión guardada a la lista de sesiones de la rutina
+        routine.getSessions().add(savedSession);
+
+        // Guardar la rutina actualizada en la base de datos
         Routine updatedRoutine = routineRepository.save(routine);
 
         // Devolver el DTO de la rutina actualizada usando el mapper
         return routineMapper.entityToDto(updatedRoutine);
     }
+
 
     @Transactional
     public RoutineResponseDto removeSessionFromRoutine(Long routineId, Long sessionId) {
@@ -136,7 +169,7 @@ public class RoutineServiceImpl implements RoutineService {
         routine.getSessions().remove(sessionToRemove);
 
         // Llamar al metodo delete del SessionService
-        sessionServiceImpl.delete(sessionId);
+//        sessionServiceImpl.delete(sessionId);
 
         // Guardar la rutina actualizada
         Routine updatedRoutine = routineRepository.save(routine);
@@ -151,7 +184,7 @@ public class RoutineServiceImpl implements RoutineService {
         Routine routine = getRoutineByCodeOrThrow(routineId);
 
         // Actualizar la sesión utilizando SessionService
-        SessionResponseDto updatedSessionDto = sessionServiceImpl.update(sessionRequestDto);
+//        SessionResponseDto updatedSessionDto = sessionServiceImpl.update(sessionRequestDto);
 
         // No es necesario manipular la lista de sesiones directamente, ya que se ha actualizado en la base de datos
         // Guardar la rutina actualizada (aunque las sesiones ya están vinculadas)

@@ -3,8 +3,6 @@ package ar.gym.gym.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalTime;
-
 @Data
 @Entity
 @Table(name = "exercises")

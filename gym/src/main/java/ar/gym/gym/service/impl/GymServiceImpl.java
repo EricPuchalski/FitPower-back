@@ -41,8 +41,8 @@ public class GymServiceImpl implements GymService {
 
     @Override
     public GymResponseDto create(GymRequestDto gymRequestDto) {
-        if (gymRepository.findByGymCode(gymRequestDto.getGymCode()).isPresent()) {
-            throw new EntityExistsException("Ya existe un gimnasio con el código " + gymRequestDto.getGymCode());
+        if (gymRepository.findByName(gymRequestDto.getName()).isPresent()) {
+            throw new EntityExistsException("Ya existe un gimnasio con el nombre " + gymRequestDto.getName());
         }
         Gym gym = gymMapper.dtoToEntity(gymRequestDto);
         gymRepository.save(gym);

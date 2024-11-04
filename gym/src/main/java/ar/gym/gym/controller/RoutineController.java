@@ -22,6 +22,7 @@ public class RoutineController {
         this.routineService = routineService;
     }
 
+
     @PostMapping
     public ResponseEntity<RoutineResponseDto> createRoutine(@RequestBody RoutineRequestDto routineRequestDto) {
         RoutineResponseDto createdRoutine = routineService.create(routineRequestDto);
@@ -54,8 +55,8 @@ public class RoutineController {
     }
 
     @PostMapping("/{routineId}/sessions")
-    public ResponseEntity<RoutineResponseDto> addSessionToRoutine(@PathVariable Long routineId, @RequestBody SessionRequestDto sessionRequestDto, @RequestParam String exerciseName) {
-        RoutineResponseDto updatedRoutine = routineService.addSessionToRoutine(routineId, sessionRequestDto, exerciseName);
+    public ResponseEntity<RoutineResponseDto> addSessionToRoutine(@PathVariable Long routineId, @RequestBody SessionRequestDto sessionRequestDto) {
+        RoutineResponseDto updatedRoutine = routineService.addSessionToRoutine(routineId, sessionRequestDto);
         return new ResponseEntity<>(updatedRoutine, HttpStatus.OK);
     }
 
