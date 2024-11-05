@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoutineRequestDto {
-    private String clientDni; // Cambiar Client completo por solo el DNI
+    private Long trainingPlanId; // Cambiar Client completo por solo el DNI
     private String name;
-//    private Status status;
 
 }

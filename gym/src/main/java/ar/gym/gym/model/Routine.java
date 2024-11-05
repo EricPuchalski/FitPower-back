@@ -14,8 +14,8 @@ public class Routine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @JoinColumn(name = "training_plan_id")
+    private TrainingPlan trainingPlan;
     private String name;
     private LocalDate creationDate;
     private boolean active;
