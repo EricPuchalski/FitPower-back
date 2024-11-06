@@ -5,7 +5,6 @@ import ar.gym.gym.dto.request.TrainerRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
-import ar.gym.gym.model.Client;
 import ar.gym.gym.model.Trainer;
 
 import java.util.List;

@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class RoutineResponseDto {
     private Long id;
-    private Long trainingPlanId;
+    private String clientDNI;
     private String name;
     private LocalDate creationDate;
     private boolean active;

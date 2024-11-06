@@ -25,7 +25,7 @@ public class Client extends Person {
     @JoinColumn(name = "nutritionist_id")
     private Nutritionist nutritionist;
     @OneToMany(mappedBy = "client")
-    private List<TrainingPlan>trainingPlans;
+    private List<Routine>routines;
     @OneToMany(mappedBy = "client")
     private List<NutritionalPlan>nutritionalPlans;
 //    @OneToOne
