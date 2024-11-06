@@ -84,8 +84,8 @@ public class TrainerServiceImpl implements TrainerService {
         if (trainerRequestDto.getName() != null && !trainerRequestDto.getName().isEmpty()) {
             existingTrainer.setName(trainerRequestDto.getName());
         }
-        if (trainerRequestDto.getSurname() != null && !trainerRequestDto.getSurname().isEmpty()) {
-            existingTrainer.setSurname(trainerRequestDto.getSurname());
+        if (trainerRequestDto.getLastname() != null && !trainerRequestDto.getLastname().isEmpty()) {
+            existingTrainer.setLastname(trainerRequestDto.getLastname());
         }
         if (trainerRequestDto.getPhone() != null && !trainerRequestDto.getPhone().isEmpty()) {
             existingTrainer.setPhone(trainerRequestDto.getPhone());

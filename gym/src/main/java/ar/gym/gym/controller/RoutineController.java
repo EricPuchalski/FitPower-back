@@ -23,11 +23,34 @@ public class RoutineController {
     }
 
 
-    @PostMapping
+    // Endpoint to create a new routine
+    @PostMapping()
     public ResponseEntity<RoutineResponseDto> createRoutine(@RequestBody RoutineRequestDto routineRequestDto) {
         RoutineResponseDto createdRoutine = routineService.create(routineRequestDto);
         return new ResponseEntity<>(createdRoutine, HttpStatus.CREATED);
     }
+
+    // Endpoint to activate a routine and set all others to inactive
+    @PostMapping("/activate/{clientDni}/{routineId}")
+    public ResponseEntity<Void> activateRoutine(@PathVariable String clientDni, @PathVariable Long routineId) {
+        routineService.activateRoutine(clientDni, routineId);
+        return ResponseEntity.ok().build();
+    }
+
+    // Endpoint to get the active routine of a client
+    @GetMapping("/active/{clientDni}")
+    public ResponseEntity<RoutineResponseDto> getActiveRoutine(@PathVariable String clientDni) {
+        RoutineResponseDto activeRoutine = routineService.getActiveRoutine(clientDni);
+        return ResponseEntity.ok(activeRoutine);
+    }
+
+    // Endpoint to get all routines of a client by their DNI
+    @GetMapping("/client/{clientDni}")
+    public ResponseEntity<List<RoutineResponseDto>> getRoutinesByClientDni(@PathVariable String clientDni) {
+        List<RoutineResponseDto> routines = routineService.getRoutinesByClientDni(clientDni);
+        return ResponseEntity.ok(routines);
+    }
+
 
     @GetMapping
     public ResponseEntity<List<RoutineResponseDto>> getAllRoutines() {

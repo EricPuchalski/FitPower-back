@@ -12,7 +12,7 @@ import java.util.List;
 public class TrainerResponseDto {
     private Long id;
     private String name;
-    private String surname;
+    private String lastname;
     private String dni;
     private String phone;
     private String address;

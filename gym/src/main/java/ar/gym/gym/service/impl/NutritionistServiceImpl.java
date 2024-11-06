@@ -97,8 +97,8 @@ public class NutritionistServiceImpl implements NutritionistService {
         if (nutritionistRequestDto.getName() != null && !nutritionistRequestDto.getName().isEmpty()) {
             existingNutritionist.setName(nutritionistRequestDto.getName());
         }
-        if (nutritionistRequestDto.getSurname() != null && !nutritionistRequestDto.getSurname().isEmpty()) {
-            existingNutritionist.setSurname(nutritionistRequestDto.getSurname());
+        if (nutritionistRequestDto.getLastname() != null && !nutritionistRequestDto.getLastname().isEmpty()) {
+            existingNutritionist.setLastname(nutritionistRequestDto.getLastname());
         }
         if (nutritionistRequestDto.getPhone() != null && !nutritionistRequestDto.getPhone().isEmpty()) {
             existingNutritionist.setPhone(nutritionistRequestDto.getPhone());

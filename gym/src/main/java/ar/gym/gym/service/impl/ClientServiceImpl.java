@@ -113,7 +113,7 @@ public class ClientServiceImpl implements ClientService {
             existingClient.setName(clientRequestDto.getName());
         }
         if (clientRequestDto.getLastname() != null) {
-            existingClient.setSurname(clientRequestDto.getLastname());
+            existingClient.setLastname(clientRequestDto.getLastname());
         }
         if (clientRequestDto.getDni() != null) {
             existingClient.setDni(clientRequestDto.getDni());

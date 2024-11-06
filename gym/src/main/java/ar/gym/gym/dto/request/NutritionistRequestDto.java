@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class NutritionistRequestDto {
     private String name;
-    private String surname;
+    private String lastname;
     @Pattern(regexp = "^[0-9]{8}$", message = "El DNI debe tener exactamente 8 dígitos")
     private String dni;
     @NotBlank(message = "El teléfono es obligatorio.")

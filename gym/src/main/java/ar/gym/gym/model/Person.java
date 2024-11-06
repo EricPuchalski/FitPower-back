@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public abstract class Person {
     @Column(unique = true)
     private String dni;
-    private String surname;
+    private String lastname;
     private String name;
     @Column(unique = true)
     private String phone;
