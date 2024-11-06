@@ -102,7 +102,21 @@ public class RoutineServiceImpl implements RoutineService {
     // Method to find all routines of a client by DNI
     public List<RoutineResponseDto> getRoutinesByClientDni(String clientDni) {
         Client client = clientRepository.findByDni(clientDni)
-                .orElseThrow(() -> new IllegalArgumentException("Client not found"));
+                .orElseThrow(() -> new EntityNotFoundException("No existe un cliente con el dni: " + clientDni));
+
+        // Fetch all routines for the client
+        List<Routine> routines = routineRepository.findByClientId(client.getId());
+
+        // Return the list of routines as DTOs
+        return routines.stream()
+                .map(routineMapper::entityToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RoutineResponseDto> getRoutinesByClientEmail(String clientEmail) {
+        Client client = clientRepository.findByEmail(clientEmail)
+                .orElseThrow(() -> new EntityNotFoundException("No existe un cliente con el email: " + clientEmail));
 
         // Fetch all routines for the client
         List<Routine> routines = routineRepository.findByClientId(client.getId());

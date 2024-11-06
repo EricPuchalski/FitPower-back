@@ -48,6 +48,14 @@ public class ClientController {
         return ResponseEntity.ok(client);
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<ClientResponseDto> findByEmail(@PathVariable String email) {
+        logger.info("Fetching client with email: {}", email);
+        ClientResponseDto client = clientService.findByEmail(email);
+        logger.info("Client retrieved: {}", client);
+        return ResponseEntity.ok(client);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ClientResponseDto> update(@Valid @RequestBody ClientRequestDto clientRequestDto, @PathVariable Long id) {
         logger.info("Updating client with ID: {}", id);

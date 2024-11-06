@@ -51,6 +51,12 @@ public class RoutineController {
         return ResponseEntity.ok(routines);
     }
 
+    @GetMapping("/client/email/{clientEmail}")
+    public ResponseEntity<List<RoutineResponseDto>> getRoutinesByClientEmail(@PathVariable String clientEmail) {
+        List<RoutineResponseDto> routines = routineService.getRoutinesByClientEmail(clientEmail);
+        return ResponseEntity.ok(routines);
+    }
+
 
     @GetMapping
     public ResponseEntity<List<RoutineResponseDto>> getAllRoutines() {

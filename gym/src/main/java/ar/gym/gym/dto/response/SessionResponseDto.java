@@ -16,4 +16,5 @@ public class SessionResponseDto {
     private LocalTime restTime;
     private boolean completed;
     private String exerciseName;
+    private Double weight;
 }

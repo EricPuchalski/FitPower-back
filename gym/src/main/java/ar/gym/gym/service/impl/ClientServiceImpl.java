@@ -103,6 +103,23 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public ClientResponseDto findByEmail(String email) {
+        logger.info("Entrando al método findByEmail con email: {}", email);
+
+        Optional<Client> client = clientRepository.findByEmail(email);
+        if (client.isEmpty()){
+            throw new EntityNotFoundException("El cliente con el email " + email + " no existe");
+        }
+        ClientResponseDto response = clientMapper.entityToDto(client.get());
+        if (client.get().getGym()!=null){
+            response.setGymName(client.get().getGym().getName());
+        }
+
+        logger.info("Saliendo del método findByEmail con respuesta: {}", response);
+        return response;
+    }
+
+    @Override
     public ClientResponseDto update(ClientRequestDto clientRequestDto, Long id) {
         logger.info("Entrando al método update con ID: {} y datos de actualización: {}", id, clientRequestDto);
 

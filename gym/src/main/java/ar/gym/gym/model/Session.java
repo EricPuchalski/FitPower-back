@@ -18,6 +18,7 @@ public class Session {
     private int reps;
     private LocalTime restTime;
     private LocalTime duration;
+    private Double weight;
     private boolean completed;
     @ManyToOne
     @JoinColumn(name = "exercise_id")
@@ -25,6 +26,9 @@ public class Session {
     @ManyToOne
     @JoinColumn(name = "routine_id")
     private Routine routine;
+    @ManyToOne
+    @JoinColumn(name = "training_diary_id")
+    private TrainingDiary trainingDiary;
 }
 
 
