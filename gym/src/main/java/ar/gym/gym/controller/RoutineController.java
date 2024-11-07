@@ -43,6 +43,11 @@ public class RoutineController {
         RoutineResponseDto activeRoutine = routineService.getActiveRoutine(clientDni);
         return ResponseEntity.ok(activeRoutine);
     }
+    @GetMapping("/active/email/{email}")
+    public ResponseEntity<RoutineResponseDto> getActiveRoutineByEmail(@PathVariable String email) {
+        RoutineResponseDto activeRoutine = routineService.getActiveRoutineByEmail(email);
+        return ResponseEntity.ok(activeRoutine);
+    }
 
     // Endpoint to get all routines of a client by their DNI
     @GetMapping("/client/{clientDni}")

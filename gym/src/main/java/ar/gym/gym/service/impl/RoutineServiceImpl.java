@@ -99,6 +99,24 @@ public class RoutineServiceImpl implements RoutineService {
         return routineMapper.entityToDto(activeRoutine);
     }
 
+
+    @Override
+    public RoutineResponseDto getActiveRoutineByEmail(String email) {
+        // Buscar el cliente por su email
+        Client client = clientRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
+
+        // Buscar la rutina activa del cliente
+        Routine activeRoutine = routineRepository.findByClientIdAndActiveTrue(client.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Active routine not found"));
+
+        // Convertir la rutina activa a DTO de respuesta y retornarla
+        return routineMapper.entityToDto(activeRoutine);
+    }
+
+
+
+
     // Method to find all routines of a client by DNI
     public List<RoutineResponseDto> getRoutinesByClientDni(String clientDni) {
         Client client = clientRepository.findByDni(clientDni)

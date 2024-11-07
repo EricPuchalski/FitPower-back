@@ -10,10 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface RoutineRepository extends JpaRepository<Routine, Long> {
-    List<Routine> findByClientIdOrderByCreationDateAsc(Long clientId);
-
-
-    Optional<Routine> findFirstByClientIdAndActiveTrue(Long clientId);
 
     List<Routine> findByClientId(Long clientId);
 

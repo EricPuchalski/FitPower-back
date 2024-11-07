@@ -1,14 +1,17 @@
 package ar.gym.gym.service.impl;
 
-import ar.gym.gym.dto.request.SessionRequestDto;
+import ar.gym.gym.dto.request.SessionToTrainingDiaryRequestDto;
 import ar.gym.gym.dto.request.TrainingDiaryRequestDto;
+import ar.gym.gym.dto.response.SessionToTrainingDiaryResponseDto;
 import ar.gym.gym.dto.response.TrainingDiaryResponseDto;
 import ar.gym.gym.mapper.SessionMapper;
 import ar.gym.gym.mapper.TrainingDiaryMapper;
 import ar.gym.gym.model.Client;
+import ar.gym.gym.model.Exercise;
 import ar.gym.gym.model.Session;
 import ar.gym.gym.model.TrainingDiary;
 import ar.gym.gym.repository.ClientRepository;
+import ar.gym.gym.repository.ExerciseRepository;
 import ar.gym.gym.repository.TrainingDiaryRepository;
 import ar.gym.gym.service.TrainingDiaryService;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,11 +30,14 @@ public class TrainingDiaryServiceImpl implements TrainingDiaryService {
     private final TrainingDiaryMapper trainingDiaryMapper;
     private final SessionMapper sessionMapper;
 
-    public TrainingDiaryServiceImpl(TrainingDiaryRepository trainingDiaryRepository, ClientRepository clientRepository, TrainingDiaryMapper trainingDiaryMapper, SessionMapper sessionMapper) {
+    private final ExerciseRepository exerciseRepository;
+
+    public TrainingDiaryServiceImpl(TrainingDiaryRepository trainingDiaryRepository, ClientRepository clientRepository, TrainingDiaryMapper trainingDiaryMapper, SessionMapper sessionMapper, ExerciseRepository exerciseRepository) {
         this.trainingDiaryRepository = trainingDiaryRepository;
         this.clientRepository = clientRepository;
         this.trainingDiaryMapper = trainingDiaryMapper;
         this.sessionMapper = sessionMapper;
+        this.exerciseRepository = exerciseRepository;
     }
 
     @Override
@@ -104,24 +110,30 @@ public class TrainingDiaryServiceImpl implements TrainingDiaryService {
 
     @Override
     @Transactional
-    public TrainingDiaryResponseDto addSessionToDiary(Long trainingDiaryId, SessionRequestDto sessionRequestDto) {
+    public SessionToTrainingDiaryResponseDto addSessionToDiary(Long trainingDiaryId, SessionToTrainingDiaryRequestDto sessionRequestDto) {
         // Buscar el diario de entrenamiento por ID
         TrainingDiary trainingDiary = trainingDiaryRepository.findById(trainingDiaryId)
-                .orElseThrow(() -> new RuntimeException("TrainingDiary not found with ID: " + trainingDiaryId));
+                .orElseThrow(() -> new EntityNotFoundException("TrainingDiary not found with ID: " + trainingDiaryId));
 
-        // Convertir el DTO de la sesión a entidad
-        Session session = sessionMapper.dtoToEntity(sessionRequestDto);
-        session.setTrainingDiary(trainingDiary);  // Establecer la relación
+        // Buscar el ejercicio usando el nombre del DTO y el repositorio de ejercicios
+        Exercise exercise = exerciseRepository.findByName(sessionRequestDto.getExerciseName())
+                .orElseThrow(() -> new EntityNotFoundException("Exercise not found with name: " + sessionRequestDto.getExerciseName()));
+
+        // Convertir el DTO de la sesión a entidad y asignar el ejercicio
+        Session session = sessionMapper.dtoTrainingToEntity(sessionRequestDto);
+        session.setExercise(exercise);  // Establecer el ejercicio en la sesión
+        session.setTrainingDiary(trainingDiary);  // Establecer la relación con el diario
 
         // Agregar la nueva sesión al diario de entrenamiento
         trainingDiary.getSessions().add(session);
 
-        // Guardar el diario actualizado (cascade persistencia guarda las sesiones)
-        TrainingDiary updatedDiary = trainingDiaryRepository.save(trainingDiary);
+        // Guardar la sesión (se guarda en cascada junto con el diario)
+        trainingDiaryRepository.save(trainingDiary);
 
-        // Convertir el resultado a DTO de respuesta y retornarlo
-        return trainingDiaryMapper.entityToDto(updatedDiary);
+        // Convertir la sesión recién añadida a DTO de respuesta
+        return sessionMapper.entityTrainingToDto(session);
     }
+
 
     @Override
     public List<TrainingDiaryResponseDto> findAllTrainingDiaries() {

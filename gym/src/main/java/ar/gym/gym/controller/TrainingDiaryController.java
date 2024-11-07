@@ -1,9 +1,12 @@
 package ar.gym.gym.controller;
 
 import ar.gym.gym.dto.request.SessionRequestDto;
+import ar.gym.gym.dto.request.SessionToTrainingDiaryRequestDto;
 import ar.gym.gym.dto.request.TrainingDiaryRequestDto;
+import ar.gym.gym.dto.response.SessionToTrainingDiaryResponseDto;
 import ar.gym.gym.dto.response.TrainingDiaryResponseDto;
 import ar.gym.gym.service.TrainingDiaryService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +23,7 @@ public class TrainingDiaryController {
         this.trainingDiaryService = trainingDiaryService;
     }
 
-    @PostMapping
+    @PostMapping(produces = "application/json")
     public ResponseEntity<TrainingDiaryResponseDto> createTrainingDiary(@RequestBody TrainingDiaryRequestDto requestDto) {
         TrainingDiaryResponseDto createdDiary = trainingDiaryService.createTrainingDiary(requestDto);
         return ResponseEntity.ok(createdDiary);
@@ -53,12 +56,14 @@ public class TrainingDiaryController {
     }
 
     @PostMapping("/{id}/sessions")
-    public ResponseEntity<TrainingDiaryResponseDto> addSessionToDiary(
+    public ResponseEntity<SessionToTrainingDiaryResponseDto> addSessionToDiary(
             @PathVariable Long id,
-            @RequestBody SessionRequestDto sessionRequestDto) {
-        TrainingDiaryResponseDto updatedDiary = trainingDiaryService.addSessionToDiary(id, sessionRequestDto);
-        return ResponseEntity.ok(updatedDiary);
+            @RequestBody SessionToTrainingDiaryRequestDto sessionRequestDto) {
+        SessionToTrainingDiaryResponseDto newSession = trainingDiaryService.addSessionToDiary(id, sessionRequestDto);
+        return ResponseEntity.ok(newSession);
     }
+
+
 
     @GetMapping
     public ResponseEntity<List<TrainingDiaryResponseDto>> getAllTrainingDiaries() {
