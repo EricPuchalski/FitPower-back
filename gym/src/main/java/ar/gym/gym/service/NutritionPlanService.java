@@ -1,6 +1,8 @@
 package ar.gym.gym.service;
 
+import ar.gym.gym.dto.request.NutritionLogRequestDto;
 import ar.gym.gym.dto.request.NutritionPlanRequestDto;
+import ar.gym.gym.dto.response.NutritionLogResponseDto;
 import ar.gym.gym.dto.response.NutritionPlanResponseDto;
 
 import java.util.List;
@@ -22,4 +24,12 @@ public interface NutritionPlanService {
     List<NutritionPlanResponseDto> findNutritionPlansByClient(Long clientId);
 
     List<NutritionPlanResponseDto> findNutritionPlansByNutritionist(Long nutritionistId);
+
+    NutritionLogResponseDto addNutritionLogToNutritionPlan(Long nutritionPlanId, NutritionLogRequestDto nutritionLogRequestDto);
+
+    NutritionLogResponseDto updateNutritionLogInNutritionPlan(Long nutritionPlanId, Long nutritionLogId, NutritionLogRequestDto nutritionLogRequestDto);
+
+    NutritionLogResponseDto addNutritionLogToNutritionPlan(Long nutritionPlanId, NutritionLogRequestDto nutritionLogRequestDto);
+
+    void deleteNutritionLogFromNutritionPlan(Long nutritionPlanId, Long nutritionLogId);
 }

@@ -26,7 +26,6 @@ public class NutritionPlan {
     private Date startDate;
     private Date endDate;
     private String description;
-    private Double dailyCalories;
     private boolean active;
 
     @Enumerated(EnumType.STRING)
