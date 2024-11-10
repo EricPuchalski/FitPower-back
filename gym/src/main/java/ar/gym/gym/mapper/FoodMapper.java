@@ -4,7 +4,9 @@ import ar.gym.gym.dto.request.FoodRequestDto;
 import ar.gym.gym.dto.response.FoodResponseDto;
 import ar.gym.gym.model.Food;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
+@Service
 public class FoodMapper {
 
     private final ModelMapper modelMapper;

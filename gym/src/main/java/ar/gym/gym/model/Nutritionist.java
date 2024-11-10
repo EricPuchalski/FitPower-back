@@ -18,11 +18,14 @@ public class Nutritionist extends Person {
     private Long id;
     private String profession;
     private boolean available;
+
+    @OneToMany(mappedBy = "nutritionist", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NutritionPlan> nutritionPlans;
+
     @OneToMany(mappedBy = "nutritionist")
-    private List<Client>clients;
+    private List<Client> clients;
+
     @ManyToOne
     @JoinColumn(name = "gym_id")
     private Gym gym;
-
-
 }

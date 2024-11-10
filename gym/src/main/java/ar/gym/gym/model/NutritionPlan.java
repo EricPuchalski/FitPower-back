@@ -38,7 +38,5 @@ public class NutritionPlan {
     @OneToMany(mappedBy = "nutritionPlan", cascade = CascadeType.ALL)
     private List<NutritionLog> logs; // Registro de consumo diario asociado al plan
 
-
     private boolean completed; // Indica si el cliente pudo finalizar el plan de nutrición.
-
 }

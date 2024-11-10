@@ -1,10 +1,7 @@
 package ar.gym.gym.mapper;
 
-import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.GymRequestDto;
-import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
-import ar.gym.gym.model.Client;
 import ar.gym.gym.model.Gym;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
