@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface NutritionistService {
     NutritionistResponseDto create(NutritionistRequestDto nutritionistRequestDto);
+
     List<NutritionistResponseDto> findAll();
 
     Nutritionist getNutritionistByDniOrThrow(String dni);
@@ -17,11 +18,10 @@ public interface NutritionistService {
 
     NutritionistResponseDto update(NutritionistRequestDto nutritionistRequestDto);
 
-   void delete(Long id);
+    void delete(Long id);
+
     List<ClientResponseDto> getClientsAssociated(String dni);
 
     NutritionistResponseDto disableNutritionistByDni(String dni);
-
-
 
 }

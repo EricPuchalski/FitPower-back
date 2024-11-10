@@ -12,26 +12,33 @@ public class Client extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @OneToMany
     private List<ClientStatus> status;
+
     private String goal;
+
     @ManyToOne
     @JoinColumn(name = "gym_id")
     private Gym gym;
+
     @ManyToOne
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
+
     @ManyToOne
     @JoinColumn(name = "nutritionist_id")
     private Nutritionist nutritionist;
+
     @OneToMany(mappedBy = "client")
-    private List<Routine>routines;
+    private List<Routine> routines;
+
     @OneToMany(mappedBy = "client")
     private List<NutritionPlan> nutritionPlans;
-//    @OneToOne
+    //    @OneToOne
 //    private java.lang.Record record;
     @OneToMany(mappedBy = "client")
-    private List<TrainingDiary>trainingDiaryList;
+    private List<TrainingDiary> trainingDiaryList;
     @OneToMany(mappedBy = "client")
     private List<NutritionLog> nutritionLogList;
     private Boolean active = true;

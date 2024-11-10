@@ -8,18 +8,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RoutineMapper {
-    private final ModelMapper modelMapper;
 
+    private final ModelMapper modelMapper;
 
     public RoutineMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
 
-    public RoutineResponseDto entityToDto(Routine routine){
+    public RoutineResponseDto entityToDto(Routine routine) {
         return modelMapper.map(routine, RoutineResponseDto.class);
     }
 
-    public Routine dtoToEntity(RoutineRequestDto routineRequestDto){
+    public Routine dtoToEntity(RoutineRequestDto routineRequestDto) {
         return modelMapper.map(routineRequestDto, Routine.class);
     }
 }

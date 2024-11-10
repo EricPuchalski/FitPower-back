@@ -12,10 +12,15 @@ import java.util.Optional;
 
 public interface GymService {
     GymResponseDto create(GymRequestDto gymRequestDto);
+
     public List<GymResponseDto> findAll();
+
     public Optional<Gym> findByName(String name);
+
     Gym getGymByCodeOrThrow(String gymCode);
+
     public GymResponseDto update(GymRequestDto gymRequestDto, Long id);
+
     public void deleteByGymCode(String gymCode);
 
     GymResponseDto addClientToGym(String gymCode, String dni);
