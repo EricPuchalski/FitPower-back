@@ -3,7 +3,9 @@ package ar.gym.gym.service.impl;
 import ar.gym.gym.dto.request.MealRequestDto;
 import ar.gym.gym.dto.response.MealResponseDto;
 import ar.gym.gym.mapper.MealMapper;
+import ar.gym.gym.model.Food;
 import ar.gym.gym.model.Meal;
+import ar.gym.gym.repository.FoodRepository;
 import ar.gym.gym.repository.MealRepository;
 import ar.gym.gym.service.MealService;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,10 +22,12 @@ public class MealServiceImpl implements MealService {
 
     private final Logger logger = LoggerFactory.getLogger(MealServiceImpl.class);
     private final MealRepository mealRepository;
+    private final FoodRepository foodRepository;
     private final MealMapper mealMapper;
 
-    public MealServiceImpl(MealRepository mealRepository, MealMapper mealMapper) {
+    public MealServiceImpl(MealRepository mealRepository, FoodRepository foodRepository, MealMapper mealMapper) {
         this.mealRepository = mealRepository;
+        this.foodRepository = foodRepository;
         this.mealMapper = mealMapper;
     }
 
@@ -138,4 +142,32 @@ public class MealServiceImpl implements MealService {
             throw new RuntimeException("Unexpected error fetching all meals", e);
         }
     }
+
+    @Override
+    public MealResponseDto addFoodToMeal(Long mealId, Long foodId) {
+        logger.info("Entering addFoodToMeal method with meal ID: {} and food ID: {}", mealId, foodId);
+        try {
+            Meal meal = mealRepository.findById(mealId)
+                    .orElseThrow(() -> new EntityNotFoundException("Meal not found with ID: " + mealId));
+
+            Food food = foodRepository.findById(foodId)
+                    .orElseThrow(() -> new EntityNotFoundException("Food not found with ID: " + foodId));
+
+            meal.getFoods().add(food);
+            food.setMeal(meal);
+
+            Meal updatedMeal = mealRepository.save(meal);
+            MealResponseDto response = mealMapper.convertToDto(updatedMeal);
+
+            logger.info("Exiting addFoodToMeal method with response: {}", response);
+            return response;
+        } catch (EntityNotFoundException e) {
+            logger.error("Error adding food to meal: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Unexpected error adding food to meal: {}", e.getMessage());
+            throw new RuntimeException("Unexpected error adding food to meal", e);
+        }
+    }
+
 }

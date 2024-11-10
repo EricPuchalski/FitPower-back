@@ -24,7 +24,7 @@ public class NutritionLog {
 
     private LocalDateTime date;
     private float totalCaloriesConsumed;
-    private Double dailyCalories;
+    private float dailyCalories;
     private String observations;
     private boolean completed;
 

@@ -99,6 +99,9 @@ public class NutritionLogServiceImpl implements NutritionLogService {
             if (nutritionLogRequestDto.getDate() != null) {
                 existingNutritionLog.setDate(nutritionLogRequestDto.getDate());
             }
+        //    if (nutritionLogRequestDto.getDailyCalories() != null) {
+        //        existingNutritionLog.setDailyCalories(nutritionLogRequestDto.getDailyCalories());
+        //          }
             //   if (nutritionLogRequestDto.getTotalCaloriesConsumed() != null) {
             //       existingNutritionLog.setTotalCaloriesConsumed(nutritionLogRequestDto.getTotalCaloriesConsumed());
             //   }

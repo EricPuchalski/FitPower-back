@@ -59,4 +59,10 @@ public class MealController {
         List<MealResponseDto> meals = mealService.findCompletedMeals();
         return new ResponseEntity<>(meals, HttpStatus.OK);
     }
+
+    @PostMapping("/{mealId}/foods/{foodId}")
+    public ResponseEntity<MealResponseDto> addFoodToMeal(@PathVariable Long mealId, @PathVariable Long foodId) {
+        MealResponseDto updatedMeal = mealService.addFoodToMeal(mealId, foodId);
+        return new ResponseEntity<>(updatedMeal, HttpStatus.OK);
+    }
 }

@@ -20,4 +20,6 @@ public interface MealService {
     List<MealResponseDto> findAllMeals();
 
     Optional<MealResponseDto> findMealById(Long id);
+
+    MealResponseDto addFoodToMeal(Long mealId, Long foodId);
 }

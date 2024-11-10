@@ -19,6 +19,9 @@ public class Meal {
     private int quantity;      //Cantidad de comidas.
     private String measureUnit;   // Unidad de medida, como "grams", "ml", o "piece"
 
+
+    //CONSIDERAR CAMBIAR DE LISTA A UNO SOLO, YA QUE PUEDE SER QUE SI AGREGO VARIAS COMIDAS DIFERENTES,
+    // NO SE PUEDA CALCULAR BIEN LA CANTIDAD DE COMIDA.
     @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL)
     private List<Food> foods; // Lista de alimentos en esta comida
 
