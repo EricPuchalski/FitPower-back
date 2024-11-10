@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -25,4 +26,7 @@ public class NutritionLog {
     private float totalCaloriesConsumed;
     private String observations;
     private boolean completed;
+
+    @OneToMany(mappedBy = "nutritionLog", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Meal> meals;
 }

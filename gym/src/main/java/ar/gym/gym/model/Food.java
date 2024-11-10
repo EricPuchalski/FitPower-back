@@ -23,8 +23,6 @@ public class Food {
     private Double potassium;     // potasio
     private Double calcium;       // calcio
 
-    private int quantity;      //Cantidad de comidas.
-    private String measureUnit;   // Unidad de medida, como "grams", "ml", o "piece"
 
     @Enumerated(EnumType.STRING)
     private FoodCategory category; // Categoría del alimento

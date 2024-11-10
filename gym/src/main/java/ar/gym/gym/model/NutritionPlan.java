@@ -32,9 +32,6 @@ public class NutritionPlan {
     @Enumerated(EnumType.STRING)
     private NutritionStatus status; // Estado del plan (por ejemplo, ACTIVO, COMPLETADO, EN_PROGRESO)
 
-    @OneToMany(mappedBy = "nutritionPlan")
-    private List<Meal> meals;
-
     @OneToMany(mappedBy = "nutritionPlan", cascade = CascadeType.ALL)
     private List<NutritionLog> logs; // Registro de consumo diario asociado al plan
 

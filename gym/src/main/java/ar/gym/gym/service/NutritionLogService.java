@@ -1,6 +1,8 @@
 package ar.gym.gym.service;
 
+import ar.gym.gym.dto.request.MealRequestDto;
 import ar.gym.gym.dto.request.NutritionLogRequestDto;
+import ar.gym.gym.dto.response.MealResponseDto;
 import ar.gym.gym.dto.response.NutritionLogResponseDto;
 
 import java.time.LocalDateTime;
@@ -26,4 +28,12 @@ public interface NutritionLogService {
     List<NutritionLogResponseDto> findNutritionLogsByClient(Long clientId);
 
     List<NutritionLogResponseDto> findNutritionLogsByNutritionPlan(Long nutritionPlanId);
+
+    MealResponseDto addMealToNutritionLog(Long nutritionLogId, MealRequestDto mealRequestDto);
+
+    MealResponseDto updateMealInNutritionLog(Long nutritionLogId, Long mealId, MealRequestDto mealRequestDto);
+
+    void deleteMealFromNutritionLog(Long nutritionLogId, Long mealId);
+
+    NutritionLogResponseDto markNutritionLogAsCompleted(Long id);
 }

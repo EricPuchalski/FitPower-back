@@ -45,43 +45,6 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public List<MealResponseDto> findAllMeals() {
-        logger.info("Entering findAllMeals method");
-        try {
-            List<Meal> meals = mealRepository.findAll();
-
-            List<MealResponseDto> response = meals.stream()
-                    .map(mealMapper::convertToDto)
-                    .collect(Collectors.toList());
-            logger.info("Exiting findAllMeals method with total meals found: {}", response.size());
-            return response;
-        } catch (Exception e) {
-            logger.error("Unexpected error fetching all meals: {}", e.getMessage());
-            throw new RuntimeException("Unexpected error fetching all meals", e);
-        }
-    }
-
-    @Override
-    public Optional<MealResponseDto> findMealById(Long id) {
-        logger.info("Entering findMealById method with ID: {}", id);
-        try {
-            Optional<Meal> meal = mealRepository.findById(id);
-            if (meal.isEmpty()) {
-                throw new EntityNotFoundException("Meal not found with ID: " + id);
-            }
-            MealResponseDto response = mealMapper.convertToDto(meal.get());
-            logger.info("Exiting findMealById method with response: {}", response);
-            return Optional.of(response);
-        } catch (EntityNotFoundException e) {
-            logger.error("Error finding meal: {}", e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            logger.error("Unexpected error finding meal: {}", e.getMessage());
-            throw new RuntimeException("Unexpected error finding meal", e);
-        }
-    }
-
-    @Override
     public MealResponseDto updateMeal(Long id, MealRequestDto mealRequestDto) {
         logger.info("Entering updateMeal method with ID: {} and update data: {}", id, mealRequestDto);
         try {
@@ -122,6 +85,26 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
+    public Optional<MealResponseDto> findMealById(Long id) {
+        logger.info("Entering findMealById method with ID: {}", id);
+        try {
+            Optional<Meal> meal = mealRepository.findById(id);
+            if (meal.isEmpty()) {
+                throw new EntityNotFoundException("Meal not found with ID: " + id);
+            }
+            MealResponseDto response = mealMapper.convertToDto(meal.get());
+            logger.info("Exiting findMealById method with response: {}", response);
+            return Optional.of(response);
+        } catch (EntityNotFoundException e) {
+            logger.error("Error finding meal: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Unexpected error finding meal: {}", e.getMessage());
+            throw new RuntimeException("Unexpected error finding meal", e);
+        }
+    }
+
+    @Override
     public List<MealResponseDto> findCompletedMeals() {
         logger.info("Entering findCompletedMeals method");
         try {
@@ -136,6 +119,23 @@ public class MealServiceImpl implements MealService {
         } catch (Exception e) {
             logger.error("Unexpected error searching completed meals: {}", e.getMessage());
             throw new EntityNotFoundException("Unexpected error searching completed meals", e);
+        }
+    }
+
+    @Override
+    public List<MealResponseDto> findAllMeals() {
+        logger.info("Entering findAllMeals method");
+        try {
+            List<Meal> meals = mealRepository.findAll();
+
+            List<MealResponseDto> response = meals.stream()
+                    .map(mealMapper::convertToDto)
+                    .collect(Collectors.toList());
+            logger.info("Exiting findAllMeals method with total meals found: {}", response.size());
+            return response;
+        } catch (Exception e) {
+            logger.error("Unexpected error fetching all meals: {}", e.getMessage());
+            throw new RuntimeException("Unexpected error fetching all meals", e);
         }
     }
 }

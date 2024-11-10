@@ -9,5 +9,12 @@ import java.util.List;
 @Repository
 public interface NutritionPlanRepository extends JpaRepository<NutritionPlan, Long> {
     List<NutritionPlan> findByClientDni(String dniClient);
+
     List<NutritionPlan> findByActive(boolean active);
+
+    List<NutritionPlan> findByCompleted(boolean b);
+
+    List<NutritionPlan> findByClientId(Long clientId);
+
+    List<NutritionPlan> findByNutritionistId(Long nutritionistId);
 }

@@ -2,6 +2,7 @@ package ar.gym.gym.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.util.List;
 
 @Data
@@ -15,13 +16,15 @@ public class Meal {
     @Enumerated(EnumType.STRING)
     private MealTime mealTime; // Tiempo de la comida, como desayuno, almuerzo, etc.
 
+    private int quantity;      //Cantidad de comidas.
+    private String measureUnit;   // Unidad de medida, como "grams", "ml", o "piece"
 
     @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL)
     private List<Food> foods; // Lista de alimentos en esta comida
 
     @ManyToOne
-    @JoinColumn(name = "nutrition_plan_id")
-    private NutritionPlan nutritionPlan; // Plan de nutrición al que pertenece esta comida
+    @JoinColumn(name = "nutrition_log_id")
+    private NutritionLog nutritionLog; // Registro de nutrición al que pertenece esta comida
 
     private boolean completed; // Indica si el cliente consumió esta comida
 }
