@@ -1,14 +1,13 @@
 package ar.gym.gym.service.impl;
 
-import ar.gym.gym.model.NutritionalPlan;
-import ar.gym.gym.repository.NutritionalPlanRepository;
+import ar.gym.gym.repository.NutritionPlanRepository;
 
-public class NutritionalPlanServiceImpl {
-    private final NutritionalPlanRepository nutritionalPlanRepository;
+public class NutritionPlanServiceImpl {
+    private final NutritionPlanRepository nutritionPlanRepository;
 
 
-    public NutritionalPlanServiceImpl(NutritionalPlanRepository nutritionalPlanRepository) {
-        this.nutritionalPlanRepository = nutritionalPlanRepository;
+    public NutritionPlanServiceImpl(NutritionPlanRepository nutritionPlanRepository) {
+        this.nutritionPlanRepository = nutritionPlanRepository;
     }
 
 //    public List<NutritionalPlan> getAllPlans() {
