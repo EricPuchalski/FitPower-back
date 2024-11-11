@@ -16,8 +16,6 @@ public class FoodRequestDto {
     private Double iron;         // Hierro
     private Double potassium;    // Potasio
     private Double calcium;      // Calcio
-    private Double quantity;     // Cantidad
-    private String measureUnit;  // Unidad de medida
     private FoodCategory category; // Categoría del alimento
     private Long mealId;         // ID de la comida a la que pertenece este alimento
     private boolean completed;   // Indica si se consumió

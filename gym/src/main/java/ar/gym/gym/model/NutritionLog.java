@@ -23,8 +23,8 @@ public class NutritionLog {
     private Client client;
 
     private LocalDateTime date;
-    private float totalCaloriesConsumed;
-    private float dailyCalories;
+    private Float totalCaloriesConsumed;
+    private Float dailyCalories;
     private String observations;
     private boolean completed;
 

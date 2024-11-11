@@ -107,9 +107,6 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
             if (nutritionPlanRequestDto.getDescription() != null) {
                 existingNutritionPlan.setDescription(nutritionPlanRequestDto.getDescription());
             }
-      //      if (nutritionPlanRequestDto.getDailyCalories() != null) {
-      //          existingNutritionPlan.setDailyCalories(nutritionPlanRequestDto.getDailyCalories());
-      //      }
             if (nutritionPlanRequestDto.getStatus() != null) {
                 existingNutritionPlan.setStatus(nutritionPlanRequestDto.getStatus());
             }
@@ -285,9 +282,6 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
             if (nutritionLogRequestDto.getDate() != null) {
                 existingNutritionLog.setDate(nutritionLogRequestDto.getDate());
             }
-            //       if (nutritionLogRequestDto.getTotalCaloriesConsumed() != null) {
-            //         existingNutritionLog.setTotalCaloriesConsumed(nutritionLogRequestDto.getTotalCaloriesConsumed());
-            //     }
             if (nutritionLogRequestDto.getObservations() != null) {
                 existingNutritionLog.setObservations(nutritionLogRequestDto.getObservations());
             }
@@ -331,6 +325,5 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
             throw new RuntimeException("Unexpected error deleting nutrition log from nutrition plan", e);
         }
     }
-
 
 }

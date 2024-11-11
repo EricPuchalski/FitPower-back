@@ -4,7 +4,9 @@ import ar.gym.gym.dto.request.NutritionLogRequestDto;
 import ar.gym.gym.dto.response.NutritionLogResponseDto;
 import ar.gym.gym.model.NutritionLog;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
+@Service
 public class NutritionLogMapper {
 
     private final ModelMapper modelMapper;

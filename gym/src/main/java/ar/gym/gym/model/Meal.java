@@ -3,7 +3,7 @@ package ar.gym.gym.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Map;
 
 @Data
 @Entity
@@ -16,14 +16,13 @@ public class Meal {
     @Enumerated(EnumType.STRING)
     private MealTime mealTime; // Tiempo de la comida, como desayuno, almuerzo, etc.
 
-    private int quantity;      //Cantidad de comidas.
+    @ElementCollection
+    @CollectionTable(name = "meal_foods", joinColumns = @JoinColumn(name = "meal_id"))
+    @MapKeyJoinColumn(name = "food_id")
+    @Column(name = "quantity")
+    private Map<Food, Integer> foods; // Mapa de alimentos y sus cantidades en esta comida
+
     private String measureUnit;   // Unidad de medida, como "grams", "ml", o "piece"
-
-
-    //CONSIDERAR CAMBIAR DE LISTA A UNO SOLO, YA QUE PUEDE SER QUE SI AGREGO VARIAS COMIDAS DIFERENTES,
-    // NO SE PUEDA CALCULAR BIEN LA CANTIDAD DE COMIDA.
-    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL)
-    private List<Food> foods; // Lista de alimentos en esta comida
 
     @ManyToOne
     @JoinColumn(name = "nutrition_log_id")

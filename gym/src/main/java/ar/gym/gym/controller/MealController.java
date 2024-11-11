@@ -24,8 +24,8 @@ public class MealController {
     }
 
     @PostMapping
-    public ResponseEntity<MealResponseDto> createMeal(@Valid @RequestBody MealRequestDto mealRequestDto) {
-        MealResponseDto createdMeal = mealService.createMeal(mealRequestDto);
+    public ResponseEntity<MealResponseDto> createMeal(@Valid @RequestBody MealRequestDto mealRequestDto, int quantity) {
+        MealResponseDto createdMeal = mealService.createMeal(mealRequestDto, quantity);
         return new ResponseEntity<>(createdMeal, HttpStatus.CREATED);
     }
 

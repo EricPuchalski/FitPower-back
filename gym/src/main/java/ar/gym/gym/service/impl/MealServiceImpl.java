@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,12 +33,22 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public MealResponseDto createMeal(MealRequestDto mealRequestDto) {
+    public MealResponseDto createMeal(MealRequestDto mealRequestDto, int quantity) {
         logger.info("Entering createMeal method with meal data: {}", mealRequestDto);
         try {
             Meal meal = mealMapper.convertToEntity(mealRequestDto);
-            Meal savedMeal = mealRepository.save(meal);
 
+            // Inicializar el mapa de alimentos si es null
+            if (meal.getFoods() == null) {
+                meal.setFoods(new HashMap<>());
+            }
+
+            // Buscar el alimento por nombre y agregarlo al mapa de alimentos
+            Food food = foodRepository.findByName(mealRequestDto.getFoodName())
+                    .orElseThrow(() -> new EntityNotFoundException("Food not found with name: " + mealRequestDto.getFoodName()));
+            meal.getFoods().put(food, quantity);
+
+            Meal savedMeal = mealRepository.save(meal);
             MealResponseDto response = mealMapper.convertToDto(savedMeal);
 
             logger.info("Exiting createMeal method with response: {}", response);
@@ -54,9 +65,18 @@ public class MealServiceImpl implements MealService {
         try {
             Meal existingMeal = mealRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Meal not found with ID: " + id));
+
             if (mealRequestDto.getMealTime() != null) {
                 existingMeal.setMealTime(mealRequestDto.getMealTime());
             }
+            existingMeal.setMeasureUnit(mealRequestDto.getMeasureUnit());
+            existingMeal.setCompleted(mealRequestDto.isCompleted());
+
+            // Actualizar el mapa de alimentos
+            if (mealRequestDto.getFoods() != null) {
+                existingMeal.setFoods(mealRequestDto.getFoods());
+            }
+
             Meal updatedMeal = mealRepository.save(existingMeal);
             MealResponseDto response = mealMapper.convertToDto(updatedMeal);
             logger.info("Exiting updateMeal method with updated meal: {}", response);
@@ -153,8 +173,8 @@ public class MealServiceImpl implements MealService {
             Food food = foodRepository.findById(foodId)
                     .orElseThrow(() -> new EntityNotFoundException("Food not found with ID: " + foodId));
 
-            meal.getFoods().add(food);
-            food.setMeal(meal);
+            // Agregar el alimento al mapa de alimentos de la comida
+            meal.getFoods().put(food, 1); // Asignar una cantidad de 1 por defecto
 
             Meal updatedMeal = mealRepository.save(meal);
             MealResponseDto response = mealMapper.convertToDto(updatedMeal);
@@ -169,5 +189,4 @@ public class MealServiceImpl implements MealService {
             throw new RuntimeException("Unexpected error adding food to meal", e);
         }
     }
-
 }

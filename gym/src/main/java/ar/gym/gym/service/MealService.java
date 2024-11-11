@@ -9,7 +9,8 @@ import java.util.Optional;
 public interface MealService {
 
 
-    MealResponseDto createMeal(MealRequestDto mealRequestDto);
+
+    MealResponseDto createMeal(MealRequestDto mealRequestDto, int quantity);
 
     MealResponseDto updateMeal(Long id, MealRequestDto mealRequestDto);
 

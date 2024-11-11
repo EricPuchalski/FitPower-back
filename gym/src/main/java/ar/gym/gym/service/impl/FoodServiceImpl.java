@@ -52,6 +52,52 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
+    public FoodResponseDto updateFood(Long id, FoodRequestDto foodRequestDto) {
+        logger.info("Entering updateFood method with ID: {} and update data: {}", id, foodRequestDto);
+        try {
+            Food existingFood = foodRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Food not found with ID: " + id));
+            if (foodRequestDto.getName() != null) {
+                existingFood.setName(foodRequestDto.getName());
+            }
+            if (foodRequestDto.getCalories() != null) {
+                existingFood.setCalories(foodRequestDto.getCalories());
+            }
+            if (foodRequestDto.getCategory() != null) {
+                existingFood.setCategory(foodRequestDto.getCategory());
+            }
+            Food updatedFood = foodRepository.save(existingFood);
+            FoodResponseDto response = foodMapper.convertToDto(updatedFood);
+            logger.info("Exiting updateFood method with updated food: {}", response);
+            return response;
+        } catch (EntityNotFoundException e) {
+            logger.error("Error updating food: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Unexpected error updating food: {}", e.getMessage());
+            throw new RuntimeException("Unexpected error updating food", e);
+        }
+    }
+
+    @Override
+    public void deleteFood(Long id) {
+        logger.info("Entering deleteFood method with ID: {}", id);
+        try {
+            Food food = foodRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Food not found with ID: " + id));
+
+            foodRepository.delete(food);
+            logger.info("Exiting deleteFood method with food deleted with ID: {}", id);
+        } catch (EntityNotFoundException e) {
+            logger.error("Error deleting food: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Unexpected error deleting food: {}", e.getMessage());
+            throw new RuntimeException("Unexpected error deleting food", e);
+        }
+    }
+
+    @Override
     public List<FoodResponseDto> findAllFoods() {
         logger.info("Entering findAllFoods method");
         try {
@@ -119,55 +165,6 @@ public class FoodServiceImpl implements FoodService {
         } catch (Exception e) {
             logger.error("Unexpected error searching foods by category: {}", e.getMessage());
             throw new RuntimeException("Unexpected error searching foods by category", e);
-        }
-    }
-
-    @Override
-    public FoodResponseDto updateFood(Long id, FoodRequestDto foodRequestDto) {
-        logger.info("Entering updateFood method with ID: {} and update data: {}", id, foodRequestDto);
-        try {
-            Food existingFood = foodRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Food not found with ID: " + id));
-            if (foodRequestDto.getName() != null) {
-                existingFood.setName(foodRequestDto.getName());
-            }
-            if (foodRequestDto.getCalories() != null) {
-                existingFood.setCalories(foodRequestDto.getCalories());
-            }
-            if (foodRequestDto.getCategory() != null) {
-                existingFood.setCategory(foodRequestDto.getCategory());
-            }
-            if (foodRequestDto.getMeasureUnit() != null) {
-                existingFood.setMeasureUnit(foodRequestDto.getMeasureUnit());
-            }
-            Food updatedFood = foodRepository.save(existingFood);
-            FoodResponseDto response = foodMapper.convertToDto(updatedFood);
-            logger.info("Exiting updateFood method with updated food: {}", response);
-            return response;
-        } catch (EntityNotFoundException e) {
-            logger.error("Error updating food: {}", e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            logger.error("Unexpected error updating food: {}", e.getMessage());
-            throw new RuntimeException("Unexpected error updating food", e);
-        }
-    }
-
-    @Override
-    public void deleteFood(Long id) {
-        logger.info("Entering deleteFood method with ID: {}", id);
-        try {
-            Food food = foodRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Food not found with ID: " + id));
-
-            foodRepository.delete(food);
-            logger.info("Exiting deleteFood method with food deleted with ID: {}", id);
-        } catch (EntityNotFoundException e) {
-            logger.error("Error deleting food: {}", e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            logger.error("Unexpected error deleting food: {}", e.getMessage());
-            throw new RuntimeException("Unexpected error deleting food", e);
         }
     }
 

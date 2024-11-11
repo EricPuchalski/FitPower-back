@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NutritionPlanService {
+
     NutritionPlanResponseDto createNutritionPlan(NutritionPlanRequestDto nutritionPlanRequestDto);
 
     List<NutritionPlanResponseDto> findAllNutritionPlans();
@@ -28,8 +29,6 @@ public interface NutritionPlanService {
     NutritionLogResponseDto addNutritionLogToNutritionPlan(Long nutritionPlanId, NutritionLogRequestDto nutritionLogRequestDto);
 
     NutritionLogResponseDto updateNutritionLogInNutritionPlan(Long nutritionPlanId, Long nutritionLogId, NutritionLogRequestDto nutritionLogRequestDto);
-
-    NutritionLogResponseDto addNutritionLogToNutritionPlan(Long nutritionPlanId, NutritionLogRequestDto nutritionLogRequestDto);
 
     void deleteNutritionLogFromNutritionPlan(Long nutritionPlanId, Long nutritionLogId);
 }
