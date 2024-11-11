@@ -10,7 +10,7 @@ public interface MealService {
 
 
 
-    MealResponseDto createMeal(MealRequestDto mealRequestDto, int quantity);
+    MealResponseDto createMeal(MealRequestDto mealRequestDto);
 
     MealResponseDto updateMeal(Long id, MealRequestDto mealRequestDto);
 

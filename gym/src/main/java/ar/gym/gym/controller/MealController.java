@@ -24,9 +24,15 @@ public class MealController {
     }
 
     @PostMapping
-    public ResponseEntity<MealResponseDto> createMeal(@Valid @RequestBody MealRequestDto mealRequestDto, int quantity) {
-        MealResponseDto createdMeal = mealService.createMeal(mealRequestDto, quantity);
-        return new ResponseEntity<>(createdMeal, HttpStatus.CREATED);
+    public ResponseEntity<MealResponseDto> createMeal(@Valid @RequestBody MealRequestDto mealRequestDto) {
+        try {
+            MealResponseDto createdMeal = mealService.createMeal(mealRequestDto);
+            return new ResponseEntity<>(createdMeal, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping

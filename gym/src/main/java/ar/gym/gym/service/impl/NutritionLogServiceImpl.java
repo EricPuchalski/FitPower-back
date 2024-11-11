@@ -279,45 +279,51 @@ public class NutritionLogServiceImpl implements NutritionLogService {
 
     @Override
     public MealResponseDto updateMealInNutritionLog(Long nutritionLogId, Long mealId, MealRequestDto mealRequestDto) {
-        if (mealRequestDto == null) {
-            throw new IllegalArgumentException("mealRequestDto cannot be null");
-        }
-
-        logger.info("Entering updateMealInNutritionLog method with nutrition log ID: {}, meal ID: {} and update data: {}", nutritionLogId, mealId, mealRequestDto);
-        try {
-            NutritionLog nutritionLog = nutritionLogRepository.findById(nutritionLogId)
-                    .orElseThrow(() -> new EntityNotFoundException("Nutrition log not found with ID: " + nutritionLogId));
-
-            Meal existingMeal = mealRepository.findById(mealId)
-                    .orElseThrow(() -> new EntityNotFoundException("Meal not found with ID: " + mealId));
-
-            if (!existingMeal.getNutritionLog().getId().equals(nutritionLogId)) {
-                throw new IllegalArgumentException("Meal does not belong to the specified nutrition log");
-            }
-
-            if (mealRequestDto.getMealTime() != null) {
-                existingMeal.setMealTime(mealRequestDto.getMealTime());
-            }
-            if (mealRequestDto.getMeasureUnit() != null) {
-                existingMeal.setMeasureUnit(mealRequestDto.getMeasureUnit());
-            }
-
-            existingMeal.setCompleted(mealRequestDto.isCompleted());
-
-            Meal updatedMeal = mealRepository.save(existingMeal);
-            MealResponseDto response = mealMapper.convertToDto(updatedMeal);
-
-            logger.info("Exiting updateMealInNutritionLog method with response for nutritionLogId {}, mealId {}: {}", nutritionLogId, mealId, response);
-            return response;
-        } catch (EntityNotFoundException e) {
-            logger.error("Error updating meal {} in nutrition log {}: {}", mealId, nutritionLogId, e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            logger.error("Unexpected error updating meal {} in nutrition log {}: {}", mealId, nutritionLogId, e.getMessage());
-            throw new RuntimeException("Unexpected error updating meal in nutrition log", e);
-        }
+        return null;
     }
 
+    /*
+        @Override
+        public MealResponseDto updateMealInNutritionLog(Long nutritionLogId, Long mealId, MealRequestDto mealRequestDto) {
+            if (mealRequestDto == null) {
+                throw new IllegalArgumentException("mealRequestDto cannot be null");
+            }
+
+            logger.info("Entering updateMealInNutritionLog method with nutrition log ID: {}, meal ID: {} and update data: {}", nutritionLogId, mealId, mealRequestDto);
+            try {
+                NutritionLog nutritionLog = nutritionLogRepository.findById(nutritionLogId)
+                        .orElseThrow(() -> new EntityNotFoundException("Nutrition log not found with ID: " + nutritionLogId));
+
+                Meal existingMeal = mealRepository.findById(mealId)
+                        .orElseThrow(() -> new EntityNotFoundException("Meal not found with ID: " + mealId));
+
+                if (!existingMeal.getNutritionLog().getId().equals(nutritionLogId)) {
+                    throw new IllegalArgumentException("Meal does not belong to the specified nutrition log");
+                }
+
+                if (mealRequestDto.getMealTime() != null) {
+                    existingMeal.setMealTime(mealRequestDto.getMealTime());
+                }
+                if (mealRequestDto.getMeasureUnit() != null) {
+                    existingMeal.setMeasureUnit(mealRequestDto.getMeasureUnit());
+                }
+
+                existingMeal.setCompleted(mealRequestDto.isCompleted());
+
+                Meal updatedMeal = mealRepository.save(existingMeal);
+                MealResponseDto response = mealMapper.convertToDto(updatedMeal);
+
+                logger.info("Exiting updateMealInNutritionLog method with response for nutritionLogId {}, mealId {}: {}", nutritionLogId, mealId, response);
+                return response;
+            } catch (EntityNotFoundException e) {
+                logger.error("Error updating meal {} in nutrition log {}: {}", mealId, nutritionLogId, e.getMessage());
+                throw e;
+            } catch (Exception e) {
+                logger.error("Unexpected error updating meal {} in nutrition log {}: {}", mealId, nutritionLogId, e.getMessage());
+                throw new RuntimeException("Unexpected error updating meal in nutrition log", e);
+            }
+        }
+    */
     @Override
     public void deleteMealFromNutritionLog(Long nutritionLogId, Long mealId) {
         logger.info("Entering deleteMealFromNutritionLog method with nutrition log ID: {} and meal ID: {}", nutritionLogId, mealId);
