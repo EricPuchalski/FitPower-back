@@ -20,6 +20,5 @@ public class NutritionPlanResponseDto {
     private boolean active;           // Indica si el plan está activo
     private boolean completed;        // Indica si el plan fue completado
 
-    private List<Long> mealIds;       // IDs de las comidas asociadas al plan
-    private List<Long> logIds;        // IDs de los registros asociados al plan
+
 }

@@ -1,7 +1,7 @@
 package ar.gym.gym.dto.request;
 import lombok.Data;
 @Data
-public class MealItemRequestDto {
+public class MealDetailRequestDto {
     private Long foodId;      // ID del alimento
     private String foodName;  // Nombre del alimento
     private Integer quantity; // Cantidad

@@ -52,26 +52,37 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     @Override
     public NutritionPlanResponseDto createNutritionPlan(NutritionPlanRequestDto nutritionPlanRequestDto) {
         logger.info("Entering createNutritionPlan method with nutrition plan data: {}", nutritionPlanRequestDto);
+
         try {
-            Client client = clientRepository.findById(nutritionPlanRequestDto.getClientId())
-                    .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + nutritionPlanRequestDto.getClientId()));
+            // Verificar que los valores no sean nulos
+            if (nutritionPlanRequestDto.getClientDni() == null || nutritionPlanRequestDto.getNutritionistDni() == null) {
+                throw new IllegalArgumentException("Client DNI and Nutritionist DNI cannot be null");
+            }
 
-            Nutritionist nutritionist = nutritionistRepository.findById(nutritionPlanRequestDto.getNutritionistId())
-                    .orElseThrow(() -> new EntityNotFoundException("Nutritionist not found with ID: " + nutritionPlanRequestDto.getNutritionistId()));
+            // Obtener el cliente y el nutricionista por sus DNI
+            Client client = clientRepository.findByDni(nutritionPlanRequestDto.getClientDni())
+                    .orElseThrow(() -> new IllegalArgumentException("Client not found with DNI: " + nutritionPlanRequestDto.getClientDni()));
 
+            Nutritionist nutritionist = nutritionistRepository.findByDni(nutritionPlanRequestDto.getNutritionistDni())
+                    .orElseThrow(() -> new IllegalArgumentException("Nutritionist not found with DNI: " + nutritionPlanRequestDto.getNutritionistDni()));
+
+            // Convertir el DTO en entidad
             NutritionPlan nutritionPlan = nutritionPlanMapper.convertToEntity(nutritionPlanRequestDto);
             nutritionPlan.setClient(client);
             nutritionPlan.setNutritionist(nutritionist);
             nutritionPlan.setActive(false);
 
+            // Guardar el plan de nutrición
             NutritionPlan savedNutritionPlan = nutritionPlanRepository.save(nutritionPlan);
+
+            // Convertir a DTO y devolver
             NutritionPlanResponseDto response = nutritionPlanMapper.convertToDto(savedNutritionPlan);
 
             logger.info("Exiting createNutritionPlan method with response: {}", response);
             return response;
-        } catch (EntityNotFoundException e) {
+        } catch (IllegalArgumentException e) {
             logger.error("Error creating nutrition plan: {}", e.getMessage());
-            throw e;
+            throw e;  // Lanzamos la excepción para ser manejada por el controlador
         } catch (Exception e) {
             logger.error("Unexpected error creating nutrition plan: {}", e.getMessage());
             throw new RuntimeException("Unexpected error creating nutrition plan", e);
@@ -85,14 +96,14 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
             NutritionPlan existingNutritionPlan = nutritionPlanRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Nutrition plan not found with ID: " + id));
 
-            if (nutritionPlanRequestDto.getClientId() != null) {
-                Client client = clientRepository.findById(nutritionPlanRequestDto.getClientId())
-                        .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + nutritionPlanRequestDto.getClientId()));
+            if (nutritionPlanRequestDto.getClientDni() != null) {
+                Client client = clientRepository.findByDni(nutritionPlanRequestDto.getClientDni())
+                        .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + nutritionPlanRequestDto.getClientDni()));
                 existingNutritionPlan.setClient(client);
             }
-            if (nutritionPlanRequestDto.getNutritionistId() != null) {
-                Nutritionist nutritionist = nutritionistRepository.findById(nutritionPlanRequestDto.getNutritionistId())
-                        .orElseThrow(() -> new EntityNotFoundException("Nutritionist not found with ID: " + nutritionPlanRequestDto.getNutritionistId()));
+            if (nutritionPlanRequestDto.getNutritionistDni() != null) {
+                Nutritionist nutritionist = nutritionistRepository.findByDni(nutritionPlanRequestDto.getNutritionistDni())
+                        .orElseThrow(() -> new EntityNotFoundException("Nutritionist not found with ID: " + nutritionPlanRequestDto.getNutritionistDni()));
                 existingNutritionPlan.setNutritionist(nutritionist);
             }
             if (nutritionPlanRequestDto.getType() != null) {

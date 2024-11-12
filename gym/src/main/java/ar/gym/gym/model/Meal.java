@@ -1,5 +1,6 @@
 package ar.gym.gym.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -22,7 +23,7 @@ public class Meal {
 
     private boolean completed; // Indica si el cliente consumió esta comida
 
-    // Referencia a la colección de MealItem (opcional)
-    @OneToMany(mappedBy = "meal")
-    private List<MealItem> mealItems;
+    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference  // Indica que este es el "lado padre" en la relación
+    private List<MealDetail> mealDetails;
 }

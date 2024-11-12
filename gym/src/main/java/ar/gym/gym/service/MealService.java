@@ -2,6 +2,7 @@ package ar.gym.gym.service;
 
 import ar.gym.gym.dto.request.MealRequestDto;
 import ar.gym.gym.dto.response.MealResponseDto;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,5 +23,5 @@ public interface MealService {
 
     Optional<MealResponseDto> findMealById(Long id);
 
-    MealResponseDto addFoodToMeal(Long mealId, Long foodId);
+    MealResponseDto addFoodToMeal(Long mealId, String foodName);
 }

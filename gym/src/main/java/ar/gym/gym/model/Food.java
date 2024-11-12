@@ -27,9 +27,5 @@ public class Food {
     @Enumerated(EnumType.STRING)
     private FoodCategory category; // Categoría del alimento
 
-    @ManyToOne
-    @JoinColumn(name = "meal_id")
-    private Meal meal; // Comida a la que pertenece este alimento
-
     private boolean completed; // Indica si se consumió
 }

@@ -8,8 +8,8 @@ import java.util.Date;
 @Data
 public class NutritionPlanRequestDto {
 
-    private Long clientId;           // ID del cliente que recibe el plan
-    private Long nutritionistId;     // ID del nutricionista que asigna el plan
+    private String clientDni;           // ID del cliente que recibe el plan
+    private String nutritionistDni;     // ID del nutricionista que asigna el plan
     private String type;             // Tipo de plan (por ejemplo, bajo en carbohidratos, balanceado, etc.)
     private Date startDate;          // Fecha de inicio del plan
     private Date endDate;            // Fecha de fin del plan
