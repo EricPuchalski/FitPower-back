@@ -16,5 +16,5 @@ public class NutritionLogResponseDto {
     private Float totalCaloriesConsumed;      // Total de calorías consumidas en ese día
     private String observations;              // Observaciones sobre el consumo de alimentos
     private boolean completed;                // Indica si el cliente completó el registro
-    List<Meal> mealList;
+    List<MealResponseDto> mealList;//cambio a MealResponseDto, para enviar al cliente lo necesario,
 }

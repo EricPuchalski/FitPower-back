@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class MealResponseDto {
-        private Long id;
+        private Long id; //
         private String mealTime;
         private Long nutritionLogId;
         private boolean completed;
