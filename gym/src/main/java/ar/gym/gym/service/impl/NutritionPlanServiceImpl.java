@@ -6,10 +6,7 @@ import ar.gym.gym.dto.response.NutritionLogResponseDto;
 import ar.gym.gym.dto.response.NutritionPlanResponseDto;
 import ar.gym.gym.mapper.NutritionLogMapper;
 import ar.gym.gym.mapper.NutritionPlanMapper;
-import ar.gym.gym.model.Client;
-import ar.gym.gym.model.NutritionLog;
-import ar.gym.gym.model.NutritionPlan;
-import ar.gym.gym.model.Nutritionist;
+import ar.gym.gym.model.*;
 import ar.gym.gym.repository.ClientRepository;
 import ar.gym.gym.repository.NutritionLogRepository;
 import ar.gym.gym.repository.NutritionPlanRepository;
@@ -54,40 +51,36 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
         logger.info("Entering createNutritionPlan method with nutrition plan data: {}", nutritionPlanRequestDto);
 
         try {
-            // Verificar que los valores no sean nulos
             if (nutritionPlanRequestDto.getClientDni() == null || nutritionPlanRequestDto.getNutritionistDni() == null) {
                 throw new IllegalArgumentException("Client DNI and Nutritionist DNI cannot be null");
             }
 
-            // Obtener el cliente y el nutricionista por sus DNI
             Client client = clientRepository.findByDni(nutritionPlanRequestDto.getClientDni())
                     .orElseThrow(() -> new IllegalArgumentException("Client not found with DNI: " + nutritionPlanRequestDto.getClientDni()));
 
             Nutritionist nutritionist = nutritionistRepository.findByDni(nutritionPlanRequestDto.getNutritionistDni())
                     .orElseThrow(() -> new IllegalArgumentException("Nutritionist not found with DNI: " + nutritionPlanRequestDto.getNutritionistDni()));
 
-            // Convertir el DTO en entidad
             NutritionPlan nutritionPlan = nutritionPlanMapper.convertToEntity(nutritionPlanRequestDto);
             nutritionPlan.setClient(client);
             nutritionPlan.setNutritionist(nutritionist);
             nutritionPlan.setActive(false);
 
-            // Guardar el plan de nutrición
             NutritionPlan savedNutritionPlan = nutritionPlanRepository.save(nutritionPlan);
 
-            // Convertir a DTO y devolver
             NutritionPlanResponseDto response = nutritionPlanMapper.convertToDto(savedNutritionPlan);
 
             logger.info("Exiting createNutritionPlan method with response: {}", response);
             return response;
         } catch (IllegalArgumentException e) {
             logger.error("Error creating nutrition plan: {}", e.getMessage());
-            throw e;  // Lanzamos la excepción para ser manejada por el controlador
+            throw e;
         } catch (Exception e) {
             logger.error("Unexpected error creating nutrition plan: {}", e.getMessage());
             throw new RuntimeException("Unexpected error creating nutrition plan", e);
         }
     }
+
 
     @Override
     public NutritionPlanResponseDto updateNutritionPlan(Long id, NutritionPlanRequestDto nutritionPlanRequestDto) {
@@ -246,7 +239,6 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     }
 
     //LÓGICA PARA AGREGAR LOS NUTRITIONLOGS AL NUTRITION PLAN
-
     @Override
     public NutritionLogResponseDto addNutritionLogToNutritionPlan(Long nutritionPlanId, NutritionLogRequestDto nutritionLogRequestDto) {
         logger.info("Entering addNutritionLogToNutritionPlan method with nutrition plan ID: {} and nutrition log data: {}", nutritionPlanId, nutritionLogRequestDto);
@@ -285,9 +277,9 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
                 throw new IllegalArgumentException("Nutrition log does not belong to the specified nutrition plan");
             }
 
-            if (nutritionLogRequestDto.getClientId() != null) {
-                Client client = clientRepository.findById(nutritionLogRequestDto.getClientId())
-                        .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + nutritionLogRequestDto.getClientId()));
+            if (nutritionLogRequestDto.getClientDni() != null) {
+                Client client = clientRepository.findByDni(nutritionLogRequestDto.getClientDni())
+                        .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + nutritionLogRequestDto.getClientDni()));
                 existingNutritionLog.setClient(client);
             }
             if (nutritionLogRequestDto.getDate() != null) {

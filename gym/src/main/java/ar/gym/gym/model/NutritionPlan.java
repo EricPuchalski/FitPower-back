@@ -21,7 +21,6 @@ public class NutritionPlan {
     @ManyToOne
     @JoinColumn(name = "nutritionist_id")
     private Nutritionist nutritionist;
-
     private String type;
     private Date startDate;
     private Date endDate;

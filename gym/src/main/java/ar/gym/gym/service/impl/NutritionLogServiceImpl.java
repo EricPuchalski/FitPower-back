@@ -55,8 +55,8 @@ public class NutritionLogServiceImpl implements NutritionLogService {
     public NutritionLogResponseDto createNutritionLog(NutritionLogRequestDto nutritionLogRequestDto) {
         logger.info("Entering createNutritionLog method with nutrition log data: {}", nutritionLogRequestDto);
         try {
-            Client client = clientRepository.findById(nutritionLogRequestDto.getClientId())
-                    .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + nutritionLogRequestDto.getClientId()));
+            Client client = clientRepository.findByDni(nutritionLogRequestDto.getClientDni())
+                    .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + nutritionLogRequestDto.getClientDni()));
 
             NutritionPlan nutritionPlan = nutritionPlanRepository.findById(nutritionLogRequestDto.getNutritionPlanId())
                     .orElseThrow(() -> new EntityNotFoundException("Nutrition plan not found with ID: " + nutritionLogRequestDto.getNutritionPlanId()));
@@ -86,9 +86,9 @@ public class NutritionLogServiceImpl implements NutritionLogService {
             NutritionLog existingNutritionLog = nutritionLogRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Nutrition log not found with ID: " + id));
 
-            if (nutritionLogRequestDto.getClientId() != null) {
-                Client client = clientRepository.findById(nutritionLogRequestDto.getClientId())
-                        .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + nutritionLogRequestDto.getClientId()));
+            if (nutritionLogRequestDto.getClientDni() != null) {
+                Client client = clientRepository.findByDni(nutritionLogRequestDto.getClientDni())
+                        .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + nutritionLogRequestDto.getClientDni()));
                 existingNutritionLog.setClient(client);
             }
             if (nutritionLogRequestDto.getNutritionPlanId() != null) {
@@ -165,11 +165,21 @@ public class NutritionLogServiceImpl implements NutritionLogService {
     public List<NutritionLogResponseDto> findAllNutritionLogs() {
         logger.info("Entering findAllNutritionLogs method");
         try {
-            List<NutritionLog> nutritionLogs = nutritionLogRepository.findAll();
+            // Obtener todos los NutritionLogs (con Meals)
+            List<NutritionLog> nutritionLogs = nutritionLogRepository.findAllWithMeals();
 
+            // Convertir los NutritionLogs a sus DTOs correspondientes
             List<NutritionLogResponseDto> response = nutritionLogs.stream()
-                    .map(nutritionLogMapper::convertToDto)
+                    .map(nutritionLog -> {
+                        NutritionLogResponseDto dto = nutritionLogMapper.convertToDto(nutritionLog);
+
+                        // Mapear las Meals a MealResponseDto y asignarlas a mealList
+                        dto.setMealList(mealMapper.convertToDtoList(nutritionLog.getMeals()));
+
+                        return dto;
+                    })
                     .collect(Collectors.toList());
+
             logger.info("Exiting findAllNutritionLogs method with total nutrition logs found: {}", response.size());
             return response;
         } catch (Exception e) {
@@ -177,6 +187,8 @@ public class NutritionLogServiceImpl implements NutritionLogService {
             throw new EntityNotFoundException("Unexpected error fetching all nutrition logs", e);
         }
     }
+
+
 
     @Override
     public List<NutritionLogResponseDto> findCompletedNutritionLogs() {

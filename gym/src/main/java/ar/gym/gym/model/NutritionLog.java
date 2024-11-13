@@ -1,5 +1,6 @@
 package ar.gym.gym.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,7 +28,7 @@ public class NutritionLog {
     private Float dailyCalories;
     private String observations;
     private boolean completed;
-
     @OneToMany(mappedBy = "nutritionLog", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference  // Indica que este es el "lado hijo" que no debe ser serializado
     private List<Meal> meals;
 }

@@ -4,7 +4,6 @@ import ar.gym.gym.model.NutritionStatus;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 public class NutritionPlanResponseDto {

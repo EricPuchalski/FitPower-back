@@ -35,11 +35,14 @@ public class Client extends Person {
 
     @OneToMany(mappedBy = "client")
     private List<NutritionPlan> nutritionPlans;
+
     //    @OneToOne
 //    private java.lang.Record record;
     @OneToMany(mappedBy = "client")
     private List<TrainingDiary> trainingDiaryList;
+
     @OneToMany(mappedBy = "client")
     private List<NutritionLog> nutritionLogList;
+
     private Boolean active = true;
 }

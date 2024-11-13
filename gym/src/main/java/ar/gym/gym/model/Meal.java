@@ -19,6 +19,7 @@ public class Meal {
 
     @ManyToOne
     @JoinColumn(name = "nutrition_log_id")
+    @JsonManagedReference  // Indica que este es el "lado padre" en la relación
     private NutritionLog nutritionLog; // Registro de nutrición al que pertenece esta comida
 
     private boolean completed; // Indica si el cliente consumió esta comida

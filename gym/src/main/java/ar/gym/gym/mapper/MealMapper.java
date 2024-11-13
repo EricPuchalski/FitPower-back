@@ -7,6 +7,9 @@ import ar.gym.gym.model.Meal;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class MealMapper {
 
@@ -22,5 +25,11 @@ public class MealMapper {
 
     public Meal convertToEntity(MealRequestDto mealRequestDto) {
         return modelMapper.map(mealRequestDto, Meal.class);
+    }
+
+    public List<MealResponseDto> convertToDtoList(List<Meal> meals) {
+        return meals.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 }
