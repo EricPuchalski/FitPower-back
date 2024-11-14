@@ -1,9 +1,7 @@
 package ar.gym.gym.service.impl;
 
-import ar.gym.gym.dto.request.RoutineRequestDto;
 import ar.gym.gym.dto.request.TrainerRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
-import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.mapper.ClientMapper;
 import ar.gym.gym.mapper.TrainerMapper;
@@ -84,8 +82,8 @@ public class TrainerServiceImpl implements TrainerService {
         if (trainerRequestDto.getName() != null && !trainerRequestDto.getName().isEmpty()) {
             existingTrainer.setName(trainerRequestDto.getName());
         }
-        if (trainerRequestDto.getSurname() != null && !trainerRequestDto.getSurname().isEmpty()) {
-            existingTrainer.setSurname(trainerRequestDto.getSurname());
+        if (trainerRequestDto.getLastname() != null && !trainerRequestDto.getLastname().isEmpty()) {
+            existingTrainer.setLastname(trainerRequestDto.getLastname());
         }
         if (trainerRequestDto.getPhone() != null && !trainerRequestDto.getPhone().isEmpty()) {
             existingTrainer.setPhone(trainerRequestDto.getPhone());
@@ -132,12 +130,17 @@ public class TrainerServiceImpl implements TrainerService {
                 .map(clientMapper::entityToDto)
                 .collect(Collectors.toList());
     }
-
     @Override
-    public RoutineResponseDto createRoutine(RoutineRequestDto routineRequestDto) {
-        return null;
+    public List<ClientResponseDto> getClientsAssociatedEmail(String email){
+        Trainer trainer = trainerRepository.findByEmail(email);
+        if (trainer != null) {
+            return trainer.getClients()
+                    .stream()
+                    .map(clientMapper::entityToDto)
+                    .collect(Collectors.toList());
+        }
+
+        throw new EntityNotFoundException("Entrenador no encontrado con el email: " + email);
+
     }
-//    public RoutineResponseDto createRoutine(RoutineRequestDto routineRequestDto){
-//        return  routineServiceImpl.create(routineRequestDto);
-//    }
 }

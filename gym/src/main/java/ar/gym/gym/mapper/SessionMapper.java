@@ -1,10 +1,9 @@
 package ar.gym.gym.mapper;
 
-import ar.gym.gym.dto.request.NutritionistRequestDto;
 import ar.gym.gym.dto.request.SessionRequestDto;
-import ar.gym.gym.dto.response.NutritionistResponseDto;
+import ar.gym.gym.dto.request.SessionToTrainingDiaryRequestDto;
 import ar.gym.gym.dto.response.SessionResponseDto;
-import ar.gym.gym.model.Nutritionist;
+import ar.gym.gym.dto.response.SessionToTrainingDiaryResponseDto;
 import ar.gym.gym.model.Session;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -25,5 +24,13 @@ public class SessionMapper {
 
     public Session dtoToEntity(SessionRequestDto sessionRequestDto){
         return modelMapper.map(sessionRequestDto, Session.class);
+    }
+
+    public Session dtoTrainingToEntity(SessionToTrainingDiaryRequestDto sessionToTrainingDiaryRequestDto){
+        return modelMapper.map(sessionToTrainingDiaryRequestDto, Session.class);
+    }
+
+    public SessionToTrainingDiaryResponseDto entityTrainingToDto(Session session){
+        return modelMapper.map(session, SessionToTrainingDiaryResponseDto.class);
     }
 }

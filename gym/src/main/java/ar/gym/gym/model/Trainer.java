@@ -15,8 +15,6 @@ public class Trainer extends Person {
     private String profession;
     private boolean available;
     @OneToMany(mappedBy = "trainer")
-    private List<Routine>routineList;
-    @OneToMany(mappedBy = "trainer")
     private List<Client>clients;
     @ManyToOne
     @JoinColumn(name = "gym_id")

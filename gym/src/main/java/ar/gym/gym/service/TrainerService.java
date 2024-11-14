@@ -1,9 +1,7 @@
 package ar.gym.gym.service;
 
-import ar.gym.gym.dto.request.RoutineRequestDto;
 import ar.gym.gym.dto.request.TrainerRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
-import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.model.Trainer;
 
@@ -25,5 +23,6 @@ public interface TrainerService {
 
    List<ClientResponseDto> getClientsAssociated(String dni);
 
-    RoutineResponseDto createRoutine(RoutineRequestDto routineRequestDto);
+    List<ClientResponseDto> getClientsAssociatedEmail(String email);
+
 }

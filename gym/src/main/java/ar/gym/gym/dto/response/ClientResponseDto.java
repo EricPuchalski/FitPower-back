@@ -1,11 +1,10 @@
 package ar.gym.gym.dto.response;
 
-import ar.gym.gym.model.*;
+import ar.gym.gym.model.ClientStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.lang.Record;
 import java.util.List;
 
 @Data
@@ -16,6 +15,7 @@ public class ClientResponseDto {
     private String name;
     private String lastname;
     private String dni;
+    private String initialPhysicalState; //Estado fisico inicial
     private String phone;
     private String address;
     private String email;
@@ -23,4 +23,7 @@ public class ClientResponseDto {
     private List<ClientStatus> statuses;
     private String goal;
     private String gymName;
+    private String trainerDni;
+    private String nutritionistDni;
+
 }
