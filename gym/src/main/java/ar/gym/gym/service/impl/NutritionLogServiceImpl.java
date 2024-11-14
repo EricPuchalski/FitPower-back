@@ -35,20 +35,22 @@ public class NutritionLogServiceImpl implements NutritionLogService {
     private final MealRepository mealRepository;
     private final NutritionLogMapper nutritionLogMapper;
     private final MealMapper mealMapper;
-
+    private final MealServiceImpl mealService;
 
     public NutritionLogServiceImpl(NutritionLogRepository nutritionLogRepository,
                                    ClientRepository clientRepository,
                                    NutritionPlanRepository nutritionPlanRepository,
                                    MealRepository mealRepository,
                                    NutritionLogMapper nutritionLogMapper,
-                                   MealMapper mealMapper) {
+                                   MealMapper mealMapper,
+                                   MealServiceImpl mealService) {
         this.nutritionLogRepository = nutritionLogRepository;
         this.clientRepository = clientRepository;
         this.nutritionPlanRepository = nutritionPlanRepository;
         this.mealRepository = mealRepository;
         this.nutritionLogMapper = nutritionLogMapper;
         this.mealMapper = mealMapper;
+        this.mealService = mealService;
     }
 
     @Override
@@ -171,10 +173,22 @@ public class NutritionLogServiceImpl implements NutritionLogService {
             // Convertir los NutritionLogs a sus DTOs correspondientes
             List<NutritionLogResponseDto> response = nutritionLogs.stream()
                     .map(nutritionLog -> {
+                        // Convertir NutritionLog a DTO
                         NutritionLogResponseDto dto = nutritionLogMapper.convertToDto(nutritionLog);
 
-                        // Mapear las Meals a MealResponseDto y asignarlas a mealList
-                        dto.setMealList(mealMapper.convertToDtoList(nutritionLog.getMeals()));
+                        // Obtener las Meals con sus MealDetails asociados
+                        List<MealResponseDto> mealResponseDtos = mealService.findAllMeals();
+
+                        // Filtrar las Meals que pertenecen al NutritionLog actual
+                        List<MealResponseDto> filteredMealResponseDtos = mealResponseDtos.stream()
+                                .filter(mealResponseDto -> {
+                                    Long nutritionLogId = mealResponseDto.getNutritionLogId();
+                                    return nutritionLogId != null && nutritionLogId.equals(nutritionLog.getId());
+                                })
+                                .collect(Collectors.toList());
+
+                        // Asignar la lista de MealResponseDto con MealDetail
+                        dto.setMealList(filteredMealResponseDtos);
 
                         return dto;
                     })
@@ -294,48 +308,6 @@ public class NutritionLogServiceImpl implements NutritionLogService {
         return null;
     }
 
-    /*
-        @Override
-        public MealResponseDto updateMealInNutritionLog(Long nutritionLogId, Long mealId, MealRequestDto mealRequestDto) {
-            if (mealRequestDto == null) {
-                throw new IllegalArgumentException("mealRequestDto cannot be null");
-            }
-
-            logger.info("Entering updateMealInNutritionLog method with nutrition log ID: {}, meal ID: {} and update data: {}", nutritionLogId, mealId, mealRequestDto);
-            try {
-                NutritionLog nutritionLog = nutritionLogRepository.findById(nutritionLogId)
-                        .orElseThrow(() -> new EntityNotFoundException("Nutrition log not found with ID: " + nutritionLogId));
-
-                Meal existingMeal = mealRepository.findById(mealId)
-                        .orElseThrow(() -> new EntityNotFoundException("Meal not found with ID: " + mealId));
-
-                if (!existingMeal.getNutritionLog().getId().equals(nutritionLogId)) {
-                    throw new IllegalArgumentException("Meal does not belong to the specified nutrition log");
-                }
-
-                if (mealRequestDto.getMealTime() != null) {
-                    existingMeal.setMealTime(mealRequestDto.getMealTime());
-                }
-                if (mealRequestDto.getMeasureUnit() != null) {
-                    existingMeal.setMeasureUnit(mealRequestDto.getMeasureUnit());
-                }
-
-                existingMeal.setCompleted(mealRequestDto.isCompleted());
-
-                Meal updatedMeal = mealRepository.save(existingMeal);
-                MealResponseDto response = mealMapper.convertToDto(updatedMeal);
-
-                logger.info("Exiting updateMealInNutritionLog method with response for nutritionLogId {}, mealId {}: {}", nutritionLogId, mealId, response);
-                return response;
-            } catch (EntityNotFoundException e) {
-                logger.error("Error updating meal {} in nutrition log {}: {}", mealId, nutritionLogId, e.getMessage());
-                throw e;
-            } catch (Exception e) {
-                logger.error("Unexpected error updating meal {} in nutrition log {}: {}", mealId, nutritionLogId, e.getMessage());
-                throw new RuntimeException("Unexpected error updating meal in nutrition log", e);
-            }
-        }
-    */
     @Override
     public void deleteMealFromNutritionLog(Long nutritionLogId, Long mealId) {
         logger.info("Entering deleteMealFromNutritionLog method with nutrition log ID: {} and meal ID: {}", nutritionLogId, mealId);

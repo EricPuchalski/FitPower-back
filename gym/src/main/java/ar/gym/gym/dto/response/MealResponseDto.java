@@ -1,6 +1,5 @@
 package ar.gym.gym.dto.response;
 
-import ar.gym.gym.model.MealDetail;
 import lombok.Data;
 
 import java.util.List;
@@ -11,5 +10,5 @@ public class MealResponseDto {
         private String mealTime;
         private Long nutritionLogId;
         private boolean completed;
-        private List<MealDetail> mealDetails;
+        private List<MealDetailResponseDto> mealDetails;
 }

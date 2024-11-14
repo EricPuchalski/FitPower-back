@@ -1,10 +1,8 @@
 package ar.gym.gym.dto.request;
 
-import ar.gym.gym.model.Meal;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 public class NutritionLogRequestDto {

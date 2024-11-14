@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b2ff890f-4515-478b-9216-a36d2f21e1d7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/mapper/MealDetailMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/NutritionLogRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/request/NutritionLogRequestDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/MealResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/MealResponseDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/NutritionLogResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/dto/response/NutritionLogResponseDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/NutritionLogServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/gym/src/main/java/ar/gym/gym/service/impl/NutritionLogServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
