@@ -12,6 +12,7 @@ import ar.gym.gym.model.Session;
 import ar.gym.gym.model.TrainingDiary;
 import ar.gym.gym.repository.ClientRepository;
 import ar.gym.gym.repository.ExerciseRepository;
+import ar.gym.gym.repository.SessionRepository;
 import ar.gym.gym.repository.TrainingDiaryRepository;
 import ar.gym.gym.service.TrainingDiaryService;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,14 +30,15 @@ public class TrainingDiaryServiceImpl implements TrainingDiaryService {
     private final ClientRepository clientRepository;
     private final TrainingDiaryMapper trainingDiaryMapper;
     private final SessionMapper sessionMapper;
-
+    private final SessionRepository sessionRepository;
     private final ExerciseRepository exerciseRepository;
 
-    public TrainingDiaryServiceImpl(TrainingDiaryRepository trainingDiaryRepository, ClientRepository clientRepository, TrainingDiaryMapper trainingDiaryMapper, SessionMapper sessionMapper, ExerciseRepository exerciseRepository) {
+    public TrainingDiaryServiceImpl(TrainingDiaryRepository trainingDiaryRepository, ClientRepository clientRepository, TrainingDiaryMapper trainingDiaryMapper, SessionMapper sessionMapper, SessionRepository sessionRepository, ExerciseRepository exerciseRepository) {
         this.trainingDiaryRepository = trainingDiaryRepository;
         this.clientRepository = clientRepository;
         this.trainingDiaryMapper = trainingDiaryMapper;
         this.sessionMapper = sessionMapper;
+        this.sessionRepository = sessionRepository;
         this.exerciseRepository = exerciseRepository;
     }
 
@@ -50,7 +52,7 @@ public class TrainingDiaryServiceImpl implements TrainingDiaryService {
         // Convertir el DTO a entidad
         TrainingDiary trainingDiary = trainingDiaryMapper.dtoToEntity(requestDto);
         trainingDiary.setClient(client);
-        trainingDiary.setDate(LocalDateTime.now());
+        trainingDiary.setCreationDate(LocalDateTime.now());
 
         // Guardar en la base de datos
         trainingDiary = trainingDiaryRepository.save(trainingDiary);
@@ -60,10 +62,24 @@ public class TrainingDiaryServiceImpl implements TrainingDiaryService {
     }
 
     @Override
+    public List<SessionToTrainingDiaryResponseDto> getSessionsByTrainingDiaryId(Long trainingDiaryId) {
+        // Buscar el diario de entrenamiento por ID
+        TrainingDiary trainingDiary = trainingDiaryRepository.findById(trainingDiaryId)
+                .orElseThrow(() -> new EntityNotFoundException("Training Diary not found with ID: " + trainingDiaryId));
+
+        // Obtener las sesiones del diario y mapearlas a DTOs
+        return trainingDiary.getSessions()
+                .stream()
+                .map(sessionMapper::entityTrainingToDto)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
     public List<TrainingDiaryResponseDto> getAllDiariesByClient(String clientDni) {
         // Buscar todos los diarios de entrenamiento del cliente por DNI
         Client client = clientRepository.findByDni(clientDni)
-                .orElseThrow(() -> new RuntimeException("Client not found with DNI: " + clientDni));
+                .orElseThrow(() -> new EntityNotFoundException("Client not found with DNI: " + clientDni));
 
         return trainingDiaryRepository.findByClient(client)
                 .stream()
@@ -75,7 +91,7 @@ public class TrainingDiaryServiceImpl implements TrainingDiaryService {
     public TrainingDiaryResponseDto getDiaryById(Long id) {
         // Buscar el diario de entrenamiento por ID
         TrainingDiary trainingDiary = trainingDiaryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Training Diary not found with ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Training Diary not found with ID: " + id));
 
         return trainingDiaryMapper.entityToDto(trainingDiary);
     }
@@ -85,11 +101,10 @@ public class TrainingDiaryServiceImpl implements TrainingDiaryService {
     public TrainingDiaryResponseDto updateTrainingDiary(Long id, TrainingDiaryRequestDto requestDto) {
         // Buscar el diario de entrenamiento existente por ID
         TrainingDiary trainingDiary = trainingDiaryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Training Diary not found with ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Training Diary not found with ID: " + id));
 
         // Actualizar los campos con los datos del requestDto
         trainingDiary.setObservation(requestDto.getObservation());
-        trainingDiary.setCompleted(requestDto.getSession() != null);
 
         // Guardar los cambios
         trainingDiary = trainingDiaryRepository.save(trainingDiary);
@@ -102,11 +117,22 @@ public class TrainingDiaryServiceImpl implements TrainingDiaryService {
     public void deleteTrainingDiary(Long id) {
         // Verificar si el diario de entrenamiento existe antes de eliminar
         TrainingDiary trainingDiary = trainingDiaryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Training Diary not found with ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Training Diary not found with ID: " + id));
 
         trainingDiaryRepository.delete(trainingDiary);
     }
 
+
+    @Override
+    @Transactional
+    public void deleteSession(Long idSession) {
+        // Buscar la sesión por ID
+        Session session = sessionRepository.findById(idSession)
+                .orElseThrow(() -> new EntityNotFoundException("Session not found with ID: " + idSession));
+
+        // Eliminar la sesión
+        sessionRepository.delete(session);
+    }
 
     @Override
     @Transactional
@@ -122,6 +148,7 @@ public class TrainingDiaryServiceImpl implements TrainingDiaryService {
         // Convertir el DTO de la sesión a entidad y asignar el ejercicio
         Session session = sessionMapper.dtoTrainingToEntity(sessionRequestDto);
         session.setExercise(exercise);  // Establecer el ejercicio en la sesión
+        session.setWeight(sessionRequestDto.getWeight());
         session.setTrainingDiary(trainingDiary);  // Establecer la relación con el diario
 
         // Agregar la nueva sesión al diario de entrenamiento

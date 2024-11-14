@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class RoutineRequestDto {
     private String clientDni; // Cambiar Client completo por solo el DNI
     private String name;
-//    private Status status;
 
 }

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class ExerciseController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ExerciseResponseDto> create(@RequestBody ExerciseRequestDto exerciseRequestDto) {
         logger.info("Creating a new exercise: {}", exerciseRequestDto);
         ExerciseResponseDto createdExercise = exerciseService.create(exerciseRequestDto);
@@ -33,6 +35,7 @@ public class ExerciseController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TRAINER')")
     public ResponseEntity<List<ExerciseResponseDto>> findAll() {
         logger.info("Fetching all exercises");
         List<ExerciseResponseDto> exercises = exerciseService.findAll();
@@ -41,6 +44,7 @@ public class ExerciseController {
     }
 
     @GetMapping("/{name}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TRAINER')")
     public ResponseEntity<Exercise> findByName(@PathVariable String name) {
         logger.info("Fetching exercise with name: {}", name);
         Optional<Exercise> exercise = exerciseService.findByName(name);
@@ -54,6 +58,7 @@ public class ExerciseController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ExerciseResponseDto> update(@RequestBody ExerciseRequestDto exerciseRequestDto, @PathVariable Long id) {
         logger.info("Updating exercise with ID: {}", id);
         ExerciseResponseDto updatedExercise = exerciseService.update(exerciseRequestDto, id);
@@ -62,6 +67,7 @@ public class ExerciseController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         logger.info("Deleting exercise with ID: {}", id);
         exerciseService.delete(id);

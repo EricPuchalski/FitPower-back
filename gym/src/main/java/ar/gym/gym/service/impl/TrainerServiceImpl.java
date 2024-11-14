@@ -1,9 +1,7 @@
 package ar.gym.gym.service.impl;
 
-import ar.gym.gym.dto.request.RoutineRequestDto;
 import ar.gym.gym.dto.request.TrainerRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
-import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.mapper.ClientMapper;
 import ar.gym.gym.mapper.TrainerMapper;
@@ -131,5 +129,18 @@ public class TrainerServiceImpl implements TrainerService {
                 .stream()
                 .map(clientMapper::entityToDto)
                 .collect(Collectors.toList());
+    }
+    @Override
+    public List<ClientResponseDto> getClientsAssociatedEmail(String email){
+        Trainer trainer = trainerRepository.findByEmail(email);
+        if (trainer != null) {
+            return trainer.getClients()
+                    .stream()
+                    .map(clientMapper::entityToDto)
+                    .collect(Collectors.toList());
+        }
+
+        throw new EntityNotFoundException("Entrenador no encontrado con el email: " + email);
+
     }
 }

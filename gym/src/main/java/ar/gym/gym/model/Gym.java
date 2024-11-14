@@ -12,8 +12,6 @@ public class Gym {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String gymCode;
     private String name;
     private String phone;
     private String email;

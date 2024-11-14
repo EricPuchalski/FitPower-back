@@ -1,6 +1,5 @@
 package ar.gym.gym.dto.request;
 
-import ar.gym.gym.model.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -8,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

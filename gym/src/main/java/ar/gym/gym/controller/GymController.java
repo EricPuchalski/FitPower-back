@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class GymController {
 
     // Endpoint para crear un nuevo gimnasio
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GymResponseDto> create(@RequestBody GymRequestDto gymRequestDto) {
         logger.info("Creating a new gym: {}", gymRequestDto);
         GymResponseDto createdGym = gymService.create(gymRequestDto);
@@ -69,43 +70,47 @@ public class GymController {
     }
 
     // Endpoint para eliminar un gimnasio
-    @DeleteMapping("/{gymCode}")
-    public ResponseEntity<Void> delete(@PathVariable String gymCode) {
-        logger.info("Deleting gym with code: {}", gymCode);
-        gymService.deleteByGymCode(gymCode);
-        logger.info("Gym with code {} has been deleted", gymCode);
+    @DeleteMapping("/{name}")
+    public ResponseEntity<Void> delete(@PathVariable String name) {
+        logger.info("Deleting gym with code: {}", name);
+        gymService.deleteByName(name);
+        logger.info("Gym with code {} has been deleted", name);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // Endpoint para agregar un cliente a un gimnasio
-    @PutMapping("/add/{gymCode}/clients/{dni}")
-    public ResponseEntity<GymResponseDto> addClientToGym(@PathVariable String gymCode, @PathVariable String dni) {
-        logger.info("Adding client with DNI {} to gym with code {}", dni, gymCode);
-        GymResponseDto updatedGym = gymService.addClientToGym(gymCode, dni);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/add/{name}/clients/{dni}")
+    public ResponseEntity<GymResponseDto> addClientToGym(@PathVariable String name, @PathVariable String dni) {
+        logger.info("Adding client with DNI {} to gym with code {}", dni, name);
+        GymResponseDto updatedGym = gymService.addClientToGym(name, dni);
         logger.info("Client added to gym successfully: {}", updatedGym);
         return ResponseEntity.ok(updatedGym);
     }
 
     // Endpoint para agregar un entrenador a un gimnasio
-    @PostMapping("/add/{gymCode}/trainers/{dni}")
-    public ResponseEntity<GymResponseDto> addTrainerToGym(@PathVariable String gymCode, @PathVariable String dni) {
-        logger.info("Adding trainer with DNI {} to gym with code {}", dni, gymCode);
-        GymResponseDto updatedGym = gymService.addTrainerToGym(gymCode, dni);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/add/{name}/trainers/{dni}")
+    public ResponseEntity<GymResponseDto> addTrainerToGym(@PathVariable String name, @PathVariable String dni) {
+        logger.info("Adding trainer with DNI {} to gym with code {}", dni, name);
+        GymResponseDto updatedGym = gymService.addTrainerToGym(name, dni);
         logger.info("Trainer added to gym successfully: {}", updatedGym);
         return ResponseEntity.ok(updatedGym);
     }
 
     // Endpoint para agregar un nutricionista a un gimnasio
-    @PostMapping("/add/{gymCode}/nutritionist/{dni}")
-    public ResponseEntity<GymResponseDto> addNutritionistToGym(@PathVariable String gymCode, @PathVariable String dni) {
-        logger.info("Adding nutritionist with DNI {} to gym with code {}", dni, gymCode);
-        GymResponseDto updatedGym = gymService.addNutritionistToGym(gymCode, dni);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/add/{name}/nutritionist/{dni}")
+    public ResponseEntity<GymResponseDto> addNutritionistToGym(@PathVariable String name, @PathVariable String dni) {
+        logger.info("Adding nutritionist with DNI {} to gym with code {}", dni, name);
+        GymResponseDto updatedGym = gymService.addNutritionistToGym(name, dni);
         logger.info("Nutritionist added to gym successfully: {}", updatedGym);
         return ResponseEntity.ok(updatedGym);
     }
 
     // Endpoint para asignar un entrenador a un cliente
-    @PostMapping("/assign/{dniTrainer}/trainer-to-client/{dniClient}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/assign/{dniTrainer}/trainer-to-client/{dniClient}")
     public ResponseEntity<AddClientToTrainerResponseDto> assignTrainerToClient(@PathVariable String dniTrainer, @PathVariable String dniClient) {
         logger.info("Assigning trainer with DNI {} to client with DNI {}", dniTrainer, dniClient);
         AddClientToTrainerResponseDto addClientToTrainerResponseDto = gymService.assignTrainerToClient(dniTrainer, dniClient);
@@ -114,6 +119,7 @@ public class GymController {
     }
 
     // Endpoint para asignar un nutricionista a un cliente
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/assign/{dniNut}/nutritionist-to-client/{dniClient}")
     public ResponseEntity<AddClientToNutritionistResponseDto> assignNutritionistToClient(@PathVariable String dniNut, @PathVariable String dniClient) {
         logger.info("Assigning nutritionist with DNI {} to client with DNI {}", dniNut, dniClient);

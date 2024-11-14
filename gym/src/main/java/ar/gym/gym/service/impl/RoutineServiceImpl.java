@@ -4,14 +4,8 @@ import ar.gym.gym.dto.request.RoutineRequestDto;
 import ar.gym.gym.dto.request.SessionRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.mapper.RoutineMapper;
-import ar.gym.gym.model.Client;
-import ar.gym.gym.model.Exercise;
-import ar.gym.gym.model.Routine;
-import ar.gym.gym.model.Session;
-import ar.gym.gym.repository.ClientRepository;
-import ar.gym.gym.repository.ExerciseRepository;
-import ar.gym.gym.repository.RoutineRepository;
-import ar.gym.gym.repository.SessionRepository;
+import ar.gym.gym.model.*;
+import ar.gym.gym.repository.*;
 import ar.gym.gym.service.RoutineService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,33 +25,51 @@ public class RoutineServiceImpl implements RoutineService {
     private final RoutineMapper routineMapper;
     private final ClientRepository clientRepository;
     private final SessionRepository sessionRepository;
-
     private final ExerciseRepository exerciseRepository;
+    private final NotificationRepository notificationRepository;
 
-    public RoutineServiceImpl(RoutineRepository routineRepository, RoutineMapper routineMapper, ClientRepository clientRepository, SessionRepository sessionRepository, ExerciseRepository exerciseRepository) {
+    private final TrainingPlanRepository trainingPlanRepository;
+
+    public RoutineServiceImpl(RoutineRepository routineRepository, RoutineMapper routineMapper, ClientRepository clientRepository, SessionRepository sessionRepository, ExerciseRepository exerciseRepository, NotificationRepository notificationRepository, TrainingPlanRepository trainingPlanRepository) {
         this.routineRepository = routineRepository;
         this.routineMapper = routineMapper;
         this.clientRepository = clientRepository;
         this.sessionRepository = sessionRepository;
         this.exerciseRepository = exerciseRepository;
+        this.notificationRepository = notificationRepository;
+        this.trainingPlanRepository = trainingPlanRepository;
     }
 
     @Override
     public RoutineResponseDto create(RoutineRequestDto routineRequestDto) {
         Client client = clientRepository.findByDni(routineRequestDto.getClientDni())
-                .orElseThrow(() -> new IllegalArgumentException("Client not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
 
         // Convert DTO to entity
         Routine routine = routineMapper.dtoToEntity(routineRequestDto);
 
         // Set active to false initially
-        routine.setActive(false);
+        routine.setActive(true);
+        routine.setCompleted(false);
 
         // Set the client to the routine
         routine.setClient(client);
 
+        routine.setCreationDate(LocalDate.now());
+
         // Save the new routine
         Routine newRoutine = routineRepository.save(routine);
+
+        //Notificar al cliente
+        Notification notification = Notification.builder().
+                creationDate(LocalDateTime.now()).
+                seen(false).
+                message("Se añadió la rutina " + routineRequestDto.getName()).
+                client(client).build();
+        client.getNotifications().add(notification);
+
+        clientRepository.save(client);
+        notificationRepository.save(notification);
 
         // Return the new routine as DTO
         return routineMapper.entityToDto(newRoutine);
@@ -68,15 +80,6 @@ public class RoutineServiceImpl implements RoutineService {
         // Fetch the client by ID
         Client client = clientRepository.findByDni(dni)
                 .orElseThrow(() -> new EntityNotFoundException("Client not found"));
-
-        // Fetch the routines for the client
-        List<Routine> routines = routineRepository.findByClientId(client.getId());
-
-        // Set all routines to inactive
-        for (Routine r : routines) {
-            r.setActive(false);
-            routineRepository.save(r);
-        }
 
         // Activate the selected routine
         Routine routineToActivate = routineRepository.findById(routineId)
@@ -114,6 +117,54 @@ public class RoutineServiceImpl implements RoutineService {
         return routineMapper.entityToDto(activeRoutine);
     }
 
+    @Override
+    public RoutineResponseDto completeRoutine(Long idRoutine) {
+        // 1. Buscar la rutina por su ID
+        Routine routine = routineRepository.findById(idRoutine)
+                .orElseThrow(() -> new EntityNotFoundException("Routine not found"));
+
+        // 2. Marcar la rutina como completada, pero no guardarla aún
+        routine.setCompleted(true);
+
+        // 3. Obtener el DNI del cliente asociado a la rutina
+        String clientDni = routine.getClient().getDni();
+
+        // 4. Obtener el cliente asociado a la rutina
+        Client client = clientRepository.findByDni(clientDni)
+                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
+
+        // 5. Obtener el plan de entrenamiento activo del cliente
+        List<TrainingPlan> activeTrainingPlans = trainingPlanRepository.findByClientAndActiveTrue(client);
+        if (activeTrainingPlans.isEmpty()) {
+            throw new EntityNotFoundException("Active training plan not found");
+        }
+        TrainingPlan activeTrainingPlan = activeTrainingPlans.get(0);
+
+        // 6. Obtener todas las rutinas activas del plan de entrenamiento activo
+        List<Routine> activeRoutines = activeTrainingPlan.getRoutines().stream()
+                .filter(Routine::isActive)
+                .collect(Collectors.toList());
+
+        // 7. Verificar si todas las rutinas activas están completadas
+        boolean allCompleted = activeRoutines.stream().allMatch(Routine::isCompleted);
+
+        if (allCompleted) {
+            // 8. Si todas están completadas, restablecer el estado de todas las rutinas activas a no completado
+            activeRoutines.forEach(r -> r.setCompleted(false));
+            routineRepository.saveAll(activeRoutines);
+        } else {
+            // Si no todas están completadas, guardar la rutina actual individualmente
+            routineRepository.save(routine);
+        }
+
+        // 9. Convertir la rutina actualizada a un DTO y devolverla
+        return routineMapper.entityToDto(routine);
+    }
+
+
+
+
+
 
 
 
@@ -136,10 +187,13 @@ public class RoutineServiceImpl implements RoutineService {
         Client client = clientRepository.findByEmail(clientEmail)
                 .orElseThrow(() -> new EntityNotFoundException("No existe un cliente con el email: " + clientEmail));
 
-        // Fetch all routines for the client
-        List<Routine> routines = routineRepository.findByClientId(client.getId());
+        // Fetch all routines for the client and filter by active status
+        List<Routine> routines = routineRepository.findByClientId(client.getId())
+                .stream()
+                .filter(Routine::isActive)  // Filtra solo las rutinas activas
+                .toList();
 
-        // Return the list of routines as DTOs
+        // Convert the list of active routines to DTOs
         return routines.stream()
                 .map(routineMapper::entityToDto)
                 .collect(Collectors.toList());
@@ -221,6 +275,13 @@ public class RoutineServiceImpl implements RoutineService {
 
         // Guardar la rutina actualizada en la base de datos
         Routine updatedRoutine = routineRepository.save(routine);
+        //Notificar al cliente
+        Notification notification = Notification.builder().
+                creationDate(LocalDateTime.now()).
+                seen(false).
+                message("Se añadió una sesión a la rutina " + routine.getName()).build();
+        routine.getClient().getNotifications().add(notification);
+        notificationRepository.save(notification);
 
         // Devolver el DTO de la rutina actualizada usando el mapper
         return routineMapper.entityToDto(updatedRoutine);
@@ -246,25 +307,78 @@ public class RoutineServiceImpl implements RoutineService {
 
         // Guardar la rutina actualizada
         Routine updatedRoutine = routineRepository.save(routine);
+        //Notificar al cliente
+        Notification notification = Notification.builder().
+                creationDate(LocalDateTime.now()).
+                seen(false).
+                message("Se ha removido una sesión en la rutina " + routine.getName()).build();
+        routine.getClient().getNotifications().add(notification);
+        notificationRepository.save(notification);
 
         // Devolver el DTO de la rutina actualizada usando el mapper
         return routineMapper.entityToDto(updatedRoutine);
     }
 
     @Transactional
-    public RoutineResponseDto editSessionInRoutine(Long routineId, SessionRequestDto sessionRequestDto) {
+    @Override
+    public RoutineResponseDto editSessionInRoutine(Long routineId, Long sessionId, SessionRequestDto sessionRequestDto) {
         // Buscar la rutina por su ID
-        Routine routine = getRoutineByCodeOrThrow(routineId);
+        Routine routine = routineRepository.findById(routineId)
+                .orElseThrow(() -> new EntityExistsException("Routine not found"));
 
-        // Actualizar la sesión utilizando SessionService
-//        SessionResponseDto updatedSessionDto = sessionServiceImpl.update(sessionRequestDto);
+        // Buscar la sesión correspondiente a editar utilizando el sessionId
+        Session sessionToUpdate = routine.getSessions().stream()
+                .filter(session -> session.getId().equals(sessionId))
+                .findFirst()
+                .orElseThrow(() -> new EntityExistsException("Session not found"));
 
-        // No es necesario manipular la lista de sesiones directamente, ya que se ha actualizado en la base de datos
-        // Guardar la rutina actualizada (aunque las sesiones ya están vinculadas)
-        Routine updatedRoutine = routineRepository.save(routine);
+        // Actualizar la sesión con los datos del DTO
+        sessionToUpdate.setSets(sessionRequestDto.getSets());
+        sessionToUpdate.setReps(sessionRequestDto.getReps());
+        sessionToUpdate.setRestTime(sessionRequestDto.getRestTime());
+        if (sessionRequestDto.getExerciseName()!=null){
+            Optional<Exercise> exercise = exerciseRepository.findByName(sessionRequestDto.getExerciseName());
+            if (exercise.isEmpty()){
+                throw new EntityNotFoundException("Exercise not found");
+            }
+            sessionToUpdate.setExercise(exercise.get());
 
-        // Devolver el DTO de la rutina actualizada usando el mapper
-        return routineMapper.entityToDto(updatedRoutine);
+        }
+
+        // Aquí puedes agregar más campos si es necesario
+
+        // Si la relación entre Routine y Session tiene cascade, no es necesario guardar la sesión
+        routineRepository.save(routine); // Esto guarda la rutina y la sesión si la relación es cascada
+
+        //Notificar al cliente
+        Notification notification = Notification.builder().
+                creationDate(LocalDateTime.now()).
+                seen(false).
+                message("Se ha editado una sesión en la rutina " + routine.getName()).build();
+        routine.getClient().getNotifications().add(notification);
+        notificationRepository.save(notification);
+
+        // Devolver el DTO de la rutina actualizada
+        return routineMapper.entityToDto(routine);
     }
+
+    @Transactional
+    @Override
+    public RoutineResponseDto deactivateRoutine(Long routineId) {
+        // Buscar la rutina por su ID
+        Routine routine = routineRepository.findById(routineId)
+                .orElseThrow(() -> new EntityNotFoundException("Routine not found"));
+
+        // Desactivar la rutina (setActive false)
+        routine.setActive(false);
+
+        // Guardar la rutina desactivada en la base de datos
+        routineRepository.save(routine);
+
+        // Convertir la rutina desactivada a DTO y devolverla
+        return routineMapper.entityToDto(routine);
+    }
+
+
 
 }

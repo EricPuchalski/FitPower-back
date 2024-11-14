@@ -1,6 +1,5 @@
 package ar.gym.gym.service;
 
-import ar.gym.gym.dto.request.SessionRequestDto;
 import ar.gym.gym.dto.request.SessionToTrainingDiaryRequestDto;
 import ar.gym.gym.dto.request.TrainingDiaryRequestDto;
 import ar.gym.gym.dto.response.SessionToTrainingDiaryResponseDto;
@@ -18,5 +17,9 @@ public interface TrainingDiaryService {
     SessionToTrainingDiaryResponseDto addSessionToDiary(Long trainingDiaryId, SessionToTrainingDiaryRequestDto sessionRequestDto);
 
     List<TrainingDiaryResponseDto> findAllTrainingDiaries();
+
+    List<SessionToTrainingDiaryResponseDto> getSessionsByTrainingDiaryId(Long trainingDiaryId);
+
+    void deleteSession(Long idSession);
 
 }

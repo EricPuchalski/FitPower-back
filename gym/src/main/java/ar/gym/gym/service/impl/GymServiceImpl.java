@@ -44,6 +44,12 @@ public class GymServiceImpl implements GymService {
         if (gymRepository.findByName(gymRequestDto.getName()).isPresent()) {
             throw new EntityExistsException("Ya existe un gimnasio con el nombre " + gymRequestDto.getName());
         }
+        if (gymRepository.findByPhone(gymRequestDto.getPhone()).isPresent()) {
+            throw new EntityExistsException("Ya existe un gimnasio con el número de teléfono " + gymRequestDto.getPhone());
+        }
+        if (gymRepository.findByEmail(gymRequestDto.getEmail()).isPresent()) {
+            throw new EntityExistsException("Ya existe un gimnasio con el email " + gymRequestDto.getEmail());
+        }
         Gym gym = gymMapper.dtoToEntity(gymRequestDto);
         gymRepository.save(gym);
         return gymMapper.entityToDto(gym);
@@ -67,9 +73,20 @@ public class GymServiceImpl implements GymService {
     }
 
     //Funcion para reutilizar el mensaje de clase con id inexistente
-    public Gym getGymByCodeOrThrow(String gymCode) {
-        return gymRepository.findByGymCode(gymCode)
-                .orElseThrow(() -> new EntityExistsException("El gimnasio con el código " + gymCode + " no existe"));
+    public Gym getGymByNameOrThrow(String name) {
+        return gymRepository.findByName(name)
+                .orElseThrow(() -> new EntityExistsException("El gimnasio con el código " + name + " no existe"));
+    }
+
+    public Gym getGymByEmailOrThrow(String email) {
+        return gymRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityExistsException("El gimnasio con el email " + email + " no existe"));
+    }
+
+
+    public Gym getGymByPhoneOrThrow(String phone) {
+        return gymRepository.findByPhone(phone)
+                .orElseThrow(() -> new EntityExistsException("El gimnasio con el teléfono " + phone + " no existe"));
     }
 
     @Override
@@ -101,14 +118,14 @@ public class GymServiceImpl implements GymService {
 
 
     @Override
-    public void deleteByGymCode(String gymCode) {
-        Gym gym = getGymByCodeOrThrow(gymCode);
+    public void deleteByName(String name) {
+        Gym gym = getGymByNameOrThrow(name);
         gymRepository.delete(gym);
     }
 
-    public GymResponseDto addClientToGym(String gymCode, String dni) {
+    public GymResponseDto addClientToGym(String name, String dni) {
         // Buscar el gimnasio por el código
-        Gym gym = getGymByCodeOrThrow(gymCode);
+        Gym gym = getGymByNameOrThrow(name);
         Client client = clientRepository.findByDni(dni)
                 .orElseThrow(() -> new EntityExistsException("El cliente con el DNI "+ dni + "no existe") );
 
@@ -127,9 +144,9 @@ public class GymServiceImpl implements GymService {
         return gymMapper.entityToDto(gym);
     }
 
-    public GymResponseDto addTrainerToGym(String gymCode, String dni) {
+    public GymResponseDto addTrainerToGym(String name, String dni) {
         // Buscar el gimnasio por el código
-        Gym gym = getGymByCodeOrThrow(gymCode);
+        Gym gym = getGymByNameOrThrow(name);
         Trainer trainer = trainerRepository.findByDni(dni)
                 .orElseThrow(() -> new EntityExistsException("El entrenador con el DNI " + dni + " no existe"));
 
@@ -150,9 +167,9 @@ public class GymServiceImpl implements GymService {
     }
 
 
-    public GymResponseDto addNutritionistToGym(String gymCode, String dni) {
+    public GymResponseDto addNutritionistToGym(String name, String dni) {
         // Buscar el gimnasio por el código
-        Gym gym = getGymByCodeOrThrow(gymCode);
+        Gym gym = getGymByNameOrThrow(name);
         Nutritionist nutritionist = nutritionistRepository.findByDni(dni)
                 .orElseThrow(() -> new EntityExistsException("El nutricionista con el DNI " + dni + " no existe"));
 

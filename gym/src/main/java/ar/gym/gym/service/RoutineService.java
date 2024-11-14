@@ -24,7 +24,7 @@ public interface RoutineService {
 
     RoutineResponseDto removeSessionFromRoutine(Long routineId, Long sessionId);
 
-    RoutineResponseDto editSessionInRoutine(Long routineId, SessionRequestDto sessionRequestDto);
+    public RoutineResponseDto editSessionInRoutine(Long routineId, Long sessionId, SessionRequestDto sessionRequestDto);
 
     void activateRoutine(String clientDni, Long routineId);
 
@@ -35,4 +35,9 @@ public interface RoutineService {
     List<RoutineResponseDto> getRoutinesByClientEmail(String clientEmail);
 
     RoutineResponseDto getActiveRoutineByEmail(String email);
+
+    RoutineResponseDto completeRoutine(Long idRoutine);
+
+    RoutineResponseDto deactivateRoutine(Long routineId);
+
 }

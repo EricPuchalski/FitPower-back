@@ -25,6 +25,9 @@ logging:
     root: info # permite ver los logs de consola
 
 gym:
+  app:  #Configuración para jwt.
+    jwtSecret: mySecretKey
+    jwtExpirationMs: 86400000
   openapi:
     url: "http://localhost:8080"
     description: ".API for gym management"

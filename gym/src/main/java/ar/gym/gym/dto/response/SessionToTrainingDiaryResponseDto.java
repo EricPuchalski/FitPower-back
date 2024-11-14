@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SessionToTrainingDiaryResponseDto
 {
+    private Long id;
     private int reps;
     private String exerciseName;
     private Double weight;

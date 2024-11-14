@@ -17,4 +17,5 @@ public class RoutineResponseDto {
     private LocalDate creationDate;
     private boolean active;
     private List<SessionResponseDto> sessions;
+    private boolean completed;
 }

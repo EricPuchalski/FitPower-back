@@ -1,12 +1,9 @@
 package ar.gym.gym.dto.request;
 
-import ar.gym.gym.model.Client;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
