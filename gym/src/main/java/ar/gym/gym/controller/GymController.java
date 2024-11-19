@@ -81,7 +81,7 @@ public class GymController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // Endpoint para agregar un cliente a un gimnasio
+    // Endpoint para agregar un cliente a un gimnasio ELIMINAR
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/add/{name}/clients/{dni}")
     public ResponseEntity<GymResponseDto> addClientToGym(@PathVariable String name, @PathVariable String dni) {
@@ -91,7 +91,7 @@ public class GymController {
         return ResponseEntity.ok(updatedGym);
     }
 
-    // Endpoint para agregar un entrenador a un gimnasio
+    // Endpoint para agregar un entrenador a un gimnasio ELIMINAR |
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add/{name}/trainers/{dni}")
     public ResponseEntity<GymResponseDto> addTrainerToGym(@PathVariable String name, @PathVariable String dni) {
@@ -101,7 +101,7 @@ public class GymController {
         return ResponseEntity.ok(updatedGym);
     }
 
-    // Endpoint para agregar un nutricionista a un gimnasio
+    // Endpoint para agregar un nutricionista a un gimnasio ELIMINAR
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add/{name}/nutritionist/{dni}")
     public ResponseEntity<GymResponseDto> addNutritionistToGym(@PathVariable String name, @PathVariable String dni) {

@@ -133,7 +133,6 @@ public class ClientController {
     public ResponseEntity<NotificationResponseDto> markNotificationAsSeen(
             @PathVariable String dniClient,
             @PathVariable Long notificationId) {
-
         // Llamamos al servicio para marcar la notificación como vista
         NotificationResponseDto updatedNotification = clientService.markNotificationAsSeen(dniClient, notificationId);
 

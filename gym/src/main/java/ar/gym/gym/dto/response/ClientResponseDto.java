@@ -20,7 +20,7 @@ public class ClientResponseDto {
     private String address;
     private String email;
     private boolean active;
-    private List<ClientStatus> statuses;
+    private List<ClientStatusResponseDto> statuses;
     private String goal;
     private String gymName;
     private String trainerDni;
