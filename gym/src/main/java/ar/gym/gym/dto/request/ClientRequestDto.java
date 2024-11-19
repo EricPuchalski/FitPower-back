@@ -25,9 +25,5 @@ public class ClientRequestDto {
     private boolean active;
     private ClientStatus status;
     private String goal;
-    private String gymName;
-    private String trainerDni;
-    private String nutritionistDni;
     private String initialPhysicalState; //Estado fisico inicial
-
 }

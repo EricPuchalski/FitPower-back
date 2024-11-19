@@ -19,4 +19,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findByEmail(String email);
     @Query("SELECT n FROM Notification n WHERE n.client.dni = :dni AND n.seen = false")
     List<Notification> findByDniAndNotificationsSeenFalse(String dni);
+
+    List<Client> findAllByActiveTrue();
 }
