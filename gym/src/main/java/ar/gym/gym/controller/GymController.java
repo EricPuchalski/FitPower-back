@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class GymController {
     // Endpoint para crear un nuevo gimnasio
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<GymResponseDto> create(@RequestBody GymRequestDto gymRequestDto) {
+    public ResponseEntity<GymResponseDto> create(@Validated @RequestBody GymRequestDto gymRequestDto) {
         logger.info("Creating a new gym: {}", gymRequestDto);
         GymResponseDto createdGym = gymService.create(gymRequestDto);
         logger.info("Gym created successfully: {}", createdGym);
@@ -62,7 +63,7 @@ public class GymController {
 
     // Endpoint para actualizar un gimnasio existente
     @PutMapping("/{id}")
-    public ResponseEntity<GymResponseDto> update(@RequestBody GymRequestDto gymRequestDto, @PathVariable Long id) {
+    public ResponseEntity<GymResponseDto> update(@Validated @RequestBody GymRequestDto gymRequestDto, @PathVariable Long id) {
         logger.info("Updating gym with ID: {}", id);
         GymResponseDto updatedGym = gymService.update(gymRequestDto, id);
         logger.info("Gym updated successfully: {}", updatedGym);

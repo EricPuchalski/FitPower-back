@@ -35,6 +35,8 @@ public class Client extends Person {
     @JoinColumn(name = "nutritionist_id")
     private Nutritionist nutritionist;
 
+    private String initialPhysicalState;
+
     // Cambiamos de List<Routine> a List<TrainingPlan>
     @JsonManagedReference
     @OneToMany(mappedBy = "client")

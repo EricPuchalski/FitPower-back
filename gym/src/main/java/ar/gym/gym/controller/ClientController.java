@@ -75,7 +75,7 @@ public class ClientController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ClientResponseDto> update(@Valid @RequestBody ClientRequestDto clientRequestDto, @PathVariable Long id) {
+    public ResponseEntity<ClientResponseDto> update(@Validated @RequestBody ClientRequestDto clientRequestDto, @PathVariable Long id) {
         logger.info("Updating client with ID: {}", id);
         ClientResponseDto updatedClient = clientService.update(clientRequestDto, id);
         logger.info("Client updated successfully: {}", updatedClient);

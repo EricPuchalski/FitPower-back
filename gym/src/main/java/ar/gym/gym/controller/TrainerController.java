@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class TrainerController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<TrainerResponseDto> create(@Valid @RequestBody TrainerRequestDto trainerRequestDto) {
+    public ResponseEntity<TrainerResponseDto> create(@Validated @RequestBody TrainerRequestDto trainerRequestDto) {
         logger.info("Creating trainer with request: {}", trainerRequestDto);
         TrainerResponseDto createdTrainer = trainerService.create(trainerRequestDto);
         logger.info("Created trainer: {}", createdTrainer);
@@ -54,7 +55,7 @@ public class TrainerController {
 
     @PutMapping("/{dni}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<TrainerResponseDto> update(@Valid @RequestBody TrainerRequestDto trainerRequestDto, @PathVariable String dni) {
+    public ResponseEntity<TrainerResponseDto> update(@Validated  @RequestBody TrainerRequestDto trainerRequestDto, @PathVariable String dni) {
         logger.info("Updating trainer with DNI: {} and request: {}", dni, trainerRequestDto);
         TrainerResponseDto updatedTrainer = trainerService.update(trainerRequestDto);
         logger.info("Updated trainer: {}", updatedTrainer);

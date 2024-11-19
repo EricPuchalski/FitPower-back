@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class TrainingPlanController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_TRAINER')")
-    public ResponseEntity<TrainingPlanResponseDto> createTrainingPlan(@RequestBody TrainingPlanRequestDto trainingPlanRequestDto) {
+    public ResponseEntity<TrainingPlanResponseDto> createTrainingPlan(@Validated @RequestBody TrainingPlanRequestDto trainingPlanRequestDto) {
         logger.info("Recibiendo solicitud para crear un plan de entrenamiento");
         TrainingPlanResponseDto response = trainingPlanService.create(trainingPlanRequestDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -52,7 +53,7 @@ public class TrainingPlanController {
     @PreAuthorize("hasRole('ROLE_TRAINER')")
     public ResponseEntity<TrainingPlanResponseDto> updateTrainingPlan(
             @PathVariable Long id,
-            @RequestBody TrainingPlanRequestDto trainingPlanRequestDto) {
+            @Validated @RequestBody TrainingPlanRequestDto trainingPlanRequestDto) {
         logger.info("Recibiendo solicitud para actualizar el plan de entrenamiento con ID: {}", id);
         TrainingPlanResponseDto response = trainingPlanService.update(id, trainingPlanRequestDto);
         return ResponseEntity.ok(response);

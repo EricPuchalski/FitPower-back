@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class NutritionistController {
     private static final Logger logger = LoggerFactory.getLogger(NutritionistController.class);
 
     @PostMapping
-    public ResponseEntity<NutritionistResponseDto> create(@RequestBody NutritionistRequestDto nutritionistRequestDto) {
+    public ResponseEntity<NutritionistResponseDto> create(@Validated @RequestBody NutritionistRequestDto nutritionistRequestDto) {
         logger.info("Creating nutritionist with request: {}", nutritionistRequestDto);
         NutritionistResponseDto createdNutritionist = nutritionistService.create(nutritionistRequestDto);
         logger.info("Created nutritionist: {}", createdNutritionist);
@@ -46,7 +47,7 @@ public class NutritionistController {
     }
 
     @PutMapping("/{dni}")
-    public ResponseEntity<NutritionistResponseDto> update(@RequestBody NutritionistRequestDto nutritionistRequestDto, @PathVariable String dni) {
+    public ResponseEntity<NutritionistResponseDto> update(@Validated @RequestBody NutritionistRequestDto nutritionistRequestDto, @PathVariable String dni) {
         logger.info("Updating nutritionist with DNI: {} and request: {}", dni, nutritionistRequestDto);
         NutritionistResponseDto updatedNutritionist = nutritionistService.update(nutritionistRequestDto);
         logger.info("Updated nutritionist: {}", updatedNutritionist);

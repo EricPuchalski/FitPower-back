@@ -1,5 +1,6 @@
 package ar.gym.gym.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,9 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClientStatusRequestDto {
+    @NotBlank(message = "El peso es obligatorio")
     private Double weight;
+    @NotBlank(message = "La altura es obligatorio")
     private Double height;
-    private Double bodymass;
-    private Double bodyfat;
-
 }

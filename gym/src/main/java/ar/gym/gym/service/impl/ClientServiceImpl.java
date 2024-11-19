@@ -175,7 +175,6 @@ public class ClientServiceImpl implements ClientService {
         if (clientRequestDto.getEmail() != null) {
             existingClient.setEmail(clientRequestDto.getEmail());
         }
-        existingClient.setActive(clientRequestDto.isActive());
 
         if (clientRequestDto.getGoal() != null) {
             existingClient.setGoal(clientRequestDto.getGoal());

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class RoutineController {
     // Endpoint to create a new routine
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_TRAINER')")
-    public ResponseEntity<RoutineResponseDto> createRoutine(@RequestBody RoutineRequestDto routineRequestDto) {
+    public ResponseEntity<RoutineResponseDto> createRoutine(@Validated @RequestBody RoutineRequestDto routineRequestDto) {
         RoutineResponseDto createdRoutine = routineService.create(routineRequestDto);
         return new ResponseEntity<>(createdRoutine, HttpStatus.CREATED);
     }
@@ -94,7 +95,7 @@ public class RoutineController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_TRAINER')")
     public ResponseEntity<RoutineResponseDto> updateRoutine(@PathVariable Long id,
-                                                            @RequestBody RoutineRequestDto routineRequestDto) {
+                                                            @Validated  @RequestBody RoutineRequestDto routineRequestDto) {
         RoutineResponseDto updatedRoutine = routineService.update(routineRequestDto, id);
         return new ResponseEntity<>(updatedRoutine, HttpStatus.OK);
     }
@@ -126,7 +127,7 @@ public class RoutineController {
     public ResponseEntity<RoutineResponseDto> editSessionInRoutine(
             @PathVariable Long routineId,
             @PathVariable Long sessionId,
-            @RequestBody SessionRequestDto sessionRequestDto) {
+            @Validated @RequestBody SessionRequestDto sessionRequestDto) {
 
         // Llamamos al servicio para editar la sesión en la rutina
         RoutineResponseDto updatedRoutine = routineService.editSessionInRoutine(routineId, sessionId, sessionRequestDto);

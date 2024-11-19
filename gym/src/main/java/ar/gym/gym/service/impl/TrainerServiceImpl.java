@@ -108,7 +108,6 @@ public class TrainerServiceImpl implements TrainerService {
             }
         }
 
-        existingTrainer.setActive(trainerRequestDto.isActive());
 
         // Guardamos el entrenador actualizado en la base de datos
         Trainer updatedTrainer = trainerRepository.save(existingTrainer);

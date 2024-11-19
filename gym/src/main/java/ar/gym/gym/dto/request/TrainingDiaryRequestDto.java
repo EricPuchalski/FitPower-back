@@ -1,6 +1,6 @@
 package ar.gym.gym.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TrainingDiaryRequestDto {
+    @NotBlank(message = "La sesión del diario de entrenamiento es obligatoria")
     private SessionRequestDto session;
-    @JsonProperty("clientDni")
+    @NotBlank(message = "El dni del cliente es obligatorio")
     private String clientDni;
-    @JsonProperty("observation")
     private String observation;
 }

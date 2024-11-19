@@ -11,16 +11,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TrainerRequestDto {
+    @NotBlank(message = "El nombre del entrenador es obligatorio")
     private String name;
+    @NotBlank(message = "El apellido del entrenador es obligatorio")
     private String lastname;
-    @Pattern(regexp = "^[0-9]{8}$", message = "El DNI debe tener exactamente 8 dígitos")
+    @NotBlank(message = "El dni del entrenador es obligatorio")
+    @Pattern(regexp = "^[0-9]{7,8}$", message = "El DNI debe tener entre 7 y 8 dígitos")
     private String dni;
     @NotBlank(message = "El teléfono es obligatorio.")
     private String phone;
+    @NotBlank(message = "La dirección del entrenador es obligatoria")
     private String address;
     @Email(message = "El correo electrónico debe ser válido")
     private String email;
-    private boolean active;
+    @NotBlank(message = "La profesión del entrenador es obligatoria")
     private String profession;
+    @NotBlank(message = "El gimnasio del entrenador es obligatorio")
     private String gymName;
 }

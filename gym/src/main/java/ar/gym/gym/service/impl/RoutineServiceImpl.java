@@ -257,7 +257,6 @@ public class RoutineServiceImpl implements RoutineService {
         session.setSets(sessionRequestDto.getSets());
         session.setReps(sessionRequestDto.getReps());
         session.setRestTime(sessionRequestDto.getRestTime());
-        session.setCompleted(sessionRequestDto.isCompleted());
 
         // Buscar el ejercicio por nombre y asignarlo a la sesión
         Exercise exercise = exerciseRepository.findByName(sessionRequestDto.getExerciseName())

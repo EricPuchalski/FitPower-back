@@ -123,7 +123,6 @@ public class NutritionistServiceImpl implements NutritionistService {
             }
         }
 
-        existingNutritionist.setActive(nutritionistRequestDto.isActive());
 
         Nutritionist updatedNutritionist = nutritionistRepository.save(existingNutritionist);
         logger.info("Nutritionist updated successfully: {}", nutritionistRequestDto.getDni());

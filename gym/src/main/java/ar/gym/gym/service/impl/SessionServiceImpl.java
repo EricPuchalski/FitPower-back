@@ -62,8 +62,6 @@ public class SessionServiceImpl implements SessionService {
         if (sessionRequestDto.getRestTime() != null) {
             sessionRequestDto.setRestTime(sessionRequestDto.getRestTime());
         }
-        // Actualizamos el estado de completitud de la sesión
-        sessionRequestDto.setCompleted(sessionRequestDto.isCompleted());
 
         // Guardamos la sesión actualizada en la base de datos
         Session session = sessionMapper.dtoToEntity(sessionRequestDto);

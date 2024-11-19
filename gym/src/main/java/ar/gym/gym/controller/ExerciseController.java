@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class ExerciseController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ExerciseResponseDto> create(@RequestBody ExerciseRequestDto exerciseRequestDto) {
+    public ResponseEntity<ExerciseResponseDto> create(@Validated @RequestBody ExerciseRequestDto exerciseRequestDto) {
         logger.info("Creating a new exercise: {}", exerciseRequestDto);
         ExerciseResponseDto createdExercise = exerciseService.create(exerciseRequestDto);
         logger.info("Exercise created successfully: {}", createdExercise);
@@ -59,7 +60,7 @@ public class ExerciseController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ExerciseResponseDto> update(@RequestBody ExerciseRequestDto exerciseRequestDto, @PathVariable Long id) {
+    public ResponseEntity<ExerciseResponseDto> update(@Validated @RequestBody ExerciseRequestDto exerciseRequestDto, @PathVariable Long id) {
         logger.info("Updating exercise with ID: {}", id);
         ExerciseResponseDto updatedExercise = exerciseService.update(exerciseRequestDto, id);
         logger.info("Exercise updated successfully: {}", updatedExercise);
