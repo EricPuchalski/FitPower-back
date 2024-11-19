@@ -24,8 +24,8 @@ public class NutritionPlan {
     private String type;
     private Date startDate;
     private Date endDate;
-    private String description;
     private boolean active;
+    private String recommendation; //recomendaciones del nutricionista, una especie de guia
 
     @Enumerated(EnumType.STRING)
     private NutritionStatus status; // Estado del plan (por ejemplo, ACTIVO, COMPLETADO, EN_PROGRESO)

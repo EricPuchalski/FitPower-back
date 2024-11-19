@@ -173,12 +173,9 @@ public class NutritionLogServiceImpl implements NutritionLogService {
             // Convertir los NutritionLogs a sus DTOs correspondientes
             List<NutritionLogResponseDto> response = nutritionLogs.stream()
                     .map(nutritionLog -> {
-                        // Convertir NutritionLog a DTO
                         NutritionLogResponseDto dto = nutritionLogMapper.convertToDto(nutritionLog);
-
                         // Obtener las Meals con sus MealDetails asociados
                         List<MealResponseDto> mealResponseDtos = mealService.findAllMeals();
-
                         // Filtrar las Meals que pertenecen al NutritionLog actual
                         List<MealResponseDto> filteredMealResponseDtos = mealResponseDtos.stream()
                                 .filter(mealResponseDto -> {
@@ -186,10 +183,8 @@ public class NutritionLogServiceImpl implements NutritionLogService {
                                     return nutritionLogId != null && nutritionLogId.equals(nutritionLog.getId());
                                 })
                                 .collect(Collectors.toList());
-
                         // Asignar la lista de MealResponseDto con MealDetail
                         dto.setMealList(filteredMealResponseDtos);
-
                         return dto;
                     })
                     .collect(Collectors.toList());
@@ -202,9 +197,8 @@ public class NutritionLogServiceImpl implements NutritionLogService {
         }
     }
 
-
-
     @Override
+
     public List<NutritionLogResponseDto> findCompletedNutritionLogs() {
         logger.info("Entering findCompletedNutritionLogs method");
         try {
@@ -278,7 +272,6 @@ public class NutritionLogServiceImpl implements NutritionLogService {
 
 
     //LÓGICA PARA AGREGAR COMIDAS AL LOG NUTRICIONAL POR PARTE DEL CLIENTE.
-
     @Override
     public MealResponseDto addMealToNutritionLog(Long nutritionLogId, MealRequestDto mealRequestDto) {
         logger.info("Entering addMealToNutritionLog method with nutrition log ID: {} and meal data: {}", nutritionLogId, mealRequestDto);
@@ -353,6 +346,29 @@ public class NutritionLogServiceImpl implements NutritionLogService {
         } catch (Exception e) {
             logger.error("Unexpected error marking nutrition log as completed: {}", e.getMessage());
             throw new RuntimeException("Unexpected error marking nutrition log as completed", e);
+        }
+    }
+
+    @Override
+    public NutritionLogResponseDto addObservationToNutritionLog(Long nutritionLogId, String observations) {
+        logger.info("Entering addObservationToNutritionLog method with nutrition log ID: {} and observations: {}", nutritionLogId, observations);
+        try {
+            NutritionLog nutritionLog = nutritionLogRepository.findById(nutritionLogId)
+                    .orElseThrow(() -> new EntityNotFoundException("Nutrition log not found with ID: " + nutritionLogId));
+
+            nutritionLog.setObservations(observations);
+
+            NutritionLog updatedNutritionLog = nutritionLogRepository.save(nutritionLog);
+            NutritionLogResponseDto response = nutritionLogMapper.convertToDto(updatedNutritionLog);
+
+            logger.info("Exiting addObservationToNutritionLog method with updated nutrition log: {}", response);
+            return response;
+        } catch (EntityNotFoundException e) {
+            logger.error("Error adding observation to nutrition log: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Unexpected error adding observation to nutrition log: {}", e.getMessage());
+            throw new RuntimeException("Unexpected error adding observation to nutrition log", e);
         }
     }
 

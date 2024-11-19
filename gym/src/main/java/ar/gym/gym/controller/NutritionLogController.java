@@ -106,4 +106,13 @@ public class NutritionLogController {
         nutritionLogService.deleteMealFromNutritionLog(nutritionLogId, mealId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+
+    @PutMapping("/{id}/observations")
+    public ResponseEntity<NutritionLogResponseDto> addObservationToNutritionLog(
+            @PathVariable Long id,
+            @RequestBody String observations) {
+        NutritionLogResponseDto response = nutritionLogService.addObservationToNutritionLog(id, observations);
+        return ResponseEntity.ok(response);
+    }
 }

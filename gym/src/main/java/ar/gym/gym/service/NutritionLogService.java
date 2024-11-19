@@ -36,4 +36,6 @@ public interface NutritionLogService {
     void deleteMealFromNutritionLog(Long nutritionLogId, Long mealId);
 
     NutritionLogResponseDto markNutritionLogAsCompleted(Long id);
+    NutritionLogResponseDto addObservationToNutritionLog(Long nutritionLogId, String observations);
+
 }

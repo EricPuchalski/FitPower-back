@@ -109,7 +109,7 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
                 existingNutritionPlan.setEndDate(nutritionPlanRequestDto.getEndDate());
             }
             if (nutritionPlanRequestDto.getDescription() != null) {
-                existingNutritionPlan.setDescription(nutritionPlanRequestDto.getDescription());
+                existingNutritionPlan.setRecommendation(nutritionPlanRequestDto.getDescription());
             }
             if (nutritionPlanRequestDto.getStatus() != null) {
                 existingNutritionPlan.setStatus(nutritionPlanRequestDto.getStatus());

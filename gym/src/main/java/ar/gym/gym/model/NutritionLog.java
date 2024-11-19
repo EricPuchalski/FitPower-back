@@ -26,7 +26,7 @@ public class NutritionLog {
     private LocalDateTime date;
     private Float totalCaloriesConsumed;
     private Float dailyCalories;
-    private String observations;
+    private String observations; //esto lo hace el nutricionista, el nutricionista puede ver los logs diarios del cliente
     private boolean completed;
     @OneToMany(mappedBy = "nutritionLog", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference  // Indica que este es el "lado hijo" que no debe ser serializado
