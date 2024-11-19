@@ -2,6 +2,7 @@ package ar.gym.gym.controller;
 
 import ar.gym.gym.dto.request.SessionToTrainingDiaryRequestDto;
 import ar.gym.gym.dto.request.TrainingDiaryRequestDto;
+import ar.gym.gym.dto.request.TrainingDiaryUpdateRequestDto;
 import ar.gym.gym.dto.response.SessionToTrainingDiaryResponseDto;
 import ar.gym.gym.dto.response.TrainingDiaryResponseDto;
 import ar.gym.gym.service.TrainingDiaryService;
@@ -55,7 +56,7 @@ public class TrainingDiaryController {
     @PreAuthorize("hasRole('ROLE_CLIENT')")
     public ResponseEntity<TrainingDiaryResponseDto> updateTrainingDiary(
             @PathVariable Long id,
-            @Validated @RequestBody TrainingDiaryRequestDto requestDto) {
+            @Validated @RequestBody TrainingDiaryUpdateRequestDto requestDto) {
         TrainingDiaryResponseDto updatedDiary = trainingDiaryService.updateTrainingDiary(id, requestDto);
         return ResponseEntity.ok(updatedDiary);
     }

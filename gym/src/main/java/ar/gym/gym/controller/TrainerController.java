@@ -1,6 +1,7 @@
 package ar.gym.gym.controller;
 
 import ar.gym.gym.dto.request.TrainerRequestDto;
+import ar.gym.gym.dto.request.TrainerUpdateRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.service.TrainerService;
@@ -53,11 +54,11 @@ public class TrainerController {
         return ResponseEntity.ok(trainer);
     }
 
-    @PutMapping("/{dni}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<TrainerResponseDto> update(@Validated  @RequestBody TrainerRequestDto trainerRequestDto, @PathVariable String dni) {
-        logger.info("Updating trainer with DNI: {} and request: {}", dni, trainerRequestDto);
-        TrainerResponseDto updatedTrainer = trainerService.update(trainerRequestDto);
+    public ResponseEntity<TrainerResponseDto> update(@Validated  @RequestBody TrainerUpdateRequestDto trainerRequestDto, @PathVariable Long id) {
+        logger.info("Updating trainer with ID: {} and request: {}", id, trainerRequestDto);
+        TrainerResponseDto updatedTrainer = trainerService.update(trainerRequestDto, id);
         logger.info("Updated trainer: {}", updatedTrainer);
         return ResponseEntity.ok(updatedTrainer);
     }

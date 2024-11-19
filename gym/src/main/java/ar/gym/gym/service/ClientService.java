@@ -2,6 +2,7 @@ package ar.gym.gym.service;
 
 import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ClientStatusRequestDto;
+import ar.gym.gym.dto.request.ClientUpdateRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.ClientStatusResponseDto;
 import ar.gym.gym.dto.response.NotificationResponseDto;
@@ -15,7 +16,7 @@ public interface ClientService{
 
     ClientResponseDto findByDni(String dni);
 
-    ClientResponseDto update(ClientRequestDto clientRequestDto, Long id);
+    ClientResponseDto update(ClientUpdateRequestDto clientRequestDto, Long id);
 
     void delete(String id);
 

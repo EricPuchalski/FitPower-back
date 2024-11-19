@@ -1,6 +1,7 @@
 package ar.gym.gym.controller;
 
 import ar.gym.gym.dto.request.GymRequestDto;
+import ar.gym.gym.dto.request.GymUpdateRequestDto;
 import ar.gym.gym.dto.response.AddClientToNutritionistResponseDto;
 import ar.gym.gym.dto.response.AddClientToTrainerResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
@@ -63,7 +64,7 @@ public class GymController {
 
     // Endpoint para actualizar un gimnasio existente
     @PutMapping("/{id}")
-    public ResponseEntity<GymResponseDto> update(@Validated @RequestBody GymRequestDto gymRequestDto, @PathVariable Long id) {
+    public ResponseEntity<GymResponseDto> update(@Validated @RequestBody GymUpdateRequestDto gymRequestDto, @PathVariable Long id) {
         logger.info("Updating gym with ID: {}", id);
         GymResponseDto updatedGym = gymService.update(gymRequestDto, id);
         logger.info("Gym updated successfully: {}", updatedGym);

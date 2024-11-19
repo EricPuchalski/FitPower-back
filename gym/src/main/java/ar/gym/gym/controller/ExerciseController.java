@@ -1,6 +1,7 @@
 package ar.gym.gym.controller;
 
 import ar.gym.gym.dto.request.ExerciseRequestDto;
+import ar.gym.gym.dto.request.ExerciseUpdateRequestDto;
 import ar.gym.gym.dto.response.ExerciseResponseDto;
 import ar.gym.gym.model.Exercise;
 import ar.gym.gym.service.ExerciseService;
@@ -60,7 +61,7 @@ public class ExerciseController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ExerciseResponseDto> update(@Validated @RequestBody ExerciseRequestDto exerciseRequestDto, @PathVariable Long id) {
+    public ResponseEntity<ExerciseResponseDto> update(@Validated @RequestBody ExerciseUpdateRequestDto exerciseRequestDto, @PathVariable Long id) {
         logger.info("Updating exercise with ID: {}", id);
         ExerciseResponseDto updatedExercise = exerciseService.update(exerciseRequestDto, id);
         logger.info("Exercise updated successfully: {}", updatedExercise);

@@ -2,6 +2,7 @@ package ar.gym.gym.service;
 
 import ar.gym.gym.dto.request.SessionToTrainingDiaryRequestDto;
 import ar.gym.gym.dto.request.TrainingDiaryRequestDto;
+import ar.gym.gym.dto.request.TrainingDiaryUpdateRequestDto;
 import ar.gym.gym.dto.response.SessionToTrainingDiaryResponseDto;
 import ar.gym.gym.dto.response.TrainingDiaryResponseDto;
 
@@ -11,7 +12,7 @@ public interface TrainingDiaryService {
     TrainingDiaryResponseDto createTrainingDiary(TrainingDiaryRequestDto requestDto);
     List<TrainingDiaryResponseDto> getAllDiariesByClient(String clientDni);
     TrainingDiaryResponseDto getDiaryById(Long id);
-    TrainingDiaryResponseDto updateTrainingDiary(Long id, TrainingDiaryRequestDto requestDto);
+    TrainingDiaryResponseDto updateTrainingDiary(Long id, TrainingDiaryUpdateRequestDto requestDto);
     void deleteTrainingDiary(Long id);
 
     SessionToTrainingDiaryResponseDto addSessionToDiary(Long trainingDiaryId, SessionToTrainingDiaryRequestDto sessionRequestDto);

@@ -1,6 +1,7 @@
 package ar.gym.gym.controller;
 
 import ar.gym.gym.dto.request.RoutineRequestDto;
+import ar.gym.gym.dto.request.RoutineUpdateRequestDto;
 import ar.gym.gym.dto.request.SessionRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.service.RoutineService;
@@ -95,7 +96,7 @@ public class RoutineController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_TRAINER')")
     public ResponseEntity<RoutineResponseDto> updateRoutine(@PathVariable Long id,
-                                                            @Validated  @RequestBody RoutineRequestDto routineRequestDto) {
+                                                            @Validated  @RequestBody RoutineUpdateRequestDto routineRequestDto) {
         RoutineResponseDto updatedRoutine = routineService.update(routineRequestDto, id);
         return new ResponseEntity<>(updatedRoutine, HttpStatus.OK);
     }

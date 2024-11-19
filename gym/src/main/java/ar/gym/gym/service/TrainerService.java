@@ -1,6 +1,7 @@
 package ar.gym.gym.service;
 
 import ar.gym.gym.dto.request.TrainerRequestDto;
+import ar.gym.gym.dto.request.TrainerUpdateRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.model.Trainer;
@@ -15,7 +16,7 @@ public interface TrainerService {
     Trainer getTrainerByDniOrThrow(String dni);
 
     TrainerResponseDto findByDni(String dni);
-    TrainerResponseDto update(TrainerRequestDto trainerRequestDto);
+    TrainerResponseDto update(TrainerUpdateRequestDto trainerRequestDto, Long idTrainer);
 
     // Elimina un entrenador por su ID
 

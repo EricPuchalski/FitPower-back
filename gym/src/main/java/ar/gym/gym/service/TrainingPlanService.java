@@ -1,6 +1,7 @@
 package ar.gym.gym.service;
 
 import ar.gym.gym.dto.request.TrainingPlanRequestDto;
+import ar.gym.gym.dto.request.TrainingPlanUpdateRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.dto.response.TrainingPlanResponseDto;
 
@@ -17,7 +18,7 @@ public interface TrainingPlanService {
     TrainingPlanResponseDto findById(Long id);
 
     // Actualizar un plan de entrenamiento
-    TrainingPlanResponseDto update(Long id, TrainingPlanRequestDto trainingPlanRequestDto);
+    TrainingPlanResponseDto update(Long id, TrainingPlanUpdateRequestDto trainingPlanRequestDto);
 
     // Eliminar un plan de entrenamiento (probablemente eliminando o desactivando el plan)
     void delete(Long id);

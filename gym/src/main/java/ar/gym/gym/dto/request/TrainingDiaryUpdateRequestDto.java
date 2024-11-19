@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoutineRequestDto {
-    @NotBlank(message = "El dni del cliente es obligatorio")
+public class TrainingDiaryUpdateRequestDto {
+    private SessionRequestDto session;
     @Pattern(regexp = "^[0-9]{7,8}$", message = "El DNI debe tener entre 7 y 8 dígitos")
-    private String clientDni; // Cambiar Client completo por solo el DNI
-    @NotBlank(message = "El nombre de la rutina es obligatoria")
-    private String name;
+    private String clientDni;
+    private String observation;
 }

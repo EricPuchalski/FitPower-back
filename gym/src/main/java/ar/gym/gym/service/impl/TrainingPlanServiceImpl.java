@@ -1,14 +1,17 @@
 package ar.gym.gym.service.impl;
 
 import ar.gym.gym.dto.request.TrainingPlanRequestDto;
+import ar.gym.gym.dto.request.TrainingPlanUpdateRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.dto.response.TrainingPlanResponseDto;
 import ar.gym.gym.mapper.RoutineMapper;
 import ar.gym.gym.mapper.TrainingPlanMapper;
 import ar.gym.gym.model.Client;
+import ar.gym.gym.model.Notification;
 import ar.gym.gym.model.Routine;
 import ar.gym.gym.model.TrainingPlan;
 import ar.gym.gym.repository.ClientRepository;
+import ar.gym.gym.repository.NotificationRepository;
 import ar.gym.gym.repository.RoutineRepository;
 import ar.gym.gym.repository.TrainingPlanRepository;
 import ar.gym.gym.service.TrainingPlanService;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,12 +35,15 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
     private final TrainingPlanMapper trainingPlanMapper;
     private final RoutineRepository routineRepository;
     private final RoutineMapper routineMapper;
-    public TrainingPlanServiceImpl(TrainingPlanRepository trainingPlanRepository, ClientRepository clientRepository, TrainingPlanMapper trainingPlanMapper, RoutineRepository routineRepository, RoutineMapper routineMapper) {
+    private final NotificationRepository notificationRepository;
+
+    public TrainingPlanServiceImpl(TrainingPlanRepository trainingPlanRepository, ClientRepository clientRepository, TrainingPlanMapper trainingPlanMapper, RoutineRepository routineRepository, RoutineMapper routineMapper, NotificationRepository notificationRepository) {
         this.trainingPlanRepository = trainingPlanRepository;
         this.clientRepository = clientRepository;
         this.trainingPlanMapper = trainingPlanMapper;
         this.routineRepository = routineRepository;
         this.routineMapper = routineMapper;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -58,6 +65,18 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
         trainingPlan.setCreationDate(LocalDate.now());
         trainingPlan.setActive(true); // Activar el nuevo plan
         trainingPlanRepository.save(trainingPlan);
+
+        // Notificar al cliente
+
+        Notification notification = Notification.builder().
+                creationDate(LocalDateTime.now()).
+                seen(false).
+                message("Se añadió el plan de entrenamiento:  " + trainingPlan.getName()).
+                client(client).build();
+        client.getNotifications().add(notification);
+
+        clientRepository.save(client);
+        notificationRepository.save(notification);
 
         TrainingPlanResponseDto response = trainingPlanMapper.entityToDto(trainingPlan);
         logger.info("Saliendo del método create con respuesta: {}", response);
@@ -121,7 +140,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
     }
 
     @Override
-    public TrainingPlanResponseDto update(Long id, TrainingPlanRequestDto trainingPlanRequestDto) {
+    public TrainingPlanResponseDto update(Long id, TrainingPlanUpdateRequestDto trainingPlanRequestDto) {
         logger.info("Entrando al método update con ID: {} y datos de actualización: {}", id, trainingPlanRequestDto);
 
         TrainingPlan existingTrainingPlan = trainingPlanRepository.findById(id)
@@ -193,6 +212,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
 
         // Desactivar el plan de entrenamiento (poner active en false)
         trainingPlan.setActive(false);
+
 
         // Guardar el plan de entrenamiento desactivado
         trainingPlan = trainingPlanRepository.save(trainingPlan);

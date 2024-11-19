@@ -2,6 +2,7 @@ package ar.gym.gym.service.impl;
 
 import ar.gym.gym.dto.request.SessionToTrainingDiaryRequestDto;
 import ar.gym.gym.dto.request.TrainingDiaryRequestDto;
+import ar.gym.gym.dto.request.TrainingDiaryUpdateRequestDto;
 import ar.gym.gym.dto.response.SessionToTrainingDiaryResponseDto;
 import ar.gym.gym.dto.response.TrainingDiaryResponseDto;
 import ar.gym.gym.mapper.SessionMapper;
@@ -98,7 +99,7 @@ public class TrainingDiaryServiceImpl implements TrainingDiaryService {
 
     @Override
     @Transactional
-    public TrainingDiaryResponseDto updateTrainingDiary(Long id, TrainingDiaryRequestDto requestDto) {
+    public TrainingDiaryResponseDto updateTrainingDiary(Long id, TrainingDiaryUpdateRequestDto requestDto) {
         // Buscar el diario de entrenamiento existente por ID
         TrainingDiary trainingDiary = trainingDiaryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Training Diary not found with ID: " + id));

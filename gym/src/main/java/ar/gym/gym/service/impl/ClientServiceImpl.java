@@ -2,6 +2,7 @@ package ar.gym.gym.service.impl;
 
 import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ClientStatusRequestDto;
+import ar.gym.gym.dto.request.ClientUpdateRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.ClientStatusResponseDto;
 import ar.gym.gym.dto.response.NotificationResponseDto;
@@ -65,6 +66,18 @@ public class ClientServiceImpl implements ClientService {
         }
 
         Client client = clientMapper.dtoToEntity(clientRequestDto);
+
+
+        if (clientRequestDto.getGymName() != null) {
+            Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
+
+            if (gym.isPresent()) {
+                client.setGym(gym.get());
+            } else {
+                throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + clientRequestDto.getGymName());
+            }
+        }
+
 
         client.setActive(true);
         clientRepository.save(client);
@@ -143,7 +156,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientResponseDto update(ClientRequestDto clientRequestDto, Long id) {
+    public ClientResponseDto update(ClientUpdateRequestDto clientRequestDto, Long id) {
         logger.info("Entrando al método update con ID: {} y datos de actualización: {}", id, clientRequestDto);
 
         Client existingClient = clientRepository.findById(id)

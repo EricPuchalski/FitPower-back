@@ -1,6 +1,7 @@
 package ar.gym.gym.service.impl;
 
 import ar.gym.gym.dto.request.TrainerRequestDto;
+import ar.gym.gym.dto.request.TrainerUpdateRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.mapper.ClientMapper;
@@ -76,33 +77,35 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public TrainerResponseDto update(TrainerRequestDto trainerRequestDto) {
-        Trainer existingTrainer = getTrainerByDniOrThrow(trainerRequestDto.getDni());
-
+    public TrainerResponseDto update(TrainerUpdateRequestDto trainerRequestDto, Long id) {
+        Optional<Trainer> existingTrainer = trainerRepository.findById(id);
+        if (existingTrainer.isEmpty()){
+            throw new EntityNotFoundException("No existe el entrenador con el id: "+id);
+        }
         if (trainerRequestDto.getName() != null && !trainerRequestDto.getName().isEmpty()) {
-            existingTrainer.setName(trainerRequestDto.getName());
+            existingTrainer.get().setName(trainerRequestDto.getName());
         }
         if (trainerRequestDto.getLastname() != null && !trainerRequestDto.getLastname().isEmpty()) {
-            existingTrainer.setLastname(trainerRequestDto.getLastname());
+            existingTrainer.get().setLastname(trainerRequestDto.getLastname());
         }
         if (trainerRequestDto.getPhone() != null && !trainerRequestDto.getPhone().isEmpty()) {
-            existingTrainer.setPhone(trainerRequestDto.getPhone());
+            existingTrainer.get().setPhone(trainerRequestDto.getPhone());
         }
         if (trainerRequestDto.getAddress() != null && !trainerRequestDto.getAddress().isEmpty()) {
-            existingTrainer.setAddress(trainerRequestDto.getAddress());
+            existingTrainer.get().setAddress(trainerRequestDto.getAddress());
         }
         if (trainerRequestDto.getEmail() != null && !trainerRequestDto.getEmail().isEmpty()) {
-            existingTrainer.setEmail(trainerRequestDto.getEmail());
+            existingTrainer.get().setEmail(trainerRequestDto.getEmail());
         }
         if (trainerRequestDto.getProfession() != null && !trainerRequestDto.getProfession().isEmpty()) {
-            existingTrainer.setProfession(trainerRequestDto.getProfession());
+            existingTrainer.get().setProfession(trainerRequestDto.getProfession());
         }
 
         if (trainerRequestDto.getGymName() != null) {
             Optional<Gym> gym = gymRepository.findByName(trainerRequestDto.getGymName());
 
             if (gym.isPresent()) {
-                existingTrainer.setGym(gym.get());
+                existingTrainer.get().setGym(gym.get());
             } else {
                 throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + trainerRequestDto.getGymName());
             }
@@ -110,7 +113,7 @@ public class TrainerServiceImpl implements TrainerService {
 
 
         // Guardamos el entrenador actualizado en la base de datos
-        Trainer updatedTrainer = trainerRepository.save(existingTrainer);
+        Trainer updatedTrainer = trainerRepository.save(existingTrainer.get());
 
         // Devolvemos el DTO actualizado usando el mapper
         return trainerMapper.entityToDto(updatedTrainer);

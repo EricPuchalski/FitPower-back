@@ -1,6 +1,7 @@
 package ar.gym.gym.service.impl;
 
 import ar.gym.gym.dto.request.ExerciseRequestDto;
+import ar.gym.gym.dto.request.ExerciseUpdateRequestDto;
 import ar.gym.gym.dto.response.ExerciseResponseDto;
 import ar.gym.gym.mapper.ExerciseMapper;
 import ar.gym.gym.model.Exercise;
@@ -93,7 +94,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public ExerciseResponseDto update(ExerciseRequestDto exerciseRequestDto, Long id) {
+    public ExerciseResponseDto update(ExerciseUpdateRequestDto exerciseRequestDto, Long id) {
         logger.info("Entrando al método update con datos: {}, ID: {}", exerciseRequestDto, id);
 
         Exercise existingExercise = getExerciseByIdOrThrow(id);

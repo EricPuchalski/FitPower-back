@@ -1,6 +1,7 @@
 package ar.gym.gym.service.impl;
 
 import ar.gym.gym.dto.request.RoutineRequestDto;
+import ar.gym.gym.dto.request.RoutineUpdateRequestDto;
 import ar.gym.gym.dto.request.SessionRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.mapper.RoutineMapper;
@@ -219,7 +220,7 @@ public class RoutineServiceImpl implements RoutineService {
     }
 
     @Override
-    public RoutineResponseDto update(RoutineRequestDto routineRequestDto, Long id) {
+    public RoutineResponseDto update(RoutineUpdateRequestDto routineRequestDto, Long id) {
         Routine routine = getRoutineByCodeOrThrow(id);
 
         // Actualizamos el cliente si no está vacío

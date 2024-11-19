@@ -1,6 +1,7 @@
 package ar.gym.gym.service.impl;
 
 import ar.gym.gym.dto.request.GymRequestDto;
+import ar.gym.gym.dto.request.GymUpdateRequestDto;
 import ar.gym.gym.dto.response.AddClientToNutritionistResponseDto;
 import ar.gym.gym.dto.response.AddClientToTrainerResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
@@ -90,7 +91,7 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public GymResponseDto update(GymRequestDto gymRequestDto, Long id) {
+    public GymResponseDto update(GymUpdateRequestDto gymRequestDto, Long id) {
         // Primero obtenemos el Gym existente o lanzamos una excepción si no existe
         Gym existingGym = gymRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Gimnasio no encontrado con el ID: " + id));

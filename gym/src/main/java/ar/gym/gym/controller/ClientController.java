@@ -2,6 +2,7 @@ package ar.gym.gym.controller;
 
 import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ClientStatusRequestDto;
+import ar.gym.gym.dto.request.ClientUpdateRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
 import ar.gym.gym.dto.response.ClientStatusResponseDto;
 import ar.gym.gym.dto.response.NotificationResponseDto;
@@ -75,7 +76,7 @@ public class ClientController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ClientResponseDto> update(@Validated @RequestBody ClientRequestDto clientRequestDto, @PathVariable Long id) {
+    public ResponseEntity<ClientResponseDto> update(@Validated @RequestBody ClientUpdateRequestDto clientRequestDto, @PathVariable Long id) {
         logger.info("Updating client with ID: {}", id);
         ClientResponseDto updatedClient = clientService.update(clientRequestDto, id);
         logger.info("Client updated successfully: {}", updatedClient);

@@ -1,6 +1,7 @@
 package ar.gym.gym.controller;
 
 import ar.gym.gym.dto.request.TrainingPlanRequestDto;
+import ar.gym.gym.dto.request.TrainingPlanUpdateRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.dto.response.TrainingPlanResponseDto;
 import ar.gym.gym.service.TrainingPlanService;
@@ -53,7 +54,7 @@ public class TrainingPlanController {
     @PreAuthorize("hasRole('ROLE_TRAINER')")
     public ResponseEntity<TrainingPlanResponseDto> updateTrainingPlan(
             @PathVariable Long id,
-            @Validated @RequestBody TrainingPlanRequestDto trainingPlanRequestDto) {
+            @Validated @RequestBody TrainingPlanUpdateRequestDto trainingPlanRequestDto) {
         logger.info("Recibiendo solicitud para actualizar el plan de entrenamiento con ID: {}", id);
         TrainingPlanResponseDto response = trainingPlanService.update(id, trainingPlanRequestDto);
         return ResponseEntity.ok(response);

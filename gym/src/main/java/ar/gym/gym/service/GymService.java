@@ -2,6 +2,7 @@ package ar.gym.gym.service;
 
 
 import ar.gym.gym.dto.request.GymRequestDto;
+import ar.gym.gym.dto.request.GymUpdateRequestDto;
 import ar.gym.gym.dto.response.AddClientToNutritionistResponseDto;
 import ar.gym.gym.dto.response.AddClientToTrainerResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
@@ -14,7 +15,7 @@ public interface GymService {
     GymResponseDto create(GymRequestDto gymRequestDto);
     public List<GymResponseDto> findAll();
     public Optional<Gym> findByName(String name);
-    public GymResponseDto update(GymRequestDto gymRequestDto, Long id);
+    public GymResponseDto update(GymUpdateRequestDto gymRequestDto, Long id);
     void deleteByName(String name);
 
     GymResponseDto addClientToGym(String gymCode, String dni);
