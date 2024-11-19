@@ -13,8 +13,6 @@ public class ClientStatusResponseDto {
     private Long id;
     private Double weight;
     private Double height;
-    private Double bodymass;
-    private Double bodyfat;
     private LocalDate creationDate;
 
 }

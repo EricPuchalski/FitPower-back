@@ -4,8 +4,9 @@ import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ClientStatusRequestDto;
 import ar.gym.gym.dto.request.ClientUpdateRequestDto;
 import ar.gym.gym.dto.response.*;
+
 import ar.gym.gym.service.ClientService;
-import jakarta.validation.Valid;
+import ar.gym.gym.service.ProgressEvaluationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,10 +22,12 @@ import java.util.List;
 public class ClientController {
 
     private final ClientService clientService;
+    private final ProgressEvaluationService progressEvaluationService;
     private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
 
-    public ClientController(ClientService clientService) {
+    public ClientController(ClientService clientService, ProgressEvaluationService progressEvaluationService) {
         this.clientService = clientService;
+        this.progressEvaluationService = progressEvaluationService;
     }
 
     @PostMapping
@@ -138,5 +141,32 @@ public class ClientController {
 
         // Devuelve la notificación actualizada con un código 200 OK
         return ResponseEntity.ok(updatedNotification);
+    }
+
+    @GetMapping("/{dni}/imc")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_TRAINER')")
+    public ResponseEntity<Double> getClientIMC(@PathVariable String dni) {
+        logger.info("Fetching IMC for client with dni: {}", dni);
+        double imc = progressEvaluationService.calculateIMC(dni);
+        logger.info("IMC retrieved: {}", imc);
+        return ResponseEntity.ok(imc);
+    }
+
+    @GetMapping("/{dni}/body-fat-percentage")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_TRAINER')")
+    public ResponseEntity<Double> getClientBodyFatPercentage(@PathVariable String dni) {
+        logger.info("Fetching body fat percentage for client with ID: {}", dni);
+        double bodyFatPercentage = progressEvaluationService.calculateBodyFatPercentage(dni);
+        logger.info("Body fat percentage retrieved: {}", bodyFatPercentage);
+        return ResponseEntity.ok(bodyFatPercentage);
+    }
+
+    @GetMapping("/{dni}/muscle-mass")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_TRAINER')")
+    public ResponseEntity<Double> getClientMuscleMass(@PathVariable String dni) {
+        logger.info("Fetching muscle mass for client with dni: {}", dni);
+        double muscleMass = progressEvaluationService.calculateMuscleMass(dni);
+        logger.info("Muscle mass retrieved: {}", muscleMass);
+        return ResponseEntity.ok(muscleMass);
     }
 }

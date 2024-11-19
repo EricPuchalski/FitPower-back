@@ -252,7 +252,7 @@ public class ClientServiceImpl implements ClientService {
 
         Client client = clientOptional.get();
         ClientStatus newStatus = clientStatusMapper.dtoToEntity(newStatusRequestDto);
-        newStatus.setCreationDate(LocalDate.now());
+        newStatus.setCreationDate(LocalDateTime.now());
         clientStatusRepository.save(newStatus);
         client.getStatuses().add(newStatus);
         clientRepository.save(client);

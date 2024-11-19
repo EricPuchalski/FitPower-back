@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+import java.time.LocalDate;
 
 
 @Data
@@ -23,7 +23,10 @@ public class ClientRequestDto {
     @NotBlank(message = "El dni es obligatorio")
     private String dni;
     private String phone;
+    private LocalDate birthDate;
     private String address;
+    @NotBlank(message = "El genero es obligatorio")
+    private String gender;
     @Email(message = "El correo electrónico debe ser válido")
     @NotBlank(message = "El email es obligatorio")
     private String email;
