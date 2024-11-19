@@ -65,15 +65,7 @@ public class ClientServiceImpl implements ClientService {
         }
 
         Client client = clientMapper.dtoToEntity(clientRequestDto);
-        if (clientRequestDto.getGymName() != null) {
-            Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
 
-            if (gym.isPresent()) {
-                client.setGym(gym.get());
-            } else {
-                throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + clientRequestDto.getGymName());
-            }
-        }
         client.setActive(true);
         clientRepository.save(client);
 
@@ -179,6 +171,7 @@ public class ClientServiceImpl implements ClientService {
         if (clientRequestDto.getGoal() != null) {
             existingClient.setGoal(clientRequestDto.getGoal());
         }
+
         if (clientRequestDto.getGymName() != null) {
             Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
 
@@ -188,8 +181,6 @@ public class ClientServiceImpl implements ClientService {
                 throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + clientRequestDto.getGymName());
             }
         }
-
-
 
 
 
