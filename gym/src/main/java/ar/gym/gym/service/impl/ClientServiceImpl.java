@@ -180,17 +180,6 @@ public class ClientServiceImpl implements ClientService {
         if (clientRequestDto.getGoal() != null) {
             existingClient.setGoal(clientRequestDto.getGoal());
         }
-
-        if (clientRequestDto.getGymName() != null) {
-            Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
-
-            if (gym.isPresent()) {
-                existingClient.setGym(gym.get());
-            } else {
-                throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + clientRequestDto.getGymName());
-            }
-        }
-
         if (clientRequestDto.getGymName() != null) {
             Optional<Gym> gym = gymRepository.findByName(clientRequestDto.getGymName());
 
@@ -304,6 +293,14 @@ public class ClientServiceImpl implements ClientService {
         logger.info("Notificación marcada como vista para el cliente con DNI: {}", dni);
 
         return notificationMapper.entityToDto(notification);  // Devolvemos la notificación actualizada
+    }
+
+    @Override
+    public List<ClientResponseDto> findAllByActiveTrue() {
+        List<Client> activeClients = clientRepository.findAllByActiveTrue();
+        return activeClients.stream()
+                .map(clientMapper::entityToDto)
+                .collect(Collectors.toList());
     }
 
 

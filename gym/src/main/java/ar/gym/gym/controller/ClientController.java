@@ -46,6 +46,15 @@ public class ClientController {
         return ResponseEntity.ok(clients);
     }
 
+    @GetMapping("/active")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<ClientResponseDto>> findAllByActiveTrue() {
+        logger.info("Fetching all active clients");
+        List<ClientResponseDto> activeClients = clientService.findAllByActiveTrue();
+        logger.info("Retrieved {} active clients", activeClients.size());
+        return ResponseEntity.ok(activeClients);
+    }
+
     @GetMapping("/{dni}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ClientResponseDto> findByDni(@PathVariable String dni) {
@@ -120,7 +129,7 @@ public class ClientController {
         return ResponseEntity.ok(unseenNotifications);
     }
 
-    @PutMapping("/{dniClient}/notificactions/{notificationId}/mark")
+    @PutMapping("/{dniClient}/notifications/{notificationId}/mark")
     @PreAuthorize("hasRole('ROLE_CLIENT')")
     public ResponseEntity<NotificationResponseDto> markNotificationAsSeen(
             @PathVariable String dniClient,

@@ -27,4 +27,6 @@ public interface ClientService{
     ClientStatusResponseDto addClientStatus(String dni, ClientStatusRequestDto newStatusRequestDto);
     List<NotificationResponseDto> findByDniAndNotificationsSeenFalse(String dni);
     NotificationResponseDto markNotificationAsSeen(String dni, Long notificationId);
+
+    List<ClientResponseDto> findAllByActiveTrue();
 }
