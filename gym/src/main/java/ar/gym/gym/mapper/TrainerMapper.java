@@ -3,6 +3,7 @@ package ar.gym.gym.mapper;
 import ar.gym.gym.dto.request.RoutineRequestDto;
 import ar.gym.gym.dto.request.TrainerRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
+import ar.gym.gym.dto.response.TrainerCreateResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.model.Routine;
 import ar.gym.gym.model.Trainer;
@@ -20,6 +21,10 @@ public class TrainerMapper {
 
     public TrainerResponseDto entityToDto(Trainer trainer){
         return modelMapper.map(trainer, TrainerResponseDto.class);
+    }
+
+    public TrainerCreateResponseDto entityToDtoCreate(Trainer trainer){
+        return modelMapper.map(trainer, TrainerCreateResponseDto.class);
     }
 
     public Trainer dtoToEntity(TrainerRequestDto trainerRequestDto){

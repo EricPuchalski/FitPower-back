@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -21,6 +22,8 @@ public class Client extends Person {
     @OneToMany
     private List<ClientStatus> statuses;
     private String goal;
+
+    private LocalDateTime lastUpdateDate;
 
     @ManyToOne
     @JoinColumn(name = "gym_id")

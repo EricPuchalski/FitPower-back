@@ -3,9 +3,7 @@ package ar.gym.gym.controller;
 import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ClientStatusRequestDto;
 import ar.gym.gym.dto.request.ClientUpdateRequestDto;
-import ar.gym.gym.dto.response.ClientResponseDto;
-import ar.gym.gym.dto.response.ClientStatusResponseDto;
-import ar.gym.gym.dto.response.NotificationResponseDto;
+import ar.gym.gym.dto.response.*;
 import ar.gym.gym.service.ClientService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -31,9 +29,9 @@ public class ClientController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ClientResponseDto> create(@Validated @RequestBody ClientRequestDto clientRequestDto) {
+    public ResponseEntity<ClientCreateResponseDto> create(@Validated @RequestBody ClientRequestDto clientRequestDto) {
         logger.info("Creating a new client: {}", clientRequestDto);
-        ClientResponseDto createdClient = clientService.create(clientRequestDto);
+        ClientCreateResponseDto createdClient = clientService.create(clientRequestDto);
         logger.info("Client created successfully: {}", createdClient);
         return new ResponseEntity<>(createdClient, HttpStatus.CREATED);
     }
@@ -76,9 +74,9 @@ public class ClientController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ClientResponseDto> update(@Validated @RequestBody ClientUpdateRequestDto clientRequestDto, @PathVariable Long id) {
+    public ResponseEntity<ClientUpdateResponseDto> update(@Validated @RequestBody ClientUpdateRequestDto clientRequestDto, @PathVariable Long id) {
         logger.info("Updating client with ID: {}", id);
-        ClientResponseDto updatedClient = clientService.update(clientRequestDto, id);
+        ClientUpdateResponseDto updatedClient = clientService.update(clientRequestDto, id);
         logger.info("Client updated successfully: {}", updatedClient);
         return ResponseEntity.ok(updatedClient);
     }

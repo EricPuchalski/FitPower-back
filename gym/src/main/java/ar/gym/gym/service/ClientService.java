@@ -3,20 +3,18 @@ package ar.gym.gym.service;
 import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ClientStatusRequestDto;
 import ar.gym.gym.dto.request.ClientUpdateRequestDto;
-import ar.gym.gym.dto.response.ClientResponseDto;
-import ar.gym.gym.dto.response.ClientStatusResponseDto;
-import ar.gym.gym.dto.response.NotificationResponseDto;
+import ar.gym.gym.dto.response.*;
 
 import java.util.List;
 
 public interface ClientService{
-    ClientResponseDto create(ClientRequestDto clientRequestDto);
+    ClientCreateResponseDto create(ClientRequestDto clientRequestDto);
 
     List<ClientResponseDto> findAll();
 
     ClientResponseDto findByDni(String dni);
 
-    ClientResponseDto update(ClientUpdateRequestDto clientRequestDto, Long id);
+    ClientUpdateResponseDto update(ClientUpdateRequestDto clientRequestDto, Long id);
 
     void delete(String id);
 

@@ -3,6 +3,7 @@ package ar.gym.gym.service;
 import ar.gym.gym.dto.request.TrainerRequestDto;
 import ar.gym.gym.dto.request.TrainerUpdateRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
+import ar.gym.gym.dto.response.TrainerCreateResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.model.Trainer;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 public interface TrainerService {
 
-    TrainerResponseDto create(TrainerRequestDto trainerRequestDto);
+    TrainerCreateResponseDto create(TrainerRequestDto trainerRequestDto);
    List<TrainerResponseDto> findAll();
 
     Trainer getTrainerByDniOrThrow(String dni);

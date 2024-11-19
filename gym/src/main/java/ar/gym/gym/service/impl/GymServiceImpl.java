@@ -4,6 +4,7 @@ import ar.gym.gym.dto.request.GymRequestDto;
 import ar.gym.gym.dto.request.GymUpdateRequestDto;
 import ar.gym.gym.dto.response.AddClientToNutritionistResponseDto;
 import ar.gym.gym.dto.response.AddClientToTrainerResponseDto;
+import ar.gym.gym.dto.response.GymCreateResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
 import ar.gym.gym.mapper.GymMapper;
 import ar.gym.gym.model.Client;
@@ -41,7 +42,7 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public GymResponseDto create(GymRequestDto gymRequestDto) {
+    public GymCreateResponseDto create(GymRequestDto gymRequestDto) {
         if (gymRepository.findByName(gymRequestDto.getName()).isPresent()) {
             throw new EntityExistsException("Ya existe un gimnasio con el nombre " + gymRequestDto.getName());
         }
@@ -53,7 +54,7 @@ public class GymServiceImpl implements GymService {
         }
         Gym gym = gymMapper.dtoToEntity(gymRequestDto);
         gymRepository.save(gym);
-        return gymMapper.entityToDto(gym);
+        return gymMapper.entityToDtoCreate(gym);
     }
 
     @Override
@@ -91,7 +92,7 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public GymResponseDto update(GymUpdateRequestDto gymRequestDto, Long id) {
+    public GymCreateResponseDto update(GymUpdateRequestDto gymRequestDto, Long id) {
         // Primero obtenemos el Gym existente o lanzamos una excepción si no existe
         Gym existingGym = gymRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Gimnasio no encontrado con el ID: " + id));
@@ -114,7 +115,7 @@ public class GymServiceImpl implements GymService {
         gymRepository.save(existingGym);
 
         // Convertimos la entidad actualizada a DTO y la retornamos
-        return gymMapper.entityToDto(existingGym);
+        return gymMapper.entityToDtoCreate(existingGym);
     }
 
 

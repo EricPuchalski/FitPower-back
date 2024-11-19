@@ -3,6 +3,7 @@ package ar.gym.gym.service.impl;
 import ar.gym.gym.dto.request.RoutineRequestDto;
 import ar.gym.gym.dto.request.RoutineUpdateRequestDto;
 import ar.gym.gym.dto.request.SessionRequestDto;
+import ar.gym.gym.dto.response.RoutineCreateResponseDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.mapper.RoutineMapper;
 import ar.gym.gym.model.*;
@@ -42,7 +43,7 @@ public class RoutineServiceImpl implements RoutineService {
     }
 
     @Override
-    public RoutineResponseDto create(RoutineRequestDto routineRequestDto) {
+    public RoutineCreateResponseDto create(RoutineRequestDto routineRequestDto) {
         Client client = clientRepository.findByDni(routineRequestDto.getClientDni())
                 .orElseThrow(() -> new EntityNotFoundException("Client not found"));
 
@@ -73,7 +74,7 @@ public class RoutineServiceImpl implements RoutineService {
         notificationRepository.save(notification);
 
         // Return the new routine as DTO
-        return routineMapper.entityToDto(newRoutine);
+        return routineMapper.entityToDtoCreate(newRoutine);
     }
 
     @Override

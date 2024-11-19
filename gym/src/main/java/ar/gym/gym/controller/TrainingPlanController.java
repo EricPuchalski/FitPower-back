@@ -3,6 +3,7 @@ package ar.gym.gym.controller;
 import ar.gym.gym.dto.request.TrainingPlanRequestDto;
 import ar.gym.gym.dto.request.TrainingPlanUpdateRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
+import ar.gym.gym.dto.response.TrainingPlanCreateResponseDto;
 import ar.gym.gym.dto.response.TrainingPlanResponseDto;
 import ar.gym.gym.service.TrainingPlanService;
 import org.slf4j.Logger;
@@ -28,9 +29,9 @@ public class TrainingPlanController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_TRAINER')")
-    public ResponseEntity<TrainingPlanResponseDto> createTrainingPlan(@Validated @RequestBody TrainingPlanRequestDto trainingPlanRequestDto) {
+    public ResponseEntity<TrainingPlanCreateResponseDto> createTrainingPlan(@Validated @RequestBody TrainingPlanRequestDto trainingPlanRequestDto) {
         logger.info("Recibiendo solicitud para crear un plan de entrenamiento");
-        TrainingPlanResponseDto response = trainingPlanService.create(trainingPlanRequestDto);
+        TrainingPlanCreateResponseDto response = trainingPlanService.create(trainingPlanRequestDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

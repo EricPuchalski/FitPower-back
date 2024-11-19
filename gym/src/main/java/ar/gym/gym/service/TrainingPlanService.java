@@ -3,6 +3,7 @@ package ar.gym.gym.service;
 import ar.gym.gym.dto.request.TrainingPlanRequestDto;
 import ar.gym.gym.dto.request.TrainingPlanUpdateRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
+import ar.gym.gym.dto.response.TrainingPlanCreateResponseDto;
 import ar.gym.gym.dto.response.TrainingPlanResponseDto;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface TrainingPlanService {
 
     // Crear un nuevo plan de entrenamiento
-    TrainingPlanResponseDto create(TrainingPlanRequestDto trainingPlanRequestDto);
+    TrainingPlanCreateResponseDto create(TrainingPlanRequestDto trainingPlanRequestDto);
     // Obtener todos los planes de entrenamiento
     List<TrainingPlanResponseDto> findAll();
 

@@ -1,6 +1,7 @@
 package ar.gym.gym.mapper;
 
 import ar.gym.gym.dto.request.RoutineRequestDto;
+import ar.gym.gym.dto.response.RoutineCreateResponseDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.model.Routine;
 import org.modelmapper.ModelMapper;
@@ -17,6 +18,10 @@ public class RoutineMapper {
 
     public RoutineResponseDto entityToDto(Routine routine){
         return modelMapper.map(routine, RoutineResponseDto.class);
+    }
+
+    public RoutineCreateResponseDto entityToDtoCreate(Routine routine){
+        return modelMapper.map(routine, RoutineCreateResponseDto.class);
     }
 
     public Routine dtoToEntity(RoutineRequestDto routineRequestDto){

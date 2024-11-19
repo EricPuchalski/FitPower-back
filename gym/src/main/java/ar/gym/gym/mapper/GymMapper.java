@@ -3,6 +3,7 @@ package ar.gym.gym.mapper;
 import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.GymRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
+import ar.gym.gym.dto.response.GymCreateResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
 import ar.gym.gym.model.Client;
 import ar.gym.gym.model.Gym;
@@ -26,4 +27,9 @@ public class GymMapper {
     public Gym dtoToEntity(GymRequestDto gymRequestDto){
         return modelMapper.map(gymRequestDto, Gym.class);
     }
+
+    public GymCreateResponseDto entityToDtoCreate(Gym gym){
+        return modelMapper.map(gym, GymCreateResponseDto.class);
+    }
+
 }

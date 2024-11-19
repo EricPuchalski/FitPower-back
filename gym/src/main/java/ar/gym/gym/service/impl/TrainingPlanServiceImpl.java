@@ -3,6 +3,7 @@ package ar.gym.gym.service.impl;
 import ar.gym.gym.dto.request.TrainingPlanRequestDto;
 import ar.gym.gym.dto.request.TrainingPlanUpdateRequestDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
+import ar.gym.gym.dto.response.TrainingPlanCreateResponseDto;
 import ar.gym.gym.dto.response.TrainingPlanResponseDto;
 import ar.gym.gym.mapper.RoutineMapper;
 import ar.gym.gym.mapper.TrainingPlanMapper;
@@ -47,7 +48,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
     }
 
     @Override
-    public TrainingPlanResponseDto create(TrainingPlanRequestDto trainingPlanRequestDto) {
+    public TrainingPlanCreateResponseDto create(TrainingPlanRequestDto trainingPlanRequestDto) {
         logger.info("Entrando al método create con datos del plan de entrenamiento: {}", trainingPlanRequestDto);
 
         // Obtener cliente por DNI
@@ -78,7 +79,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
         clientRepository.save(client);
         notificationRepository.save(notification);
 
-        TrainingPlanResponseDto response = trainingPlanMapper.entityToDto(trainingPlan);
+        TrainingPlanCreateResponseDto response = trainingPlanMapper.entityToDtoCreate(trainingPlan);
         logger.info("Saliendo del método create con respuesta: {}", response);
         return response;
     }

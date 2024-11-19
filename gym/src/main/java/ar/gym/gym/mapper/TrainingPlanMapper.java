@@ -1,6 +1,7 @@
 package ar.gym.gym.mapper;
 
 import ar.gym.gym.dto.request.TrainingPlanRequestDto;
+import ar.gym.gym.dto.response.TrainingPlanCreateResponseDto;
 import ar.gym.gym.dto.response.TrainingPlanResponseDto;
 import ar.gym.gym.model.TrainingPlan;
 import org.modelmapper.ModelMapper;
@@ -15,12 +16,16 @@ public class TrainingPlanMapper {
         this.modelMapper = modelMapper;
     }
 
-    // Método para convertir la entidad TrainingPlan a TrainingPlanResponseDto
+    // Metodo para convertir la entidad TrainingPlan a TrainingPlanResponseDto
     public TrainingPlanResponseDto entityToDto(TrainingPlan trainingPlan) {
         return modelMapper.map(trainingPlan, TrainingPlanResponseDto.class);
     }
 
-    // Método para convertir TrainingPlanRequestDto a la entidad TrainingPlan
+    public TrainingPlanCreateResponseDto entityToDtoCreate(TrainingPlan trainingPlan) {
+        return modelMapper.map(trainingPlan, TrainingPlanCreateResponseDto.class);
+    }
+
+    // Metodo para convertir TrainingPlanRequestDto a la entidad TrainingPlan
     public TrainingPlan dtoToEntity(TrainingPlanRequestDto trainingPlanRequestDto) {
         return modelMapper.map(trainingPlanRequestDto, TrainingPlan.class);
     }

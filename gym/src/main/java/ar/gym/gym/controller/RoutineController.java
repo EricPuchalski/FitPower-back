@@ -3,6 +3,7 @@ package ar.gym.gym.controller;
 import ar.gym.gym.dto.request.RoutineRequestDto;
 import ar.gym.gym.dto.request.RoutineUpdateRequestDto;
 import ar.gym.gym.dto.request.SessionRequestDto;
+import ar.gym.gym.dto.response.RoutineCreateResponseDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.service.RoutineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,8 @@ public class RoutineController {
     // Endpoint to create a new routine
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_TRAINER')")
-    public ResponseEntity<RoutineResponseDto> createRoutine(@Validated @RequestBody RoutineRequestDto routineRequestDto) {
-        RoutineResponseDto createdRoutine = routineService.create(routineRequestDto);
+    public ResponseEntity<RoutineCreateResponseDto> createRoutine(@Validated @RequestBody RoutineRequestDto routineRequestDto) {
+        RoutineCreateResponseDto createdRoutine = routineService.create(routineRequestDto);
         return new ResponseEntity<>(createdRoutine, HttpStatus.CREATED);
     }
 

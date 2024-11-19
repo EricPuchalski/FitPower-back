@@ -3,13 +3,14 @@ package ar.gym.gym.service;
 import ar.gym.gym.dto.request.RoutineRequestDto;
 import ar.gym.gym.dto.request.RoutineUpdateRequestDto;
 import ar.gym.gym.dto.request.SessionRequestDto;
+import ar.gym.gym.dto.response.RoutineCreateResponseDto;
 import ar.gym.gym.dto.response.RoutineResponseDto;
 import ar.gym.gym.model.Routine;
 
 import java.util.List;
 
 public interface RoutineService {
-    RoutineResponseDto create(RoutineRequestDto routineRequestDto);
+    RoutineCreateResponseDto create(RoutineRequestDto routineRequestDto);
 
     List<RoutineResponseDto> findAll();
 

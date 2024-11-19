@@ -4,6 +4,7 @@ import ar.gym.gym.dto.request.GymRequestDto;
 import ar.gym.gym.dto.request.GymUpdateRequestDto;
 import ar.gym.gym.dto.response.AddClientToNutritionistResponseDto;
 import ar.gym.gym.dto.response.AddClientToTrainerResponseDto;
+import ar.gym.gym.dto.response.GymCreateResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
 import ar.gym.gym.model.Gym;
 import ar.gym.gym.service.GymService;
@@ -32,9 +33,9 @@ public class GymController {
     // Endpoint para crear un nuevo gimnasio
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<GymResponseDto> create(@Validated @RequestBody GymRequestDto gymRequestDto) {
+    public ResponseEntity<GymCreateResponseDto> create(@Validated @RequestBody GymRequestDto gymRequestDto) {
         logger.info("Creating a new gym: {}", gymRequestDto);
-        GymResponseDto createdGym = gymService.create(gymRequestDto);
+        GymCreateResponseDto createdGym = gymService.create(gymRequestDto);
         logger.info("Gym created successfully: {}", createdGym);
         return new ResponseEntity<>(createdGym, HttpStatus.CREATED);
     }
@@ -64,9 +65,9 @@ public class GymController {
 
     // Endpoint para actualizar un gimnasio existente
     @PutMapping("/{id}")
-    public ResponseEntity<GymResponseDto> update(@Validated @RequestBody GymUpdateRequestDto gymRequestDto, @PathVariable Long id) {
+    public ResponseEntity<GymCreateResponseDto> update(@Validated @RequestBody GymUpdateRequestDto gymRequestDto, @PathVariable Long id) {
         logger.info("Updating gym with ID: {}", id);
-        GymResponseDto updatedGym = gymService.update(gymRequestDto, id);
+        GymCreateResponseDto updatedGym = gymService.update(gymRequestDto, id);
         logger.info("Gym updated successfully: {}", updatedGym);
         return ResponseEntity.ok(updatedGym);
     }

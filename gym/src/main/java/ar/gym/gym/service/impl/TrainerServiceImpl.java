@@ -3,6 +3,7 @@ package ar.gym.gym.service.impl;
 import ar.gym.gym.dto.request.TrainerRequestDto;
 import ar.gym.gym.dto.request.TrainerUpdateRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
+import ar.gym.gym.dto.response.TrainerCreateResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.mapper.ClientMapper;
 import ar.gym.gym.mapper.TrainerMapper;
@@ -36,7 +37,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public TrainerResponseDto create(TrainerRequestDto trainerRequestDto) {
+    public TrainerCreateResponseDto create(TrainerRequestDto trainerRequestDto) {
         if(trainerRepository.findByDni(trainerRequestDto.getDni()).isPresent()){
             throw new EntityExistsException("Ya existe un entrenador con el DNI " + trainerRequestDto.getDni());
         }
@@ -54,7 +55,7 @@ public class TrainerServiceImpl implements TrainerService {
         }
 
         trainerRepository.save(trainer);
-        return trainerMapper.entityToDto(trainer);
+        return trainerMapper.entityToDtoCreate(trainer);
     }
 
     @Override

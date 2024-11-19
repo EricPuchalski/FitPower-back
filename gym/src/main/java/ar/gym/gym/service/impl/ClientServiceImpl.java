@@ -3,9 +3,7 @@ package ar.gym.gym.service.impl;
 import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ClientStatusRequestDto;
 import ar.gym.gym.dto.request.ClientUpdateRequestDto;
-import ar.gym.gym.dto.response.ClientResponseDto;
-import ar.gym.gym.dto.response.ClientStatusResponseDto;
-import ar.gym.gym.dto.response.NotificationResponseDto;
+import ar.gym.gym.dto.response.*;
 import ar.gym.gym.mapper.ClientMapper;
 import ar.gym.gym.mapper.ClientStatusMapper;
 import ar.gym.gym.mapper.GymMapper;
@@ -25,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,7 +51,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientResponseDto create(ClientRequestDto clientRequestDto) {
+    public ClientCreateResponseDto create(ClientRequestDto clientRequestDto) {
         logger.info("Entrando al método create con datos del cliente: {}", clientRequestDto);
 
         if (clientRepository.findByDni(clientRequestDto.getDni()).isPresent()) {
@@ -82,7 +81,7 @@ public class ClientServiceImpl implements ClientService {
         client.setActive(true);
         clientRepository.save(client);
 
-        ClientResponseDto response = clientMapper.entityToDto(client);
+        ClientCreateResponseDto response = clientMapper.entityToDtoCreate(client);
         logger.info("Saliendo del método create con respuesta: {}", response);
         return response;
     }
@@ -156,7 +155,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientResponseDto update(ClientUpdateRequestDto clientRequestDto, Long id) {
+    public ClientUpdateResponseDto update(ClientUpdateRequestDto clientRequestDto, Long id) {
         logger.info("Entrando al método update con ID: {} y datos de actualización: {}", id, clientRequestDto);
 
         Client existingClient = clientRepository.findById(id)
@@ -194,11 +193,10 @@ public class ClientServiceImpl implements ClientService {
                 throw new EntityNotFoundException("Gimnasio no encontrado con el nombre: " + clientRequestDto.getGymName());
             }
         }
-
-
+        existingClient.setLastUpdateDate(LocalDateTime.now());
 
         Client updatedClient = clientRepository.save(existingClient);
-        ClientResponseDto response = clientMapper.entityToDto(updatedClient);
+        ClientUpdateResponseDto response = clientMapper.entityToDtoUpdate(updatedClient);
 
         logger.info("Saliendo del método update con cliente actualizado: {}", response);
         return response;

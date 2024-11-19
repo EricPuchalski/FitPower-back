@@ -5,6 +5,7 @@ import ar.gym.gym.dto.request.GymRequestDto;
 import ar.gym.gym.dto.request.GymUpdateRequestDto;
 import ar.gym.gym.dto.response.AddClientToNutritionistResponseDto;
 import ar.gym.gym.dto.response.AddClientToTrainerResponseDto;
+import ar.gym.gym.dto.response.GymCreateResponseDto;
 import ar.gym.gym.dto.response.GymResponseDto;
 import ar.gym.gym.model.Gym;
 
@@ -12,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GymService {
-    GymResponseDto create(GymRequestDto gymRequestDto);
+    GymCreateResponseDto create(GymRequestDto gymRequestDto);
     public List<GymResponseDto> findAll();
     public Optional<Gym> findByName(String name);
-    public GymResponseDto update(GymUpdateRequestDto gymRequestDto, Long id);
+    public GymCreateResponseDto update(GymUpdateRequestDto gymRequestDto, Long id);
     void deleteByName(String name);
 
     GymResponseDto addClientToGym(String gymCode, String dni);

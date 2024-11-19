@@ -1,7 +1,9 @@
 package ar.gym.gym.mapper;
 
 import ar.gym.gym.dto.request.ClientRequestDto;
+import ar.gym.gym.dto.response.ClientCreateResponseDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
+import ar.gym.gym.dto.response.ClientUpdateResponseDto;
 import ar.gym.gym.model.Client;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,15 @@ public class ClientMapper {
     public ClientResponseDto entityToDto(Client client){
         return modelMapper.map(client, ClientResponseDto.class);
     }
+
+    public ClientCreateResponseDto entityToDtoCreate(Client client){
+        return modelMapper.map(client, ClientCreateResponseDto.class);
+    }
+
+    public ClientUpdateResponseDto entityToDtoUpdate(Client client){
+        return modelMapper.map(client, ClientUpdateResponseDto.class);
+    }
+
 
     public Client dtoToEntity(ClientRequestDto clientRequestDto){
         return modelMapper.map(clientRequestDto, Client.class);

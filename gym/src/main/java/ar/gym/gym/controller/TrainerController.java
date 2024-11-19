@@ -3,6 +3,7 @@ package ar.gym.gym.controller;
 import ar.gym.gym.dto.request.TrainerRequestDto;
 import ar.gym.gym.dto.request.TrainerUpdateRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
+import ar.gym.gym.dto.response.TrainerCreateResponseDto;
 import ar.gym.gym.dto.response.TrainerResponseDto;
 import ar.gym.gym.service.TrainerService;
 import jakarta.validation.Valid;
@@ -29,9 +30,9 @@ public class TrainerController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<TrainerResponseDto> create(@Validated @RequestBody TrainerRequestDto trainerRequestDto) {
+    public ResponseEntity<TrainerCreateResponseDto> create(@Validated @RequestBody TrainerRequestDto trainerRequestDto) {
         logger.info("Creating trainer with request: {}", trainerRequestDto);
-        TrainerResponseDto createdTrainer = trainerService.create(trainerRequestDto);
+        TrainerCreateResponseDto createdTrainer = trainerService.create(trainerRequestDto);
         logger.info("Created trainer: {}", createdTrainer);
         return new ResponseEntity<>(createdTrainer, HttpStatus.CREATED);
     }
