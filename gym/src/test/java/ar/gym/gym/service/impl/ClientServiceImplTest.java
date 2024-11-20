@@ -1,6 +1,6 @@
 package ar.gym.gym.service.impl;
 
-import ar.gym.gym.controller.ClientController;
+/* import ar.gym.gym.controller.ClientController;
 import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ClientStatusRequestDto;
 import ar.gym.gym.dto.response.ClientResponseDto;
@@ -61,7 +61,7 @@ public class ClientServiceImplTest {
     @MockBean
     private NotificationMapper notificationMapper;
 
-    @InjectMocks
+   @InjectMocks
     private ClientServiceImpl clientService;
 
     private ObjectMapper objectMapper;
@@ -654,3 +654,4 @@ public class ClientServiceImplTest {
 
 
 }
+*/

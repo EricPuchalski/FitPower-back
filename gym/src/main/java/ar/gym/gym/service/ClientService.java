@@ -4,6 +4,7 @@ import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ClientStatusRequestDto;
 import ar.gym.gym.dto.request.ClientUpdateRequestDto;
 import ar.gym.gym.dto.response.*;
+import ar.gym.gym.model.Performance;
 
 import java.util.List;
 
@@ -28,4 +29,5 @@ public interface ClientService{
     NotificationResponseDto markNotificationAsSeen(String dni, Long notificationId);
 
     List<ClientResponseDto> findAllByActiveTrue();
+    PerfomanceResponseDto getPerformanceByClientDni(String dni);
 }

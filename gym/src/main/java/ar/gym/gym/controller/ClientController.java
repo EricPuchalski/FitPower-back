@@ -5,6 +5,7 @@ import ar.gym.gym.dto.request.ClientStatusRequestDto;
 import ar.gym.gym.dto.request.ClientUpdateRequestDto;
 import ar.gym.gym.dto.response.*;
 
+import ar.gym.gym.model.Performance;
 import ar.gym.gym.service.ClientService;
 import ar.gym.gym.service.ProgressEvaluationService;
 import org.slf4j.Logger;
@@ -168,5 +169,12 @@ public class ClientController {
         double muscleMass = progressEvaluationService.calculateMuscleMass(dni);
         logger.info("Muscle mass retrieved: {}", muscleMass);
         return ResponseEntity.ok(muscleMass);
+    }
+
+    @GetMapping("/{dni}/performance")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_TRAINER')")
+    public ResponseEntity<PerfomanceResponseDto> getPerformanceByDni(@PathVariable String dni) {
+        PerfomanceResponseDto performance = clientService.getPerformanceByClientDni(dni);
+        return ResponseEntity.ok(performance);
     }
 }

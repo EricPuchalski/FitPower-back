@@ -4,18 +4,11 @@ import ar.gym.gym.dto.request.ClientRequestDto;
 import ar.gym.gym.dto.request.ClientStatusRequestDto;
 import ar.gym.gym.dto.request.ClientUpdateRequestDto;
 import ar.gym.gym.dto.response.*;
-import ar.gym.gym.mapper.ClientMapper;
-import ar.gym.gym.mapper.ClientStatusMapper;
-import ar.gym.gym.mapper.GymMapper;
-import ar.gym.gym.mapper.NotificationMapper;
-import ar.gym.gym.model.Client;
-import ar.gym.gym.model.ClientStatus;
-import ar.gym.gym.model.Gym;
-import ar.gym.gym.model.Notification;
-import ar.gym.gym.repository.ClientRepository;
-import ar.gym.gym.repository.ClientStatusRepository;
-import ar.gym.gym.repository.GymRepository;
+import ar.gym.gym.mapper.*;
+import ar.gym.gym.model.*;
+import ar.gym.gym.repository.*;
 import ar.gym.gym.service.ClientService;
+import ar.gym.gym.service.ProgressEvaluationService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -35,19 +28,25 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final GymRepository gymRepository;
     private final ClientMapper clientMapper;
-    private final GymMapper gymMapper;
+    private final PerfomanceMapper perfomanceMapper;
     private final ClientStatusRepository clientStatusRepository;
     private final ClientStatusMapper clientStatusMapper;
     private final NotificationMapper notificationMapper;
+    private final PerformanceRepository performanceRepository;
+    private final PhysicalProgressRepository physicalProgressRepository;
+    private final ProgressEvaluationService progressEvaluationService;
 
-    public ClientServiceImpl(ClientRepository clientRepository, GymRepository gymRepository, ClientMapper clientMapper, GymMapper gymMapper, ClientStatusRepository clientStatusRepository, ClientStatusMapper clientStatusMapper, NotificationMapper notificationMapper) {
+    public ClientServiceImpl(ClientRepository clientRepository, GymRepository gymRepository, ClientMapper clientMapper, PerfomanceMapper perfomanceMapper, ClientStatusRepository clientStatusRepository, ClientStatusMapper clientStatusMapper, NotificationMapper notificationMapper, PerformanceRepository performanceRepository, PhysicalProgressRepository physicalProgressRepository, ProgressEvaluationService progressEvaluationService) {
         this.clientRepository = clientRepository;
         this.gymRepository = gymRepository;
         this.clientMapper = clientMapper;
-        this.gymMapper = gymMapper;
+        this.perfomanceMapper = perfomanceMapper;
         this.clientStatusRepository = clientStatusRepository;
         this.clientStatusMapper = clientStatusMapper;
         this.notificationMapper = notificationMapper;
+        this.performanceRepository = performanceRepository;
+        this.physicalProgressRepository = physicalProgressRepository;
+        this.progressEvaluationService = progressEvaluationService;
     }
 
     @Override
@@ -80,7 +79,8 @@ public class ClientServiceImpl implements ClientService {
 
         client.setActive(true);
         clientRepository.save(client);
-
+        Performance performance = Performance.builder().client(client).build();
+        performanceRepository.save(performance);
         ClientCreateResponseDto response = clientMapper.entityToDtoCreate(client);
         logger.info("Saliendo del método create con respuesta: {}", response);
         return response;
@@ -257,6 +257,22 @@ public class ClientServiceImpl implements ClientService {
         client.getStatuses().add(newStatus);
         clientRepository.save(client);
 
+
+        //Agregar progreso fisico al cliente
+        PhysicalProgress physicalProgress = PhysicalProgress.builder()
+                .bmi(progressEvaluationService.calculateIMC(client.getDni()))
+                .bodyFat(progressEvaluationService.calculateBodyFatPercentage(client.getDni()))
+                .muscleMass(progressEvaluationService.calculateMuscleMass(client.getDni()))
+                .date(LocalDateTime.now())
+                .build();
+        physicalProgressRepository.save(physicalProgress);
+        Optional<Performance> performance = performanceRepository.findByClientDni(client.getDni());
+        if(performance.isEmpty()){
+            throw new EntityNotFoundException("No existe el rendimiento solicitado de este cliente " + client.getDni());
+        }
+        performance.get().getPhysicalProgresses().add(physicalProgress);
+        performanceRepository.save(performance.get());
+
         logger.info("Estado agregado al cliente con DNI: {}", dni);
         return clientStatusMapper.entityToDto(newStatus);
     }
@@ -304,6 +320,9 @@ public class ClientServiceImpl implements ClientService {
                 .collect(Collectors.toList());
     }
 
-
-
+    public PerfomanceResponseDto getPerformanceByClientDni(String dni) {
+        Performance performance = performanceRepository.findByClientDni(dni)
+                .orElseThrow(() -> new EntityNotFoundException("No se encontró una performance asociada al cliente con DNI: " + dni));
+        return perfomanceMapper.entityToDto(performance);
+    }
 }
