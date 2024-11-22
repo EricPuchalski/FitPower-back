@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TrainingDiaryRequestDto {
-    @NotBlank(message = "La sesión del diario de entrenamiento es obligatoria")
     private SessionRequestDto session;
     @NotBlank(message = "El dni del cliente es obligatorio")
     private String clientDni;

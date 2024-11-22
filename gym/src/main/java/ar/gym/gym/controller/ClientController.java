@@ -59,7 +59,7 @@ public class ClientController {
     }
 
     @GetMapping("/{dni}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TRAINER')")
     public ResponseEntity<ClientResponseDto> findByDni(@PathVariable String dni) {
         logger.info("Fetching client with DNI: {}", dni);
         ClientResponseDto client = clientService.findByDni(dni);
@@ -176,5 +176,13 @@ public class ClientController {
     public ResponseEntity<PerfomanceResponseDto> getPerformanceByDni(@PathVariable String dni) {
         PerfomanceResponseDto performance = clientService.getPerformanceByClientDni(dni);
         return ResponseEntity.ok(performance);
+    }
+
+    @GetMapping("/{clientDni}/report")
+    @PreAuthorize("hasRole('ROLE_TRAINER')")
+    public ResponseEntity<ReportResponseDto> generateReport(@PathVariable String clientDni) {
+        PerfomanceResponseDto performance = clientService.getPerformanceByClientDni(clientDni);
+        ReportResponseDto report = progressEvaluationService.generateReportFromPerformance(performance);
+        return ResponseEntity.ok(report);
     }
 }

@@ -1,14 +1,20 @@
 package ar.gym.gym.service.impl;
 
+import ar.gym.gym.dto.response.PerfomanceResponseDto;
+import ar.gym.gym.dto.response.ReportResponseDto;
 import ar.gym.gym.model.Client;
 import ar.gym.gym.model.ClientStatus;
+import ar.gym.gym.model.PhysicalProgress;
 import ar.gym.gym.repository.ClientRepository;
 import ar.gym.gym.service.ProgressEvaluationService;
 import ar.gym.gym.utils.AgeCalculator;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProgressEvaluationServiceImpl implements ProgressEvaluationService {
@@ -58,6 +64,23 @@ public class ProgressEvaluationServiceImpl implements ProgressEvaluationService 
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("No se encontró ningún estado para el cliente"));
     }
+    public ReportResponseDto generateReportFromPerformance(PerfomanceResponseDto performance) {
+        List<PhysicalProgress> progresses = performance.getPhysicalProgresses();
+        // Ordenar por fecha descendente y tomar los últimos 4 registros
+        progresses.sort(Comparator.comparing(PhysicalProgress::getDate).reversed());
+        List<PhysicalProgress> lastFourProgresses = progresses.subList(0, Math.min(4, progresses.size()));
 
+        // Extraer los valores de BMI, masa muscular y grasa corporal
+        List<Double> bmiValues = lastFourProgresses.stream().map(PhysicalProgress::getBmi).collect(Collectors.toList());
+        List<Double> muscleMassValues = lastFourProgresses.stream().map(PhysicalProgress::getMuscleMass).collect(Collectors.toList());
+        List<Double> bodyFatValues = lastFourProgresses.stream().map(PhysicalProgress::getBodyFat).collect(Collectors.toList());
+
+        // Generar el informe
+        ReportResponseDto report = new ReportResponseDto();
+        report.setBmiValues(bmiValues);
+        report.setMuscleMassValues(muscleMassValues);
+        report.setBodyFatValues(bodyFatValues);
+        return report;
+    }
 
 }

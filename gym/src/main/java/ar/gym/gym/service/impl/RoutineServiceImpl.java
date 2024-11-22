@@ -66,7 +66,7 @@ public class RoutineServiceImpl implements RoutineService {
         Notification notification = Notification.builder().
                 creationDate(LocalDateTime.now()).
                 seen(false).
-                message("Se añadió la rutina " + routineRequestDto.getName()).
+                message("Se añadió la rutina: " + routineRequestDto.getName()).
                 client(client).build();
         client.getNotifications().add(notification);
 
@@ -276,13 +276,6 @@ public class RoutineServiceImpl implements RoutineService {
 
         // Guardar la rutina actualizada en la base de datos
         Routine updatedRoutine = routineRepository.save(routine);
-        //Notificar al cliente
-        Notification notification = Notification.builder().
-                creationDate(LocalDateTime.now()).
-                seen(false).
-                message("Se añadió una sesión a la rutina " + routine.getName()).build();
-        routine.getClient().getNotifications().add(notification);
-        notificationRepository.save(notification);
 
         // Devolver el DTO de la rutina actualizada usando el mapper
         return routineMapper.entityToDto(updatedRoutine);
@@ -308,12 +301,19 @@ public class RoutineServiceImpl implements RoutineService {
 
         // Guardar la rutina actualizada
         Routine updatedRoutine = routineRepository.save(routine);
+
+        //Obtener cliente de la rutina
+        Client client = routine.getClient();
+
         //Notificar al cliente
         Notification notification = Notification.builder().
                 creationDate(LocalDateTime.now()).
                 seen(false).
-                message("Se ha removido una sesión en la rutina " + routine.getName()).build();
-        routine.getClient().getNotifications().add(notification);
+                message("Se removió una sesión en la rutina: " + routine.getName()).
+                client(client).build();
+        client.getNotifications().add(notification);
+
+        clientRepository.save(client);
         notificationRepository.save(notification);
 
         // Devolver el DTO de la rutina actualizada usando el mapper
@@ -351,12 +351,18 @@ public class RoutineServiceImpl implements RoutineService {
         // Si la relación entre Routine y Session tiene cascade, no es necesario guardar la sesión
         routineRepository.save(routine); // Esto guarda la rutina y la sesión si la relación es cascada
 
+        //Obtener cliente de la rutina
+        Client client = routine.getClient();
+
         //Notificar al cliente
         Notification notification = Notification.builder().
                 creationDate(LocalDateTime.now()).
                 seen(false).
-                message("Se ha editado una sesión en la rutina " + routine.getName()).build();
-        routine.getClient().getNotifications().add(notification);
+                message("Se editó una sesión en la rutina: " + routine.getName()).
+                client(client).build();
+        client.getNotifications().add(notification);
+
+        clientRepository.save(client);
         notificationRepository.save(notification);
 
         // Devolver el DTO de la rutina actualizada
