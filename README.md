@@ -63,8 +63,3 @@ Los clientes pueden:
 > Aquí puedes agregar instrucciones para correr el proyecto localmente, como clonarlo, instalar dependencias y ejecutar tanto backend como frontend.
 
 ---
-
-## Autor
-
-**Santiago Paniagua**  
-[GitHub](https://github.com/PaniaguaSanty) | [LinkedIn](https://linkedin.com/in/santiago-paniagua-dev/)
