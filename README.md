@@ -57,9 +57,3 @@ Los clientes pueden:
 - **Interacción Cliente-Servidor:** API REST
 
 ---
-
-## Instalación y Ejecución (Opcional)
-
-> Aquí puedes agregar instrucciones para correr el proyecto localmente, como clonarlo, instalar dependencias y ejecutar tanto backend como frontend.
-
----
